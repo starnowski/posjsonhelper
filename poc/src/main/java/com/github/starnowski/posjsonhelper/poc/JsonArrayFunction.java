@@ -32,9 +32,7 @@ public class JsonArrayFunction implements SQLFunction {
             throw new QueryException( "json_array requires at least one argument");
         }
 
-        return args.get( 0 ) + " -> " + args.get(1);
-
-//        return "?&";
+        return renderValues(args);
     }
 
     private String renderValues(List values)
@@ -45,14 +43,11 @@ public class JsonArrayFunction implements SQLFunction {
         while (it.hasNext())
         {
             String value = it.next().toString();
-            sb.append("'");
             sb.append(value);
-            sb.append("'");
             if (it.hasNext())
             {
                 sb.append(",");
             }
-
         }
         sb.append("]");
         //TODO Sql escape

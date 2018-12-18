@@ -28,9 +28,9 @@ public class AllStringAtTopLevelJsonFunction implements SQLFunction {
     @Override
     public String render(Type argumentType, List args, SessionFactoryImplementor factory) throws QueryException {
         if ( args.size()!=2 ) {
-            throw new QueryException( "?&() requires two arguments; found : " + args.size() );
+            throw new QueryException( "jsonb_all_array_strings_exist requires two arguments; found : " + args.size() );
         }
 
-        return args.get( 0 ) + " ??& " + args.get(1);
+        return "jsonb_all_array_strings_exist(" + args.get( 0 ) + " , " + args.get(1) + ")";
     }
 }
