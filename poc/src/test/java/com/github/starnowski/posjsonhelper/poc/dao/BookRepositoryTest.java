@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.poc.dao;
 
 import com.github.starnowski.posjsonhelper.poc.model.Book;
 import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,21 @@ public class BookRepositoryTest {
     {
         // when
         List<Book> results = tested.listBooksByAuthors("William Shakespeare", "Stephen King");
+
+        // then
+        Assertions.assertThat(results).isNotEmpty().hasSize(2);
+        Assertions.assertThat(results.stream().map(Book::getId).collect(Collectors.toList())).containsExactly(2l, 3l);
+    }
+
+    @Ignore
+    @Test
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, BOOKS_WITH_MULTI_AUTHORS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    public void shouldReturnCorrectResultsByNativeQuery()
+    {
+        // when
+        List<Book> results = tested.returnBookForAuthorsByNativeQuery("William Shakespeare", "Stephen King");
 
         // then
         Assertions.assertThat(results).isNotEmpty().hasSize(2);
