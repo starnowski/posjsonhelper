@@ -37,15 +37,12 @@ public class JSONBComparisonPredicate extends AbstractSimplePredicate implements
 
     @Override
     public String render(boolean isNegated, RenderingContext renderingContext) {
-//        return ((Renderable) this.getOperand()).render(renderingContext) + jsonPath + " " + this.comparisonOperator.rendered() + " array[" + renderValues() + "]";
         return this.comparisonOperator.rendered() + "(" + json_function_get_json_element(renderingContext) + " , " + " " + renderValues() + ") = TRUE";
-//        return "json_all( " + ((Renderable) this.getOperand()).render(renderingContext) + ") = TRUE";
     }
 
     private String json_function_get_json_element(RenderingContext renderingContext)
     {
         return "json_function_get_json_element( " + ((Renderable) this.getOperand()).render(renderingContext) + " , '" + jsonPath + "' )";
-//        return "json_function_get_json_element(" + ((Renderable) this.getOperand()).render(renderingContext) + " )";
     }
 
     @Override
