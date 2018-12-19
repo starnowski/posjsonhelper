@@ -1,6 +1,6 @@
 package com.github.starnowski.posjsonhelper.poc.dao;
 
-import com.github.starnowski.posjsonhelper.poc.model.Book;
+import com.github.starnowski.posjsonhelper.poc.model.BookReader;
 import org.assertj.core.api.Assertions;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -28,10 +28,10 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = AFTER_TEST_METHOD)
-public class BookRepositoryTest {
+public class BookReaderRepositoryTest {
 
     @Autowired
-    private BookRepository tested;
+    private BookReaderRepository tested;
 
     @Test
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, BOOKS_WITH_MULTI_AUTHORS_SCRIPT_PATH},
@@ -40,11 +40,11 @@ public class BookRepositoryTest {
     public void shouldReturnCorrectResults()
     {
         // when
-        List<Book> results = tested.listBooksByAuthors("William Shakespeare", "Stephen King");
+        List<BookReader> results = tested.listBookReadersByFavouriteAuthors("William Shakespeare", "Stephen King");
 
         // then
         Assertions.assertThat(results).isNotEmpty().hasSize(2);
-        Assertions.assertThat(results.stream().map(Book::getId).collect(Collectors.toList())).containsExactly(2l, 3l);
+        Assertions.assertThat(results.stream().map(BookReader::getId).collect(Collectors.toList())).containsExactly(2l, 3l);
     }
 
     @Ignore
@@ -55,10 +55,10 @@ public class BookRepositoryTest {
     public void shouldReturnCorrectResultsByNativeQuery()
     {
         // when
-        List<Book> results = tested.returnBookForAuthorsByNativeQuery("William Shakespeare", "Stephen King");
+        List<BookReader> results = tested.returnBookForAuthorsByNativeQuery("William Shakespeare", "Stephen King");
 
         // then
         Assertions.assertThat(results).isNotEmpty().hasSize(2);
-        Assertions.assertThat(results.stream().map(Book::getId).collect(Collectors.toList())).containsExactly(2l, 3l);
+        Assertions.assertThat(results.stream().map(BookReader::getId).collect(Collectors.toList())).containsExactly(2l, 3l);
     }
 }

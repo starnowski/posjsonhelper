@@ -1,7 +1,7 @@
 package com.github.starnowski.posjsonhelper.poc.dao;
 
 import com.github.starnowski.posjsonhelper.poc.JSONBComparisonPredicate;
-import com.github.starnowski.posjsonhelper.poc.model.Book;
+import com.github.starnowski.posjsonhelper.poc.model.BookReader;
 import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -15,23 +15,23 @@ import java.util.Iterator;
 import java.util.List;
 
 @Repository
-public class BookRepository {
+public class BookReaderRepository {
 
     @Autowired
     private EntityManager entityManager;
 
-    List<Book> listBooksByAuthors(String... authors)
+    List<BookReader> listBookReadersByFavouriteAuthors(String... authors)
     {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Book> query = cb.createQuery(Book.class);
-        Root<Book> root = query.from(Book.class);
+        CriteriaQuery<BookReader> query = cb.createQuery(BookReader.class);
+        Root<BookReader> root = query.from(BookReader.class);
         query.select(root);
-        query.where(new JSONBComparisonPredicate((CriteriaBuilderImpl) cb, "authors", JSONBComparisonPredicate.ComparisonOperator.ALL_STRINGS_AT_TOP_LEVEL, root.get("jsonData"), authors));
+        query.where(new JSONBComparisonPredicate((CriteriaBuilderImpl) cb, "favourite_authors", JSONBComparisonPredicate.ComparisonOperator.ALL_STRINGS_AT_TOP_LEVEL, root.get("jsonData"), authors));
 
         return entityManager.createQuery(query).getResultList();
     }
 
-    List<Book> returnBookForAuthorsByNativeQuery(String... authours)
+    List<BookReader> returnBookForAuthorsByNativeQuery(String... authours)
     {
         StringBuilder sb = new StringBuilder();
         Iterator<String> it = Arrays.asList(authours).iterator();
