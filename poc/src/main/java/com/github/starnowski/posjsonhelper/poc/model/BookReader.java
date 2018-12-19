@@ -3,9 +3,11 @@ package com.github.starnowski.posjsonhelper.poc.model;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity
-public class Book {
+@Table(name = "book_reader")
+public class BookReader {
     @Id
     private Long id;
 

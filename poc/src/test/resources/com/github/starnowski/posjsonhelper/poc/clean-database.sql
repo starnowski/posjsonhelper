@@ -1,1 +1,1 @@
-TRUNCATE  book CASCADE;
+TRUNCATE  book_reader CASCADE;
