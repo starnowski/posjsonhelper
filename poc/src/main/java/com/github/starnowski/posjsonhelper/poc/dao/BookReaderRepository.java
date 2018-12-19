@@ -31,6 +31,16 @@ public class BookReaderRepository {
         return entityManager.createQuery(query).getResultList();
     }
 
+    List<BookReader> listBookReadersByPlacesOfBirth(String... places)
+    {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<BookReader> query = cb.createQuery(BookReader.class);
+        Root<BookReader> root = query.from(BookReader.class);
+        query.select(root);
+        query.where(root.get("placeOfBirth").in(places));
+        return entityManager.createQuery(query).getResultList();
+    }
+
     List<BookReader> returnBookForAuthorsByNativeQuery(String... authours)
     {
         StringBuilder sb = new StringBuilder();

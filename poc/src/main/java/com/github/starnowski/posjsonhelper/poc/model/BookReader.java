@@ -14,6 +14,17 @@ public class BookReader {
     @Column(name = "jsonb_data", columnDefinition = "jsonb")
     private String jsonData;
 
+    @Column(name = "place_of_birth")
+    private String placeOfBirth;
+
+    public String getPlaceOfBirth() {
+        return placeOfBirth;
+    }
+
+    public void setPlaceOfBirth(String placeOfBirth) {
+        this.placeOfBirth = placeOfBirth;
+    }
+
     public Long getId() {
         return id;
     }
