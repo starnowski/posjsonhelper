@@ -32,15 +32,11 @@ public class TestUtils {
         return jdbcTemplate.execute(new StatementCallback<List<Long>>() {
             @Override
             public List<Long> doInStatement(Statement statement) throws SQLException, DataAccessException {
-                ResultSet rs = statement.executeQuery(query);rs.next();
+                ResultSet rs = statement.executeQuery(query);
                 List<Long> result = new ArrayList<>();
-                while (true)
+                while (rs.next())
                 {
                     result.add(rs.getLong(1));
-                    if (rs.isLast())
-                    {
-                        break;
-                    }
                 }
                 return result;
             }
