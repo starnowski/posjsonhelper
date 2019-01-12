@@ -45,7 +45,7 @@ public class JSONArrayOperationTest {
 
         // then
         Assertions.assertThat(results).isNotEmpty().hasSize(1);
-        Assertions.assertThat(results).containsExactly(2l);
+        Assertions.assertThat(results).containsExactly(2L);
     }
 
     @Test
@@ -54,12 +54,47 @@ public class JSONArrayOperationTest {
             executionPhase = BEFORE_TEST_METHOD)
     public void shouldReturnEmptyIdsListWhenQueryByNonExistJsonAttribute() {
         // when
-//        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE e.payment_jsonb_dat ? 'custom11' AND e.payment_jsonb_data->'custom11'::int > 0 ");
-//        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE e.payment_jsonb_dat ? 'custom11'");
-//        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE e.payment_jsonb_data->'custom11'::int > 0 ");
         List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE jsonb_top_level_exist(e.payment_jsonb_data, 'custom11')");
 
         // then
         Assertions.assertThat(results).isEmpty();
+    }
+
+    @Test
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, EMPLOYEES_WITH_PAYMENTS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    public void shouldReturnEmptyIdsListWhenQueryByNonExistJsonAttributeAndUsingNumericComparator() {
+        // when
+        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE jsonb_top_level_exist(e.payment_jsonb_data, 'custom11') AND (e.payment_jsonb_data->>'custom11')::integer > 0");
+
+        // then
+        Assertions.assertThat(results).isEmpty();
+    }
+
+    @Test
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, EMPLOYEES_WITH_PAYMENTS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    public void shouldReturnEmptyIdsListWhenQueryByNonExistJsonAttributeAndUsingNumericComparatorWithoutCheckingIfAttributeExist() {
+        // when
+        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE (e.payment_jsonb_data->>'custom11')::integer > 0");
+
+        // then
+        Assertions.assertThat(results).isEmpty();
+    }
+
+    @Test
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, EMPLOYEES_WITH_PAYMENTS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    public void shouldReturnIdsForRecoudWhichContainsCustom33Attribute() {
+
+        // when
+        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE jsonb_top_level_exist(e.payment_jsonb_data, 'custom33')");
+
+        // then
+        Assertions.assertThat(results).isNotEmpty().hasSize(1);
+        Assertions.assertThat(results).containsExactly(4L);
     }
 }
