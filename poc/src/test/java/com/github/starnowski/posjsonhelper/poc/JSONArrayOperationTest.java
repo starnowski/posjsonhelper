@@ -39,9 +39,10 @@ public class JSONArrayOperationTest {
             executionPhase = BEFORE_TEST_METHOD)
     public void shouldReturnCorrectIdsOfEmployeesWithHighSalaryInDecember()
     {
-        //TODO
         // when
-        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE e.payment_jsonb_data-> ");
+        // Solution based on https://dba.stackexchange.com/questions/202617/indexed-range-comparison-of-array-keys-value-in-row-inside-jsonb/202729#202729
+        List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE EXISTS ( SELECT FROM jsonb_array_elements(e.payment_jsonb_data->'payments') p WHERE p->>'month'='12_2018' AND " +
+                " (p->>'value')::numeric >= '" + HIGH_SALARY + "' )");
 
         // then
         Assertions.assertThat(results).isNotEmpty().hasSize(1);
@@ -88,8 +89,7 @@ public class JSONArrayOperationTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, EMPLOYEES_WITH_PAYMENTS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    public void shouldReturnIdsForRecoudWhichContainsCustom33Attribute() {
-
+    public void shouldReturnIdsForRecordWhichContainsCustom33Attribute() {
         // when
         List<Long> results = TestUtils.selectIds(jdbcTemplate, "SELECT id FROM employee e WHERE jsonb_top_level_exist(e.payment_jsonb_data, 'custom33')");
 
