@@ -9,3 +9,6 @@ https://fullstackdeveloper.guru/2020/05/29/how-to-map-json-data-in-postgresql-da
 
 https://www.postgresql.org/docs/10/functions-json.html
 https://medium.com/geekculture/postgres-jsonb-usage-and-performance-analysis-cdbd1242a018
+
+### TODO Implement 
+* get element - json_extract_path and jsonb_extract_path, json_extract_path_text, jsonb_extract_path_text
