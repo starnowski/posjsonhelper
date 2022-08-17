@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  postgres:
+    image: postgres:10.5
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    volumes:
+      # copy the sql script to create tables
+      - ./create-database-owner.sql:/docker-entrypoint-initdb.d/1_create-database-owner.sql
+      - ./create-database.sql:/docker-entrypoint-initdb.d/2_create-database.sql

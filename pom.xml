@@ -10,6 +10,7 @@
     <modules>
 <!--        <module>poc</module>-->
         <module>core</module>
+        <module>test-utils</module>
     </modules>
 
     <properties>
