@@ -23,7 +23,7 @@ jobs:
     name: "Integration and functional tests in core module"
     services:
       postgres:
-        image: postgres:10.22
+        image: postgres:10.22-bullseye
         env:
           POSTGRES_DB: postgres
           POSTGRES_PASSWORD: postgres
