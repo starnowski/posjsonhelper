@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>parent</artifactId>
+        <groupId>com.github.starnowski.posjsonhelper</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.github.starnowski.posjsonhelper</groupId>
+    <artifactId>hibernate5</artifactId>
+
+    <properties>
+        <org.hibernate.hibernate.core.version>5.6.3.Final</org.hibernate.hibernate.core.version>
+        <org.projectlombok.lombok.version>1.16.20</org.projectlombok.lombok.version>
+        <org.codehaus.groovy.groovy-all.version>2.4.12</org.codehaus.groovy.groovy-all.version>
+        <spock.core.version>1.1-groovy-2.4</spock.core.version>
+        <org.postgresql.postgresql.version>42.3.3</org.postgresql.postgresql.version>
+        <java.version>1.8</java.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+</project>

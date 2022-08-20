@@ -11,6 +11,7 @@
 <!--        <module>poc</module>-->
         <module>core</module>
         <module>test-utils</module>
+        <module>hibernate5</module>
     </modules>
 
     <properties>
