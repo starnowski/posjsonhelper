@@ -1,4 +1,4 @@
-package com.github.starnowski.posjsonhelper.core.functions;
+package com.github.starnowski.posjsonhelper.hibernate5.functions;
 
 import org.hibernate.QueryException;
 import org.hibernate.dialect.function.SQLFunction;
