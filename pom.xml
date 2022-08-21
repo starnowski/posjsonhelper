@@ -8,7 +8,7 @@
     <artifactId>parent</artifactId>
     <version>1.0-SNAPSHOT</version>
     <modules>
-<!--        <module>poc</module>-->
+        <module>poc</module>
         <module>core</module>
         <module>test-utils</module>
         <module>hibernate5</module>
@@ -28,12 +28,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${org.hibernate.hibernate.core.version}</version>
-                <optional>true</optional>
-            </dependency>
             <!-- tests dependencies -->
             <dependency>
                 <groupId>org.projectlombok</groupId>

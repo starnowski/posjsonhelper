@@ -22,7 +22,7 @@ import java.util.List;
 public class JSONBComparisonPredicate extends AbstractSimplePredicate implements UnaryOperatorExpression<Boolean>, Serializable {
 
     private final String jsonPath;
-    private final JSONBComparisonPredicate.ComparisonOperator comparisonOperator;
+    private final ComparisonOperator comparisonOperator;
     private final Expression<?> operand;
     private final List<Expression> values;
 
