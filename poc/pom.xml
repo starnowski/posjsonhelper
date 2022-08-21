@@ -10,7 +10,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <properties>
-        <org.springframework.boot.version>1.5.8.RELEASE</org.springframework.boot.version>
+        <org.springframework.boot.version>2.5.12</org.springframework.boot.version>
+        <org.postgresql.postgresql.version>42.3.3</org.postgresql.postgresql.version>
     </properties>
 
     <artifactId>poc</artifactId>
@@ -39,9 +40,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>postgresql</groupId>
+            <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>9.1-901-1.jdbc4</version>
+            <version>${org.postgresql.postgresql.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
