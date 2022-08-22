@@ -38,7 +38,7 @@ public class NativeSQLTest {
             executionPhase = BEFORE_TEST_METHOD)
     public void shouldReturnCorrectNumberOrResults() throws SQLException {
         // when
-        Long result = TestUtils.selectAndReturnFirstRecordAsLong(null, "");
+        Long result = TestUtils.selectAndReturnFirstRecordAsLong(entityManager, "SELECT id FROM item WHERE jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array['TAG1', 'TAG2']) ");
 
         // then
         Assertions.assertThat(result).isEqualTo(1);

@@ -1,5 +1,8 @@
 package com.github.starnowski.posjsonhelper.test.utils;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -16,9 +19,8 @@ public class TestUtils {
         return rs.getString(1);
     }
 
-    public static Long selectAndReturnFirstRecordAsLong(Statement statement, final String sql) throws SQLException {
-        ResultSet rs = statement.executeQuery(sql);
-        rs.next();
-        return rs.getLong(1);
+    public static Long selectAndReturnFirstRecordAsLong(EntityManager entityManager, final String sql) throws SQLException {
+        Query query = entityManager.createNativeQuery(sql);
+        return ((BigInteger) query.getSingleResult()).longValue();
     }
 }
