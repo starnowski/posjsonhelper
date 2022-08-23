@@ -44,10 +44,12 @@ class NativeSQLItTest extends spock.lang.Specification {
             Long result = TestUtils.selectAndReturnFirstRecordAsLong(entityManager, query);
 
         then:
-            result == 1
+            result == expectedId
 
         where:
             tags    ||  expectedId
             ['TAG1', 'TAG2']      ||  1
+            ['TAG11']      ||  1
+            ['TAG12']      ||  1
     }
 }

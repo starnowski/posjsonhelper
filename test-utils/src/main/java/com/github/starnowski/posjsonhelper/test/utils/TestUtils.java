@@ -6,6 +6,8 @@ import java.math.BigInteger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class TestUtils {
 
@@ -22,5 +24,10 @@ public class TestUtils {
     public static Long selectAndReturnFirstRecordAsLong(EntityManager entityManager, final String sql) throws SQLException {
         Query query = entityManager.createNativeQuery(sql);
         return ((BigInteger) query.getSingleResult()).longValue();
+    }
+
+    public static Set<Long> selectAndReturnSetOfLongObjects(EntityManager entityManager, final String sql) throws SQLException {
+        Query query = entityManager.createNativeQuery(sql);
+        return (Set<Long>) query.getResultList().stream().map(ob -> ((BigInteger)ob).longValue()).collect(Collectors.toSet());
     }
 }
