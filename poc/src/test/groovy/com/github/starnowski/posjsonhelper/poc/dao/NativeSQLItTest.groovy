@@ -35,7 +35,7 @@ class NativeSQLItTest extends spock.lang.Specification {
     @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    def "should return single correct id #expectedId when searching by tags [#tags]" () {
+    def "should return single correct id #expectedId when searching by all matching tags [#tags]" () {
         given:
             def pattern = "SELECT id FROM item WHERE jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
             def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
@@ -47,17 +47,17 @@ class NativeSQLItTest extends spock.lang.Specification {
             result == expectedId
 
         where:
-            tags    ||  expectedId
-            ['TAG1', 'TAG2']      ||  1
-            ['TAG11']      ||  1
-            ['TAG12']      ||  1
+            tags                    ||  expectedId
+            ['TAG1', 'TAG2']        ||  1
+            ['TAG11']               ||  1
+            ['TAG12']               ||  1
     }
 
     @Unroll
     @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    def "should return correct id #expectedIds when searching by tags [#tags]" () {
+    def "should return correct id #expectedIds when searching by all matching tags [#tags]" () {
         given:
             def pattern = "SELECT id FROM item WHERE jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
             def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
@@ -69,9 +69,31 @@ class NativeSQLItTest extends spock.lang.Specification {
             result == expectedIds
 
         where:
-            tags                ||  expectedIds
-            ['TAG1', 'TAG2']      ||  [1].toSet()
-            ['TAG3']           ||  [3, 2].toSet()
-            ['TAG21', 'TAG22']           ||  [1, 4].toSet()
+            tags                            ||  expectedIds
+            ['TAG1', 'TAG2']                ||  [1].toSet()
+            ['TAG3']                        ||  [3, 2].toSet()
+            ['TAG21', 'TAG22']              ||  [1, 4].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by any matching tags [#tags]" () {
+            given:
+            def pattern = "SELECT id FROM item WHERE jsonb_any_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
+            def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
+
+        when:
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query);
+
+        then:
+            result == expectedIds
+
+        where:
+            tags                            ||  expectedIds
+            ['TAG1', 'TAG2']                ||  [1, 3].toSet()
+            ['TAG3']                        ||  [3, 2].toSet()
+            ['TAG1', 'TAG32']               ||  [1, 3, 5].toSet()
     }
 }
