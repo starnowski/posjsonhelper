@@ -48,6 +48,12 @@
                 <version>${spock.core.version}</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.spockframework</groupId>
+                <artifactId>spock-spring</artifactId>
+                <version>${spock.core.version}</version>
+                <scope>test</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
