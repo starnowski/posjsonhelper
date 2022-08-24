@@ -41,7 +41,7 @@ class NativeSQLItTest extends spock.lang.Specification {
             def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
 
         when:
-            Long result = TestUtils.selectAndReturnFirstRecordAsLong(entityManager, query);
+            Long result = TestUtils.selectAndReturnFirstRecordAsLong(entityManager, query)
 
         then:
             result == expectedId
@@ -115,8 +115,10 @@ class NativeSQLItTest extends spock.lang.Specification {
         where:
             operator    |   value                           ||  expectedIds
             "="         |   562                             ||  [8].toSet()
+            "="         |   731                             ||  [].toSet()
             "="         |   132                             ||  [7].toSet()
             ">="        |   562                             ||  [8, 9].toSet()
+            ">="        |   2000                            ||  [].toSet()
             ">"         |   562                             ||  [9].toSet()
             "<="        |   562                             ||  [8, 7].toSet()
             "<"         |   562                             ||  [7].toSet()
@@ -148,4 +150,7 @@ class NativeSQLItTest extends spock.lang.Specification {
             "<"         |   -1137.98    ||  [].toSet()
             "<"         |   20490.04    ||  [10, 11].toSet()
     }
+
+    // TODO Operator - IN ()
+    // TODO Operator - LIKE
 }
