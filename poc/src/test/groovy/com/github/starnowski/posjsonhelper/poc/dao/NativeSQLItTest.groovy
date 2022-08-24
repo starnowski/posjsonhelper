@@ -101,7 +101,7 @@ class NativeSQLItTest extends spock.lang.Specification {
     @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    def "should return correct id #expectedIds when searching by #operator operator with value #value" () {
+    def "should return correct id #expectedIds when searching by #operator operator to compare integer value #value" () {
         given:
             def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'integer_value')\\:\\:int %s %d"
             def query = String.format(pattern, operator, value)
@@ -121,5 +121,31 @@ class NativeSQLItTest extends spock.lang.Specification {
             "<="        |   562                             ||  [8, 7].toSet()
             "<"         |   562                             ||  [7].toSet()
             "<"         |   1322                            ||  [7, 8].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by #operator operator to compare double value #value" () {
+        given:
+            def pattern = "SELECT id FROM item WHERE cast(jsonb_extract_path_text(jsonb_content, 'double_value') AS numeric) %s %.2f"
+            def query = String.format(Locale.US, pattern, operator, value)
+
+        when:
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+
+        then:
+            result == expectedIds
+
+        where:
+            operator    |   value       ||  expectedIds
+            "="         |   -1137.98    ||  [11].toSet()
+            "="         |   353.01      ||  [10].toSet()
+            ">="        |   -1137.98    ||  [10, 11, 12].toSet()
+            ">"         |   -1137.98    ||  [10, 12].toSet()
+            "<="        |   -1137.98    ||  [11].toSet()
+            "<"         |   -1137.98    ||  [].toSet()
+            "<"         |   20490.04    ||  [10, 11].toSet()
     }
 }
