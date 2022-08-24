@@ -63,7 +63,7 @@ class NativeSQLItTest extends spock.lang.Specification {
             def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
 
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query);
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
 
         then:
             result == expectedIds
@@ -85,7 +85,7 @@ class NativeSQLItTest extends spock.lang.Specification {
             def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
 
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query);
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
 
         then:
             result == expectedIds
@@ -97,25 +97,29 @@ class NativeSQLItTest extends spock.lang.Specification {
             ['TAG1', 'TAG32']               ||  [1, 3, 5].toSet()
     }
 
-//    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id #expectedIds when searching by any matching tags [#tags]" () {
-//        given:
-//        def pattern = "SELECT id FROM item WHERE jsonb_any_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
-//        def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
-//
-//        when:
-//        def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query);
-//
-//        then:
-//        result == expectedIds
-//
-//        where:
-//        tags                            ||  expectedIds
-//        ['TAG1', 'TAG2']                ||  [1, 3].toSet()
-//        ['TAG3']                        ||  [3, 2].toSet()
-//        ['TAG1', 'TAG32']               ||  [1, 3, 5].toSet()
-//    }
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by #operator operator with value #value" () {
+        given:
+            def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'integer_value')\\:\\:int %s %d"
+            def query = String.format(pattern, operator, value)
+
+        when:
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+
+        then:
+            result == expectedIds
+
+        where:
+            operator    |   value                           ||  expectedIds
+            "="         |   562                             ||  [8].toSet()
+            "="         |   132                             ||  [7].toSet()
+            ">="        |   562                             ||  [8, 9].toSet()
+            ">"         |   562                             ||  [9].toSet()
+            "<="        |   562                             ||  [8, 7].toSet()
+            "<"         |   562                             ||  [7].toSet()
+            "<"         |   1322                            ||  [7, 8].toSet()
+    }
 }
