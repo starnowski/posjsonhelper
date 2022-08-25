@@ -151,6 +151,28 @@ class NativeSQLItTest extends spock.lang.Specification {
             "<"         |   20490.04    ||  [10, 11].toSet()
     }
 
-    // TODO Operator - IN ()
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by IN operator to compare enum value #values" () {
+        given:
+            def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'enum_value') IN (%s) "
+            def query = String.format(pattern, values.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
+
+        when:
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+
+        then:
+            result == expectedIds
+
+        where:
+            values                            ||  expectedIds
+            ['SUPER', 'USER']                ||  [14, 13].toSet()
+            ['SUPER']                        ||  [13].toSet()
+            ['ANONYMOUS', 'SUPER']               ||  [15, 13].toSet()
+    }
+
+
     // TODO Operator - LIKE
 }

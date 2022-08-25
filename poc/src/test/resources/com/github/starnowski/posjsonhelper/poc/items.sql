@@ -17,3 +17,8 @@ INSERT INTO item (id, jsonb_content) VALUES (9, '{"integer_value": 1322}');
 INSERT INTO item (id, jsonb_content) VALUES (10, '{"double_value": 353.01}');
 INSERT INTO item (id, jsonb_content) VALUES (11, '{"double_value": -1137.98}');
 INSERT INTO item (id, jsonb_content) VALUES (12, '{"double_value": 20490.04}');
+
+-- enum values
+INSERT INTO item (id, jsonb_content) VALUES (13, '{"enum_value": "SUPER"}');
+INSERT INTO item (id, jsonb_content) VALUES (14, '{"enum_value": "USER"}');
+INSERT INTO item (id, jsonb_content) VALUES (15, '{"enum_value": "ANONYMOUS"}');
