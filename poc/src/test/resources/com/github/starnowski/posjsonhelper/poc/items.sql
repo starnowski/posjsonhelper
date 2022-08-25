@@ -22,3 +22,8 @@ INSERT INTO item (id, jsonb_content) VALUES (12, '{"double_value": 20490.04}');
 INSERT INTO item (id, jsonb_content) VALUES (13, '{"enum_value": "SUPER"}');
 INSERT INTO item (id, jsonb_content) VALUES (14, '{"enum_value": "USER"}');
 INSERT INTO item (id, jsonb_content) VALUES (15, '{"enum_value": "ANONYMOUS"}');
+
+-- string values
+INSERT INTO item (id, jsonb_content) VALUES (16, '{"string_value": "this is full sentence"}');
+INSERT INTO item (id, jsonb_content) VALUES (17, '{"string_value": "this is part of sentence"}');
+INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of records"}');

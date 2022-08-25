@@ -167,12 +167,34 @@ class NativeSQLItTest extends spock.lang.Specification {
             result == expectedIds
 
         where:
-            values                            ||  expectedIds
-            ['SUPER', 'USER']                ||  [14, 13].toSet()
-            ['SUPER']                        ||  [13].toSet()
-            ['ANONYMOUS', 'SUPER']               ||  [15, 13].toSet()
+            values                              ||  expectedIds
+            ['SUPER', 'USER']                   ||  [14, 13].toSet()
+            ['SUPER']                           ||  [13].toSet()
+            ['ANONYMOUS', 'SUPER']              ||  [15, 13].toSet()
     }
 
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by LIKE operator with #expresion" () {
+        given:
+            def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'string_value') LIKE '%s' "
+            def query = String.format(pattern, expresion)
 
-    // TODO Operator - LIKE
+        when:
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+
+        then:
+            result == expectedIds
+
+        where:
+            expresion                           ||  expectedIds
+            'this is full sentence'             ||  [16].toSet()
+            'this is '                          ||  [].toSet()
+            'this is %'                         ||  [16, 17].toSet()
+            'end of'                            ||  [].toSet()
+            'end of%'                           ||  [].toSet()
+            '%end of%'                          ||  [18].toSet()
+    }
 }
