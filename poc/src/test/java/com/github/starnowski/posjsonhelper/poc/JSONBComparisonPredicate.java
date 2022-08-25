@@ -1,13 +1,14 @@
 package com.github.starnowski.posjsonhelper.poc;
 
-import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
-import org.hibernate.jpa.criteria.ParameterRegistry;
-import org.hibernate.jpa.criteria.Renderable;
-import org.hibernate.jpa.criteria.ValueHandlerFactory;
-import org.hibernate.jpa.criteria.compile.RenderingContext;
-import org.hibernate.jpa.criteria.expression.LiteralExpression;
-import org.hibernate.jpa.criteria.expression.UnaryOperatorExpression;
-import org.hibernate.jpa.criteria.predicate.AbstractSimplePredicate;
+
+import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
+import org.hibernate.query.criteria.internal.ParameterRegistry;
+import org.hibernate.query.criteria.internal.Renderable;
+import org.hibernate.query.criteria.internal.ValueHandlerFactory;
+import org.hibernate.query.criteria.internal.compile.RenderingContext;
+import org.hibernate.query.criteria.internal.expression.LiteralExpression;
+import org.hibernate.query.criteria.internal.expression.UnaryOperatorExpression;
+import org.hibernate.query.criteria.internal.predicate.AbstractSimplePredicate;
 
 import javax.persistence.criteria.Expression;
 import java.io.Serializable;
@@ -22,7 +23,7 @@ import java.util.List;
 public class JSONBComparisonPredicate extends AbstractSimplePredicate implements UnaryOperatorExpression<Boolean>, Serializable {
 
     private final String jsonPath;
-    private final JSONBComparisonPredicate.ComparisonOperator comparisonOperator;
+    private final ComparisonOperator comparisonOperator;
     private final Expression<?> operand;
     private final List<Expression> values;
 

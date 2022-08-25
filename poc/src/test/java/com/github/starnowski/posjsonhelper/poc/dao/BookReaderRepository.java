@@ -2,7 +2,7 @@ package com.github.starnowski.posjsonhelper.poc.dao;
 
 import com.github.starnowski.posjsonhelper.poc.JSONBComparisonPredicate;
 import com.github.starnowski.posjsonhelper.poc.model.BookReader;
-import org.hibernate.jpa.criteria.CriteriaBuilderImpl;
+import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
