@@ -11,7 +11,7 @@
 
     <properties>
         <org.springframework.boot.version>2.5.12</org.springframework.boot.version>
-        <org.postgresql.postgresql.version>42.3.3</org.postgresql.postgresql.version>
+        <org.postgresql.postgresql.version>42.4.1</org.postgresql.postgresql.version>
     </properties>
 
     <artifactId>poc</artifactId>
