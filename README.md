@@ -1,1 +1,17 @@
 # posjsonhelper
+
+### Useful links
+https://thorben-janssen.com/persist-postgresqls-jsonb-data-type-hibernate/
+https://stackoverflow.com/questions/15974474/mapping-postgresql-json-column-to-a-hibernate-entity-property
+https://prateek-ashtikar512.medium.com/how-to-handle-json-in-postgresql-5e2745d5324
+https://fullstackdeveloper.guru/2020/05/29/how-to-map-json-data-in-postgresql-database-to-a-hibernate-entity-column/
+
+
+https://www.postgresql.org/docs/10/functions-json.html
+https://medium.com/geekculture/postgres-jsonb-usage-and-performance-analysis-cdbd1242a018
+### Escape operators in JPA2 native query -- Create operators
+https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-character-with-spring-jparepository
+
+### TODO Implement 
+* get element - json_extract_path and jsonb_extract_path, json_extract_path_text, jsonb_extract_path_text
+* add option to chose if you want to user operators or functions for escaping characters
