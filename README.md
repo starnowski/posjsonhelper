@@ -1,5 +1,7 @@
 # posjsonhelper
 
+[![Run tests for posmulten hibernate](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml/badge.svg)](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml)
+
 ### Useful links
 https://thorben-janssen.com/persist-postgresqls-jsonb-data-type-hibernate/
 https://stackoverflow.com/questions/15974474/mapping-postgresql-json-column-to-a-hibernate-entity-property
