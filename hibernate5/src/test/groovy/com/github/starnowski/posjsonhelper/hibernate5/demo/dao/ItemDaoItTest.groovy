@@ -37,7 +37,7 @@ class ItemDaoItTest extends Specification {
     def "should return single correct id #expectedId when searching by all matching tags [#tags]" () {
 
         when:
-        def results = tested.findAllByAllMatchingTags(tags)
+        def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
 
         then:
             results.stream().map({it.getId()}).collect(Collectors.toList()) == new HashSet([ expectedId ])
