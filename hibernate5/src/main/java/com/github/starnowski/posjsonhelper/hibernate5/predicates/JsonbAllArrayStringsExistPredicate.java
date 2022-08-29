@@ -9,7 +9,6 @@ import org.hibernate.query.criteria.internal.ValueHandlerFactory;
 import org.hibernate.query.criteria.internal.compile.RenderingContext;
 import org.hibernate.query.criteria.internal.expression.LiteralExpression;
 import org.hibernate.query.criteria.internal.expression.UnaryOperatorExpression;
-import org.hibernate.query.criteria.internal.expression.function.BasicFunctionExpression;
 import org.hibernate.query.criteria.internal.predicate.AbstractSimplePredicate;
 
 import javax.persistence.criteria.Expression;
@@ -35,28 +34,22 @@ public class JsonbAllArrayStringsExistPredicate extends AbstractSimplePredicate 
         this.values = new ArrayList(values.length);
         while (var6.hasNext()) {
             Object value = var6.next();
-            this.values.add(new LiteralExpression(criteriaBuilder, ((ValueHandlerFactory.ValueHandler) valueHandler).convert(value)));
+            this.values.add(new LiteralExpression(criteriaBuilder, valueHandler.convert(value)));
         }
     }
 
     @Override
     public void registerParameters(ParameterRegistry registry) {
-//        Helper.possibleParameter(this.jsonBExtractPath, registry);//TODO
         Iterator var2 = this.values.iterator();
 
-        while(var2.hasNext()) {
-            Expression value = (Expression)var2.next();
+        while (var2.hasNext()) {
+            Expression value = (Expression) var2.next();
             Helper.possibleParameter(value, registry);
         }
     }
 
-//    private String json_function_get_json_element(RenderingContext renderingContext) {
-//        return "json_function_get_json_element( " + ((Renderable) this.getOperand()).render(renderingContext) + " , '" + jsonPath + "' )";
-//    }
-
     private String renderValues(RenderingContext renderingContext) {
         StringBuilder sb = new StringBuilder();
-//        sb.append("json_function_json_array(");
         sb.append("json_function_json_array(");
         Iterator it = Arrays.asList(values).iterator();
 
@@ -76,8 +69,7 @@ public class JsonbAllArrayStringsExistPredicate extends AbstractSimplePredicate 
     }
 
     @Override
-    public String render(boolean b, RenderingContext renderingContext) {
-        //TODO negative
-        return this.context.getJsonbAllArrayStringsExistFunctionReference() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + " " + renderValues(renderingContext) + ") = TRUE";
+    public String render(boolean isNegated, RenderingContext renderingContext) {
+        return this.context.getJsonbAllArrayStringsExistFunctionReference() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + " " + renderValues(renderingContext) + ") = " + (isNegated ? "FALSE" : "TRUE");
     }
 }
