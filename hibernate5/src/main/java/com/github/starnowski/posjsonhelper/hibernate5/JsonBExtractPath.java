@@ -44,21 +44,23 @@ public class JsonBExtractPath extends BasicFunctionExpression<String> implements
     }
 
     public String render(RenderingContext renderingContext) {
-        return "jsonb_extract_path( " + ((Renderable) this.getOperand()).render(renderingContext) + " , " + renderJsonPath(renderingContext) + " )";
+        renderingContext.getFunctionStack().push(this);
+        String var3;
+        try {
+            var3 = "jsonb_extract_path( " + ((Renderable) this.getOperand()).render(renderingContext) + " , " + renderJsonPath(renderingContext) + " )";
+        } finally {
+            renderingContext.getFunctionStack().pop();
+        }
+        return var3;
     }
 
     private String renderJsonPath(RenderingContext renderingContext) {
         StringBuilder sb = new StringBuilder();
-//        sb.append("json_function_json_array(");
-        sb.append("array[");
-
         String sep = "";
         for (Iterator var11 = pathValues.iterator(); var11.hasNext(); sep = ", ") {
             Expression value = (Expression) var11.next();
             sb.append(sep).append(((Renderable) value).render(renderingContext));
         }
-
-        sb.append("]");
         return sb.toString();
     }
 }

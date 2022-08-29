@@ -40,7 +40,7 @@ class ItemDaoItTest extends Specification {
         def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
 
         then:
-            results.stream().map({it.getId()}).collect(Collectors.toList()) == new HashSet([ expectedId ])
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == new HashSet([ expectedId ])
 
         where:
             tags                    ||  expectedId
