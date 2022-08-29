@@ -26,6 +26,11 @@
             <version>${org.hibernate.hibernate.core.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>com.github.starnowski.posjsonhelper</groupId>
+            <artifactId>core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!--        tests   -->
         <dependency>
