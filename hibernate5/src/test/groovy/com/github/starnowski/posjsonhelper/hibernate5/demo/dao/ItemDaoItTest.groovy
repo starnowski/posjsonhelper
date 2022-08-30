@@ -85,4 +85,22 @@ class ItemDaoItTest extends Specification {
             ['TAG3']                        ||  [3L, 2L].toSet()
             ['TAG21', 'TAG22']              ||  [1L, 4L].toSet()
     }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by any matching tags [#tags]" () {
+        when:
+            def results = tested.findAllByAnyMatchingTags(new HashSet<String>(tags))
+
+        then:
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+
+        where:
+            tags                            ||  expectedIds
+            ['TAG1', 'TAG2']                ||  [1, 3].toSet()
+            ['TAG3']                        ||  [3, 2].toSet()
+            ['TAG1', 'TAG32']               ||  [1, 3, 5].toSet()
+    }
 }

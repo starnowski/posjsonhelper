@@ -4,6 +4,7 @@ import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.hibernate5.JsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate5.demo.model.Item;
 import com.github.starnowski.posjsonhelper.hibernate5.predicates.JsonbAllArrayStringsExistPredicate;
+import com.github.starnowski.posjsonhelper.hibernate5.predicates.JsonbAnyArrayStringsExistPredicate;
 import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -13,6 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -41,6 +43,15 @@ public class ItemDao {
         Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(new Context(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
         Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")));
         query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(new Context(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
 }
