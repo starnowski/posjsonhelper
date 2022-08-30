@@ -27,6 +27,8 @@ import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.IT
 ])
 class ItemDaoItTest extends Specification {
 
+    private static Set<Long> ALL_ITEMS_IDS = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L).toSet()
+
     @Autowired
     private ItemDao tested
 
@@ -64,5 +66,23 @@ class ItemDaoItTest extends Specification {
             ['TAG1', 'TAG2']                ||  [1].toSet()
             ['TAG3']                        ||  [3, 2].toSet()
             ['TAG21', 'TAG22']              ||  [1, 4].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags]" () {
+        when:
+            def results = tested.findAllThatDoNotMatchByAllMatchingTags(new HashSet<String>(tags))
+
+        then:
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == ALL_ITEMS_IDS.stream().filter({id -> !expectedIds.contains(id)}).collect(Collectors.toSet())
+
+        where:
+            tags                            ||  expectedIds
+            ['TAG1', 'TAG2']                ||  [1L].toSet()
+            ['TAG3']                        ||  [3L, 2L].toSet()
+            ['TAG21', 'TAG22']              ||  [1L, 4L].toSet()
     }
 }
