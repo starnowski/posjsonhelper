@@ -53,12 +53,11 @@ class ItemDaoItTest extends Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by all matching tags [#tags]" () {
-
         when:
             def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
 
         then:
-        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
 
         where:
             tags                            ||  expectedIds
