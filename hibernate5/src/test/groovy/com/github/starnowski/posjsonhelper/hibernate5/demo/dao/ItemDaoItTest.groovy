@@ -35,9 +35,8 @@ class ItemDaoItTest extends Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return single correct id #expectedId when searching by all matching tags [#tags]" () {
-
         when:
-        def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
+            def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
 
         then:
             results.stream().map({it.getId()}).collect(Collectors.toSet()) == new HashSet([ expectedId ])
@@ -47,5 +46,24 @@ class ItemDaoItTest extends Specification {
             ['TAG1', 'TAG2']        ||  1
             ['TAG11']               ||  1
             ['TAG12']               ||  1
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by all matching tags [#tags]" () {
+
+        when:
+            def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
+
+        then:
+        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+
+        where:
+            tags                            ||  expectedIds
+            ['TAG1', 'TAG2']                ||  [1].toSet()
+            ['TAG3']                        ||  [3, 2].toSet()
+            ['TAG21', 'TAG22']              ||  [1, 4].toSet()
     }
 }
