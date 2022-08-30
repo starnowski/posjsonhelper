@@ -28,6 +28,8 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 ])
 class NativeSQLItTest extends spock.lang.Specification {
 
+    private static Set<Long> ALL_ITEMS_IDS = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L).toSet()
+
     @Autowired
     EntityManager entityManager
 
@@ -73,6 +75,28 @@ class NativeSQLItTest extends spock.lang.Specification {
             ['TAG1', 'TAG2']                ||  [1].toSet()
             ['TAG3']                        ||  [3, 2].toSet()
             ['TAG21', 'TAG22']              ||  [1, 4].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags]" () {
+        given:
+            def pattern = "SELECT id FROM item WHERE jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values') IS NULL OR NOT jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
+            def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
+
+        when:
+            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+
+        then:
+            result == ALL_ITEMS_IDS.stream().filter({id -> !expectedIds.contains(id)}).collect(Collectors.toSet())
+
+        where:
+            tags                            ||  expectedIds
+            ['TAG1', 'TAG2']                ||  [1L].toSet()
+            ['TAG3']                        ||  [3L, 2L].toSet()
+            ['TAG21', 'TAG22']              ||  [1L, 4L].toSet()
     }
 
     @Unroll
