@@ -1,6 +1,5 @@
 package com.github.starnowski.posjsonhelper.hibernate5.demo.dao
 
-import com.github.starnowski.posjsonhelper.test.utils.NumericComparator
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.jdbc.Sql
@@ -21,7 +20,6 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED
 import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.CLEAR_DATABASE_SCRIPT_PATH
 import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.ITEMS_SCRIPT_PATH
-//import com.github.starnowski.posjsonhelper.test.utils.NumericComparator
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup([
