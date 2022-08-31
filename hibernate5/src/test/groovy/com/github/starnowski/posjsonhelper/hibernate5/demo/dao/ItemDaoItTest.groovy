@@ -149,4 +149,25 @@ class ItemDaoItTest extends Specification {
             ['SUPER']                           ||  [13].toSet()
             ['ANONYMOUS', 'SUPER']              ||  [15, 13].toSet()
     }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by LIKE operator with #expresion" () {
+        when:
+            def results = tested.findAllByStringValueAndLikeOperator(expresion)
+
+        then:
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+
+        where:
+            expresion                           ||  expectedIds
+            'this is full sentence'             ||  [16].toSet()
+            'this is '                          ||  [].toSet()
+            'this is %'                         ||  [16, 17].toSet()
+            'end of'                            ||  [].toSet()
+            'end of%'                           ||  [].toSet()
+            '%end of%'                          ||  [18].toSet()
+    }
 }

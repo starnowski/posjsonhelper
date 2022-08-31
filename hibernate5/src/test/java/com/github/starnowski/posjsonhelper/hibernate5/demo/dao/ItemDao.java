@@ -93,4 +93,13 @@ public class ItemDao {
         query.where((new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("enum_value"), root.get("jsonbContent"))).in(strings));
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Item> findAllByStringValueAndLikeOperator(String expression) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(cb.like(new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("string_value"), root.get("jsonbContent")), expression));
+        return entityManager.createQuery(query).getResultList();
+    }
 }
