@@ -9,7 +9,6 @@ public class PostgreSQLDialectEnricher {
 
     public void enrich(PostgreSQL81Dialect postgreSQL81Dialect) {
         postgreSQL81Dialect.getFunctions().put("json_function_json_array", new JsonArrayFunction());
-        postgreSQL81Dialect.getFunctions().put("jsonb_extract_path", new StandardSQLFunction("jsonb_extract_path", StandardBasicTypes.STRING));
         postgreSQL81Dialect.getFunctions().put("jsonb_all_array_strings_exist", new StandardSQLFunction("jsonb_all_array_strings_exist", StandardBasicTypes.BOOLEAN));
         postgreSQL81Dialect.getFunctions().put("jsonb_any_array_strings_exist", new StandardSQLFunction("jsonb_any_array_strings_exist", StandardBasicTypes.BOOLEAN));
     }
