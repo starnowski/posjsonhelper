@@ -2,11 +2,13 @@ package com.github.starnowski.posjsonhelper.hibernate5.demo.dao;
 
 import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.hibernate5.JsonBExtractPath;
+import com.github.starnowski.posjsonhelper.hibernate5.JsonBExtractPathText;
 import com.github.starnowski.posjsonhelper.hibernate5.demo.model.Item;
 import com.github.starnowski.posjsonhelper.hibernate5.predicates.JsonbAllArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.hibernate5.predicates.JsonbAnyArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import org.hibernate.query.criteria.internal.CriteriaBuilderImpl;
+import org.hibernate.query.criteria.internal.expression.function.CastFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +60,28 @@ public class ItemDao {
     }
 
     public List<Item> findAllByNumericValue(BigDecimal bigDecimal, NumericComparator numericComparator) {
-        return null;
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        CastFunction<BigDecimal, String> castFunction = new CastFunction<>((CriteriaBuilderImpl) cb, BigDecimal.class, new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("double_value"), root.get("jsonbContent")));
+        switch (numericComparator) {
+            case EQ:
+                query.where(cb.equal(castFunction, bigDecimal));
+                break;
+            case GE:
+                query.where(cb.ge(castFunction, bigDecimal));
+                break;
+            case GT:
+                query.where(cb.gt(castFunction, bigDecimal));
+                break;
+            case LE:
+                query.where(cb.le(castFunction, bigDecimal));
+                break;
+            case LT:
+                query.where(cb.lt(castFunction, bigDecimal));
+                break;
+        }
+        return entityManager.createQuery(query).getResultList();
     }
 }
