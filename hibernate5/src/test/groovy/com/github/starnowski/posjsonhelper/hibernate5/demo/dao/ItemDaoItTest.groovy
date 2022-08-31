@@ -1,5 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate5.demo.dao
 
+import com.github.starnowski.posjsonhelper.test.utils.TestUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.jdbc.Sql
@@ -129,5 +130,23 @@ class ItemDaoItTest extends Specification {
             LE          |   -1137.98    ||  [11].toSet()
             LT          |   -1137.98    ||  [].toSet()
             LT          |   20490.04    ||  [10, 11].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by IN operator to compare enum value #values" () {
+        when:
+            def results = tested.findAllByStringThatMatchInValues(values)
+
+        then:
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+
+        where:
+            values                              ||  expectedIds
+            ['SUPER', 'USER']                   ||  [14, 13].toSet()
+            ['SUPER']                           ||  [13].toSet()
+            ['ANONYMOUS', 'SUPER']              ||  [15, 13].toSet()
     }
 }

@@ -84,4 +84,13 @@ public class ItemDao {
         }
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Item> findAllByStringThatMatchInValues(List<String> strings) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where((new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("enum_value"), root.get("jsonbContent"))).in(strings));
+        return entityManager.createQuery(query).getResultList();
+    }
 }
