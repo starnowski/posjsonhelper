@@ -34,6 +34,11 @@
 
         <!--        tests   -->
         <dependency>
+            <groupId>com.github.starnowski.posjsonhelper</groupId>
+            <artifactId>test-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
