@@ -49,7 +49,6 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
         StringBuilder sb = new StringBuilder();
         //TODO get json_function_json_array function name from context
         sb.append("json_function_json_array(");
-        Iterator it = Arrays.asList(values).iterator();
 
         String sep = "";
         for (Iterator var11 = this.values.iterator(); var11.hasNext(); sep = ", ") {
