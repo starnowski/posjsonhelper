@@ -7,9 +7,10 @@ import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.type.BooleanType;
 import org.hibernate.type.Type;
 
+import java.util.Iterator;
 import java.util.List;
 
-public class AllStringAtTopLevelJsonFunction implements SQLFunction {
+public class JsonArrayFunction implements SQLFunction {
     @Override
     public boolean hasArguments() {
         return true;
@@ -27,10 +28,28 @@ public class AllStringAtTopLevelJsonFunction implements SQLFunction {
 
     @Override
     public String render(Type argumentType, List args, SessionFactoryImplementor factory) throws QueryException {
-        if ( args.size()!=2 ) {
-            throw new QueryException( "jsonb_all_array_strings_exist requires two arguments; found : " + args.size() );
+        if ( args.size() <= 0  ) {
+            throw new QueryException( "json_array requires at least one argument");
         }
 
-        return "jsonb_all_array_strings_exist(" + args.get( 0 ) + " , " + args.get(1) + ")";
+        return renderValues(args);
+    }
+
+    private String renderValues(List values)
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("array[");
+        Iterator<Object> it = values.iterator();
+        while (it.hasNext())
+        {
+            String value = it.next().toString();
+            sb.append(value);
+            if (it.hasNext())
+            {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
     }
 }

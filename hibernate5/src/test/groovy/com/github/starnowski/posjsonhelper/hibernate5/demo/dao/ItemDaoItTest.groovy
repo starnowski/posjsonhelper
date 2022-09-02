@@ -1,4 +1,4 @@
-package com.github.starnowski.posjsonhelper.poc.dao
+package com.github.starnowski.posjsonhelper.hibernate5.demo.dao
 
 import com.github.starnowski.posjsonhelper.test.utils.TestUtils
 import org.springframework.beans.factory.annotation.Autowired
@@ -6,16 +6,21 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.context.jdbc.SqlConfig
 import org.springframework.test.context.jdbc.SqlGroup
+import spock.lang.Specification
 import spock.lang.Unroll
 
-import javax.persistence.EntityManager
 import java.util.stream.Collectors
 
-import static com.github.starnowski.posjsonhelper.poc.TestUtils.CLEAR_DATABASE_SCRIPT_PATH
-import static com.github.starnowski.posjsonhelper.poc.TestUtils.ITEMS_SCRIPT_PATH
+import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.EQ
+import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.GE
+import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.GT
+import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.LE
+import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.LT
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED
+import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.CLEAR_DATABASE_SCRIPT_PATH
+import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.ITEMS_SCRIPT_PATH
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup([
@@ -26,27 +31,23 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
                 config = @SqlConfig(transactionMode = ISOLATED),
                 executionPhase = AFTER_TEST_METHOD)
 ])
-class NativeSQLItTest extends spock.lang.Specification {
+class ItemDaoItTest extends Specification {
 
     private static Set<Long> ALL_ITEMS_IDS = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L).toSet()
 
     @Autowired
-    EntityManager entityManager
+    private ItemDao tested
 
     @Unroll
     @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return single correct id #expectedId when searching by all matching tags [#tags]" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
-            def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
-
         when:
-            Long result = TestUtils.selectAndReturnFirstRecordAsLong(entityManager, query)
+            def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
 
         then:
-            result == expectedId
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == new HashSet([ expectedId ])
 
         where:
             tags                    ||  expectedId
@@ -60,15 +61,11 @@ class NativeSQLItTest extends spock.lang.Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by all matching tags [#tags]" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
-            def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
-
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+            def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
 
         then:
-            result == expectedIds
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
 
         where:
             tags                            ||  expectedIds
@@ -82,15 +79,11 @@ class NativeSQLItTest extends spock.lang.Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags]" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values') IS NULL OR NOT jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
-            def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
-
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+            def results = tested.findAllThatDoNotMatchByAllMatchingTags(new HashSet<String>(tags))
 
         then:
-            result == ALL_ITEMS_IDS.stream().filter({id -> !expectedIds.contains(id)}).collect(Collectors.toSet())
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == ALL_ITEMS_IDS.stream().filter({id -> !expectedIds.contains(id)}).collect(Collectors.toSet())
 
         where:
             tags                            ||  expectedIds
@@ -104,15 +97,11 @@ class NativeSQLItTest extends spock.lang.Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by any matching tags [#tags]" () {
-            given:
-            def pattern = "SELECT id FROM item WHERE jsonb_any_array_strings_exist(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
-            def query = String.format(pattern, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
-
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+            def results = tested.findAllByAnyMatchingTags(new HashSet<String>(tags))
 
         then:
-            result == expectedIds
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
 
         where:
             tags                            ||  expectedIds
@@ -125,54 +114,22 @@ class NativeSQLItTest extends spock.lang.Specification {
     @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    def "should return correct id #expectedIds when searching by #operator operator to compare integer value #value" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'integer_value')\\:\\:int %s %d"
-            def query = String.format(pattern, operator, value)
-
-        when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
-
-        then:
-            result == expectedIds
-
-        where:
-            operator    |   value                           ||  expectedIds
-            "="         |   562                             ||  [8].toSet()
-            "="         |   731                             ||  [].toSet()
-            "="         |   132                             ||  [7].toSet()
-            ">="        |   562                             ||  [8, 9].toSet()
-            ">="        |   2000                            ||  [].toSet()
-            ">"         |   562                             ||  [9].toSet()
-            "<="        |   562                             ||  [8, 7].toSet()
-            "<"         |   562                             ||  [7].toSet()
-            "<"         |   1322                            ||  [7, 8].toSet()
-    }
-
-    @Unroll
-    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-            config = @SqlConfig(transactionMode = ISOLATED),
-            executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by #operator operator to compare double value #value" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE cast(jsonb_extract_path_text(jsonb_content, 'double_value') AS numeric) %s %.2f"
-            def query = String.format(Locale.US, pattern, operator, value)
-
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+            def results = tested.findAllByNumericValue(value, operator)
 
         then:
-            result == expectedIds
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
 
         where:
             operator    |   value       ||  expectedIds
-            "="         |   -1137.98    ||  [11].toSet()
-            "="         |   353.01      ||  [10].toSet()
-            ">="        |   -1137.98    ||  [10, 11, 12].toSet()
-            ">"         |   -1137.98    ||  [10, 12].toSet()
-            "<="        |   -1137.98    ||  [11].toSet()
-            "<"         |   -1137.98    ||  [].toSet()
-            "<"         |   20490.04    ||  [10, 11].toSet()
+            EQ          |   -1137.98    ||  [11].toSet()
+            EQ          |   353.01      ||  [10].toSet()
+            GE          |   -1137.98    ||  [10, 11, 12].toSet()
+            GT          |   -1137.98    ||  [10, 12].toSet()
+            LE          |   -1137.98    ||  [11].toSet()
+            LT          |   -1137.98    ||  [].toSet()
+            LT          |   20490.04    ||  [10, 11].toSet()
     }
 
     @Unroll
@@ -180,15 +137,11 @@ class NativeSQLItTest extends spock.lang.Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by IN operator to compare enum value #values" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'enum_value') IN (%s) "
-            def query = String.format(pattern, values.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
-
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+            def results = tested.findAllByStringThatMatchInValues(values)
 
         then:
-            result == expectedIds
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
 
         where:
             values                              ||  expectedIds
@@ -202,15 +155,11 @@ class NativeSQLItTest extends spock.lang.Specification {
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by LIKE operator with #expresion" () {
-        given:
-            def pattern = "SELECT id FROM item WHERE jsonb_extract_path_text(jsonb_content, 'string_value') LIKE '%s' "
-            def query = String.format(pattern, expresion)
-
         when:
-            def result = TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+            def results = tested.findAllByStringValueAndLikeOperator(expresion)
 
         then:
-            result == expectedIds
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
 
         where:
             expresion                           ||  expectedIds
