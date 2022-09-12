@@ -2,7 +2,7 @@ package com.github.starnowski.posjsonhelper.core.sql;
 
 import java.util.List;
 
-public class DefaultSQLDefinition implements SQLDefinition {
+public class DefaultSQLDefinition implements ISQLDefinition {
 
     private final String createScript;
     private final String dropScript;

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * The default interface holds DDL statements, statements that drop applied changes, and SQL statements that verify if statements were applied correctly.
  */
-public interface SQLDefinition {
+public interface ISQLDefinition {
 
     /**
      * Returns DDL statement which should be executed to apply changes that are represented by the main object.
