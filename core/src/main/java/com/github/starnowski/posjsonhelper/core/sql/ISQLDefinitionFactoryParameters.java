@@ -1,4 +1,4 @@
 package com.github.starnowski.posjsonhelper.core.sql;
 
-public interface ISQLDefinitionProducerParameters {
+public interface ISQLDefinitionFactoryParameters {
 }
