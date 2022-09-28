@@ -1,8 +1,8 @@
 package com.github.starnowski.posjsonhelper.core.sql.functions;
 
+import com.github.starnowski.posjsonhelper.core.sql.DefaultSQLDefinition;
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionFactory;
-import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionFactoryParameters;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,15 +17,8 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
     public R produce(P parameters) {
         validate(parameters);
         String createScript = produceStatement(parameters);
-        String functionReference = returnFunctionReference(parameters);
         String dropScript = returnDropScript(parameters);
-        return returnFunctionDefinition(parameters, new FunctionDefinitionBuilder()
-                .withCreateScript(createScript)
-                .withFunctionReference(functionReference)
-                .withDropScript(dropScript)
-                .withCheckingStatements(returnCheckingStatements(parameters))
-                .withFunctionArguments(prepareFunctionArguments(parameters))
-                .build());
+        return returnFunctionDefinition(parameters, new DefaultSQLDefinition(createScript, dropScript, returnCheckingStatements(parameters)));
     }
 
     protected String returnFunctionReference(P parameters) {
@@ -80,7 +73,11 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
         }
     }
 
-    abstract protected R returnFunctionDefinition(P parameters, IFunctionDefinition functionDefinition);
+    protected List<IFunctionArgument> prepareFunctionArguments(P parameters) {
+        return emptyList();
+    }
+
+    abstract protected R returnFunctionDefinition(P parameters, ISQLDefinition functionDefinition);
 
     abstract protected String produceStatement(P parameters);
 }
