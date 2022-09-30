@@ -6,62 +6,61 @@ import spock.lang.Unroll
 import java.util.stream.Collectors
 
 import static java.lang.String.format
-import static java.lang.String.format
 import static java.util.Optional.ofNullable
 
-class AbstractDefaultFunctionDefinitionFactoryGenericTest extends Specification {
+abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends AbstractDefaultFunctionDefinitionFactory, P extends IFunctionFactoryParameters> extends Specification {
 
     def "should return non-empty string object for correct parameters object"() {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
+            T tested = returnTestedObject()
+            P parameters = returnCorrectParametersSpyObject()
 
         when:
-        String result = tested.produce(parameters).getCreateScript()
+            String result = tested.produce(parameters).getCreateScript()
 
         then:
-        result != null
-        !result.trim().isEmpty()
+            result != null
+            !result.trim().isEmpty()
     }
 
     def "should throw exception of type 'IllegalArgumentException' when parameters object is null" ()
     {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
+            T tested = returnTestedObject()
 
         when:
-        tested.produce(null)
+            tested.produce(null)
 
         then:
-        def ex = thrown(IllegalArgumentException.class)
+            def ex = thrown(IllegalArgumentException.class)
 
         and: "exception should have correct message"
-        ex.message == "The parameters object cannot be null"
+            ex.message == "The parameters object cannot be null"
     }
 
     def "should throw exception of type 'IllegalArgumentException' when function name is null, even if the rest of parameters are correct"()
     {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
+            T tested = returnTestedObject()
+            P parameters = returnCorrectParametersSpyObject()
 
         when:
-        tested.produce(parameters)
+            tested.produce(parameters)
 
         then:
-        1 * parameters.getFunctionName() >> null
-        def ex = thrown(IllegalArgumentException.class)
+            1 * parameters.getFunctionName() >> null
+            def ex = thrown(IllegalArgumentException.class)
 
         and: "exception should have correct message"
-        ex.message == "Function name cannot be null"
+            ex.message == "Function name cannot be null"
     }
 
     @Unroll
     def "should throw exception of type 'IllegalArgumentException' when function name is blank ('#functionName'), even if the rest of parameters are correct"()
     {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
+        T tested = returnTestedObject()
+        P parameters = returnCorrectParametersSpyObject()
 
         when:
         tested.produce(parameters)
@@ -81,8 +80,8 @@ class AbstractDefaultFunctionDefinitionFactoryGenericTest extends Specification 
     def "should throw exception of type 'IllegalArgumentException' when schema name is blank ('#schema'), even if the rest of parameters are correct"()
     {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
+        T tested = returnTestedObject()
+        P parameters = returnCorrectParametersSpyObject()
 
         when:
         tested.produce(parameters)
@@ -99,37 +98,15 @@ class AbstractDefaultFunctionDefinitionFactoryGenericTest extends Specification 
     }
 
     @Unroll
-    def "should return expected reference to function #expectedFunctionReference for schema #schema and function name #functionName"()
-    {
-        given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
-        parameters.getSchema() >> schema
-        parameters.getFunctionName() >> functionName
-
-        expect:
-        tested.produce(parameters).getFunctionReference() == expectedFunctionReference
-
-        where:
-        schema      |   functionName            ||  expectedFunctionReference
-        null        |   "fun1"                  ||  "fun1"
-        "public"    |   "fun1"                  ||  "public.fun1"
-        "sch"       |   "fun1"                  ||  "sch.fun1"
-        null        |   "this_is_function"      ||  "this_is_function"
-        "public"    |   "this_is_function"      ||  "public.this_is_function"
-        "sch"       |   "this_is_function"      ||  "sch.this_is_function"
-    }
-
-    @Unroll
     def "should create correctly the creation statement with contains the right phrase for schema #schema and function #functionName"()
     {
         given:
-        AbstractDefaultFunctionDefinitionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
+        T tested = returnTestedObject()
+        P parameters = returnCorrectParametersSpyObject()
         parameters.getSchema() >> schema
         parameters.getFunctionName() >> functionName
         def functionDefinition = tested.produce(parameters)
-        String functionReference = functionDefinition.getFunctionReference()
+        String functionReference = tested.returnFunctionReference(parameters)
         String expectedCreateFunctionPhrase = format("CREATE OR REPLACE FUNCTION %s(%s)", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
 
         expect:
@@ -149,68 +126,68 @@ class AbstractDefaultFunctionDefinitionFactoryGenericTest extends Specification 
     def "should create correct drop statement for schema #schema and function #functionName"()
     {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
+        T tested = returnTestedObject()
+        P parameters = returnCorrectParametersSpyObject()
         parameters.getSchema() >> schema
         parameters.getFunctionName() >> functionName
         def functionDefinition = tested.produce(parameters)
-        String functionReference = functionDefinition.getFunctionReference()
+        String functionReference = tested.returnFunctionReference(parameters)
         String expectedDropFunctionStatement = format("DROP FUNCTION IF EXISTS %s(%s);", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
 
         expect:
         functionDefinition.getDropScript() == expectedDropFunctionStatement
 
         where:
-        schema      |   functionName
-        null        |   "fun1"
-        "public"    |   "fun1"
-        "sch"       |   "fun1"
-        null        |   "this_is_function"
-        "public"    |   "this_is_function"
-        "sch"       |   "this_is_function"
+            schema      |   functionName
+            null        |   "fun1"
+            "public"    |   "fun1"
+            "sch"       |   "fun1"
+            null        |   "this_is_function"
+            "public"    |   "this_is_function"
+            "sch"       |   "this_is_function"
     }
 
     @Unroll
     def "should create correct statement that check if function was created for schema #schema and function #functionName"()
     {
         given:
-        AbstractFunctionFactory tested = returnTestedObject()
-        IFunctionFactoryParameters parameters = returnCorrectParametersSpyObject()
-        parameters.getSchema() >> schema
-        parameters.getFunctionName() >> functionName
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT COUNT(1) FROM pg_proc pg, pg_catalog.pg_namespace pgn WHERE ")
-        sb.append("pg.proname = '")
-        sb.append(functionName)
-        sb.append("' AND ")
-        if (schema == null)
-        {
-            sb.append("pgn.nspname = 'public'")
-        } else {
-            sb.append("pgn.nspname = '")
-            sb.append(schema)
-            sb.append("'")
-        }
-        sb.append(" AND ")
-        sb.append("pg.pronamespace =  pgn.oid;")
-        String expectedCheckingStatement = sb.toString()
+            T tested = returnTestedObject()
+            P parameters = returnCorrectParametersSpyObject()
+            parameters.getSchema() >> schema
+            parameters.getFunctionName() >> functionName
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT COUNT(1) FROM pg_proc pg, pg_catalog.pg_namespace pgn WHERE ")
+            sb.append("pg.proname = '")
+            sb.append(functionName)
+            sb.append("' AND ")
+            if (schema == null)
+            {
+                sb.append("pgn.nspname = 'public'")
+            } else {
+                sb.append("pgn.nspname = '")
+                sb.append(schema)
+                sb.append("'")
+            }
+            sb.append(" AND ")
+            sb.append("pg.pronamespace =  pgn.oid;")
+            String expectedCheckingStatement = sb.toString()
 
         when:
-        def functionDefinition = tested.produce(parameters)
+            def functionDefinition = tested.produce(parameters)
 
         then:
-        functionDefinition.getCheckingStatements()
-        functionDefinition.getCheckingStatements().size() >= 1
-        functionDefinition.getCheckingStatements()[0] == expectedCheckingStatement
+            functionDefinition.getCheckingStatements()
+            functionDefinition.getCheckingStatements().size() >= 1
+            functionDefinition.getCheckingStatements()[0] == expectedCheckingStatement
 
         where:
-        schema      |   functionName
-        null        |   "fun1"
-        "public"    |   "fun1"
-        "sch"       |   "fun1"
-        null        |   "this_is_function"
-        "public"    |   "this_is_function"
-        "sch"       |   "this_is_function"
+            schema      |   functionName
+            null        |   "fun1"
+            "public"    |   "fun1"
+            "sch"       |   "fun1"
+            null        |   "this_is_function"
+            "public"    |   "this_is_function"
+            "sch"       |   "this_is_function"
     }
 
     private String prepareArgumentsPhrase(List<IFunctionArgument> functionArguments)
@@ -218,7 +195,7 @@ class AbstractDefaultFunctionDefinitionFactoryGenericTest extends Specification 
         ofNullable(functionArguments).orElse(new ArrayList<IFunctionArgument>()).stream().map({ argument -> argument.getType() }).collect(Collectors.joining( ", " ))
     }
 
-    abstract protected returnTestedObject();
+    protected abstract T returnTestedObject()
 
-    abstract protected returnCorrectParametersSpyObject();
+    protected abstract P returnCorrectParametersSpyObject();
 }
