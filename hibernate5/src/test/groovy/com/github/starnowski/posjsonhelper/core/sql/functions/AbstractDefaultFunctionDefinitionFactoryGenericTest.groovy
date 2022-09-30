@@ -101,13 +101,13 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends Abs
     def "should create correctly the creation statement with contains the right phrase for schema #schema and function #functionName"()
     {
         given:
-        T tested = returnTestedObject()
-        P parameters = returnCorrectParametersSpyObject()
-        parameters.getSchema() >> schema
-        parameters.getFunctionName() >> functionName
-        def functionDefinition = tested.produce(parameters)
-        String functionReference = tested.returnFunctionReference(parameters)
-        String expectedCreateFunctionPhrase = format("CREATE OR REPLACE FUNCTION %s(%s)", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
+            T tested = returnTestedObject()
+            P parameters = returnCorrectParametersSpyObject()
+            parameters.getSchema() >> schema
+            parameters.getFunctionName() >> functionName
+            def functionDefinition = tested.produce(parameters)
+            String functionReference = tested.returnFunctionReference(parameters)
+            String expectedCreateFunctionPhrase = format("CREATE OR REPLACE FUNCTION %s(%s)", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
 
         expect:
         functionDefinition.getCreateScript().contains(expectedCreateFunctionPhrase)
@@ -126,16 +126,16 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends Abs
     def "should create correct drop statement for schema #schema and function #functionName"()
     {
         given:
-        T tested = returnTestedObject()
-        P parameters = returnCorrectParametersSpyObject()
-        parameters.getSchema() >> schema
-        parameters.getFunctionName() >> functionName
-        def functionDefinition = tested.produce(parameters)
-        String functionReference = tested.returnFunctionReference(parameters)
-        String expectedDropFunctionStatement = format("DROP FUNCTION IF EXISTS %s(%s);", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
+            T tested = returnTestedObject()
+            P parameters = returnCorrectParametersSpyObject()
+            parameters.getSchema() >> schema
+            parameters.getFunctionName() >> functionName
+            def functionDefinition = tested.produce(parameters)
+            String functionReference = tested.returnFunctionReference(parameters)
+            String expectedDropFunctionStatement = format("DROP FUNCTION IF EXISTS %s(%s);", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
 
         expect:
-        functionDefinition.getDropScript() == expectedDropFunctionStatement
+            functionDefinition.getDropScript() == expectedDropFunctionStatement
 
         where:
             schema      |   functionName
