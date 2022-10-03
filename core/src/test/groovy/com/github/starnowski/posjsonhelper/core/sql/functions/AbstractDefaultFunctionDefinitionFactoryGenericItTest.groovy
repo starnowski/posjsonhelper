@@ -7,16 +7,11 @@ import org.springframework.jdbc.core.JdbcTemplate
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import javax.sql.DataSource
-
-import static com.github.starnowski.posjsonhelper.test.utils.TestUtils.isFunctionExists
+import static com.github.starnowski.posjsonhelper.core.TestCoreUtils.isFunctionExists
 import static org.junit.Assert.assertEquals
 
 @SpringBootTest(classes = [TestApplication.class])
 abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends AbstractDefaultFunctionDefinitionFactory, P extends IFunctionFactoryParameters> extends Specification {
-
-    @Autowired
-    DataSource dataSource
 
     @Autowired
     JdbcTemplate jdbcTemplate
@@ -25,8 +20,7 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends 
     def "test 1: should create function with name #name for schema #schema"()
     {
         given:
-            def connection = dataSource.getConnection()
-            assertEquals(false, isFunctionExists(connection.createStatement(), name, schema))
+            assertEquals(false, isFunctionExists(jdbcTemplate, name, schema))
             P parameters = returnCorrectParametersSpyObject()
             parameters.getSchema() >> schema
             parameters.getFunctionName() >> name
@@ -37,13 +31,13 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends 
             jdbcTemplate.execute(functionDefinition.getCreateScript())
 
         then:
-            isFunctionExists(connection.createStatement(), name, schema)
+            isFunctionExists(jdbcTemplate, name, schema)
 
         where:
             schema                  |   name
             null                    |   "jsonb_all_array_strings_exist"
             "public"                |   "json_fun_exist"
-            "non_public_schema"     |   "someFun"
+            "non_public_schema"     |   "some_fun"
 
     }
 
@@ -51,8 +45,7 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends 
     def "test 2: should delete function with name #name for schema #schema"()
     {
         given:
-            def connection = dataSource.getConnection()
-            assertEquals(true, isFunctionExists(connection.createStatement(), name, schema))
+            assertEquals(true, isFunctionExists(jdbcTemplate, name, schema))
             P parameters = returnCorrectParametersSpyObject()
             parameters.getSchema() >> schema
             parameters.getFunctionName() >> name
@@ -63,13 +56,13 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends 
             jdbcTemplate.execute(functionDefinition.getDropScript())
 
         then:
-            !isFunctionExists(connection.createStatement(), name, schema)
+            !isFunctionExists(jdbcTemplate, name, schema)
 
         where:
             schema                  |   name
             null                    |   "jsonb_all_array_strings_exist"
             "public"                |   "json_fun_exist"
-            "non_public_schema"     |   "someFun"
+            "non_public_schema"     |   "some_fun"
 
     }
 
