@@ -25,7 +25,8 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends 
     def "test 1: should create function with name #name for schema #schema"()
     {
         given:
-            assertEquals(false, isFunctionExists(dataSource.getConnection().createStatement(), name, schema))
+            def connection = dataSource.getConnection()
+            assertEquals(false, isFunctionExists(connection.createStatement(), name, schema))
             P parameters = returnCorrectParametersSpyObject()
             parameters.getSchema() >> schema
             parameters.getFunctionName() >> name
@@ -36,7 +37,33 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericItTest <T extends 
             jdbcTemplate.execute(functionDefinition.getCreateScript())
 
         then:
-            isFunctionExists(dataSource.getConnection().createStatement(), name, schema)
+            isFunctionExists(connection.createStatement(), name, schema)
+
+        where:
+            schema                  |   name
+            null                    |   "jsonb_all_array_strings_exist"
+            "public"                |   "json_fun_exist"
+            "non_public_schema"     |   "someFun"
+
+    }
+
+    @Unroll
+    def "test 2: should delete function with name #name for schema #schema"()
+    {
+        given:
+            def connection = dataSource.getConnection()
+            assertEquals(true, isFunctionExists(connection.createStatement(), name, schema))
+            P parameters = returnCorrectParametersSpyObject()
+            parameters.getSchema() >> schema
+            parameters.getFunctionName() >> name
+            T tested = returnTestedObject()
+            def functionDefinition = tested.produce(parameters)
+
+        when:
+            jdbcTemplate.execute(functionDefinition.getDropScript())
+
+        then:
+            !isFunctionExists(connection.createStatement(), name, schema)
 
         where:
             schema                  |   name
