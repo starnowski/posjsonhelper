@@ -3,10 +3,7 @@ package com.github.starnowski.posjsonhelper.core.sql.functions
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import java.util.stream.Collectors
-
 import static java.lang.String.format
-import static java.util.Optional.ofNullable
 
 abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends AbstractDefaultFunctionDefinitionFactory, P extends IFunctionFactoryParameters> extends Specification {
 
@@ -107,7 +104,7 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends Abs
             parameters.getFunctionName() >> functionName
             def functionDefinition = tested.produce(parameters)
             String functionReference = tested.returnFunctionReference(parameters)
-            String expectedCreateFunctionPhrase = format("CREATE OR REPLACE FUNCTION %s(%s)", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
+            String expectedCreateFunctionPhrase = format("CREATE OR REPLACE FUNCTION %s(%s)", functionReference, prepareArgumentsPhrase())
 
         expect:
         functionDefinition.getCreateScript().contains(expectedCreateFunctionPhrase)
@@ -132,7 +129,7 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends Abs
             parameters.getFunctionName() >> functionName
             def functionDefinition = tested.produce(parameters)
             String functionReference = tested.returnFunctionReference(parameters)
-            String expectedDropFunctionStatement = format("DROP FUNCTION IF EXISTS %s(%s);", functionReference, prepareArgumentsPhrase(functionDefinition.getFunctionArguments()))
+            String expectedDropFunctionStatement = format("DROP FUNCTION IF EXISTS %s(%s);", functionReference, prepareArgumentsPhrase())
 
         expect:
             functionDefinition.getDropScript() == expectedDropFunctionStatement
@@ -190,10 +187,7 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends Abs
             "sch"       |   "this_is_function"
     }
 
-    private String prepareArgumentsPhrase(List<IFunctionArgument> functionArguments)
-    {
-        ofNullable(functionArguments).orElse(new ArrayList<IFunctionArgument>()).stream().map({ argument -> argument.getType() }).collect(Collectors.joining( ", " ))
-    }
+    protected abstract String prepareArgumentsPhrase()
 
     protected abstract T returnTestedObject()
 

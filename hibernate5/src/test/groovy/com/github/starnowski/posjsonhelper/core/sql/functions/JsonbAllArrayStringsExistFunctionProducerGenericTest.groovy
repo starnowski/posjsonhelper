@@ -2,6 +2,11 @@ package com.github.starnowski.posjsonhelper.core.sql.functions
 
 class JsonbAllArrayStringsExistFunctionProducerGenericTest extends AbstractDefaultFunctionDefinitionFactoryGenericTest<JsonbAllArrayStringsExistFunctionProducer, DefaultFunctionFactoryParameters> {
     @Override
+    protected String prepareArgumentsPhrase() {
+        "jsonb, text[]"
+    }
+
+    @Override
     protected JsonbAllArrayStringsExistFunctionProducer returnTestedObject() {
         new JsonbAllArrayStringsExistFunctionProducer()
     }
