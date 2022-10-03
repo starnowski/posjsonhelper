@@ -5,7 +5,7 @@ import spock.lang.Unroll
 class JsonbAllArrayStringsExistFunctionProducerGenericTest extends AbstractDefaultFunctionDefinitionFactoryGenericTest<JsonbAllArrayStringsExistFunctionProducer, DefaultFunctionFactoryParameters> {
 
     @Unroll
-    def "should generate statement that creates function '#testFunctionName' for schema '#testSchema' which returns type '#testReturnType' which returns value for property '#testCurrentTenantIdProperty'" () {
+    def "should generate statement that creates function '#testFunctionName' for schema '#testSchema'" () {
         expect:
             returnTestedObject().produce(new DefaultFunctionFactoryParameters(testFunctionName, testSchema)).getCreateScript() == expectedStatement
 
