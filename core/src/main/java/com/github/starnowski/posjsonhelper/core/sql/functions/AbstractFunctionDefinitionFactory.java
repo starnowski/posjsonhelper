@@ -73,11 +73,67 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
         }
     }
 
+    protected String buildFunctionNameAndArgumentDeclaration(P parameters) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CREATE OR REPLACE FUNCTION ");
+        sb.append(returnFunctionReference(parameters));
+        sb.append(buildArgumentDeclaration(parameters));
+        sb.append(" ");
+        sb.append(buildReturnPhrase(parameters));
+        return sb.toString();
+    }
+
+    private String buildReturnPhrase(P parameters) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RETURNS ");
+        sb.append(prepareReturnType(parameters));
+        return sb.toString();
+    }
+
+    protected String buildArgumentDeclaration(P parameters) {
+        List<IFunctionArgument> arguments = prepareFunctionArguments(parameters);
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        sb.append(prepareArgumentsPhrase(arguments));
+        sb.append(")");
+        return sb.toString();
+    }
+
+    protected String buildBodyAndMetaData(P parameters) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(buildBody(parameters));
+        sb.append("\n");
+        sb.append("$$ LANGUAGE ");
+        sb.append(returnFunctionLanguage(parameters));
+        sb.append("\n");
+        //TODO Metadata
+//        sb.append(buildMetaData(parameters));
+        return sb.toString();
+    }
+
+    protected String produceStatement(P parameters) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(buildFunctionNameAndArgumentDeclaration(parameters));
+        sb.append(" AS $$");
+        sb.append("\n");
+        sb.append(buildBodyAndMetaData(parameters));
+        sb.append(";");
+        return sb.toString();
+    }
+
     protected List<IFunctionArgument> prepareFunctionArguments(P parameters) {
         return emptyList();
     }
 
-    abstract protected R returnFunctionDefinition(P parameters, ISQLDefinition functionDefinition);
+    protected String returnFunctionLanguage(P parameters) {
+        return "sql";
+    }
 
-    abstract protected String produceStatement(P parameters);
+
+    protected abstract String buildBody(P parameters);
+
+    protected abstract String prepareReturnType(P parameters);
+
+    protected abstract R returnFunctionDefinition(P parameters, ISQLDefinition functionDefinition);
+
 }

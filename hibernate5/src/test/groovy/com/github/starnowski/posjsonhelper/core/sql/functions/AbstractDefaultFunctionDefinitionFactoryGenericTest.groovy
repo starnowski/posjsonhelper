@@ -26,7 +26,7 @@ abstract class AbstractDefaultFunctionDefinitionFactoryGenericTest<T extends Abs
             T tested = returnTestedObject()
 
         when:
-            tested.produce(null)
+            tested.produce((P)null)
 
         then:
             def ex = thrown(IllegalArgumentException.class)
