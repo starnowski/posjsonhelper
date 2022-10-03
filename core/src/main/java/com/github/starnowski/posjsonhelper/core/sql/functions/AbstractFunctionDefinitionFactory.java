@@ -105,7 +105,7 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
         sb.append("\n");
         sb.append("$$ LANGUAGE ");
         sb.append(returnFunctionLanguage(parameters));
-        sb.append("\n");
+//        sb.append("\n");
         //TODO Metadata
 //        sb.append(buildMetaData(parameters));
         return sb.toString();
@@ -126,7 +126,7 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
     }
 
     protected String returnFunctionLanguage(P parameters) {
-        return "sql";
+        return "SQL";
     }
 
 

@@ -14,7 +14,7 @@ public class JsonbAllArrayStringsExistFunctionProducer extends AbstractDefaultFu
 
     @Override
     protected String buildBody(DefaultFunctionFactoryParameters parameters) {
-        return "SELECT $1 ?& $2";
+        return "SELECT $1 ?& $2;";
     }
 
     @Override
