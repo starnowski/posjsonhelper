@@ -54,8 +54,8 @@ jobs:
       - name: Create database
         run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database.sql' -U postgres -h 127.0.0.1
 
-      - name: Create non public schema
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database-non-public-schema.sql' -U postgres -h 127.0.0.1
+      - name: Create core module db and non public schema
+        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database-core-database-and-data.sql' -U postgres -h 127.0.0.1
 
       - name: Run tests
         run: ./mvnw -DskipTests --quiet clean install && ./mvnw test
