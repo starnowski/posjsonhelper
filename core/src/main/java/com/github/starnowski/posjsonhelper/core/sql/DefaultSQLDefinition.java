@@ -8,10 +8,6 @@ public class DefaultSQLDefinition implements ISQLDefinition {
     private final String dropScript;
     private final List<String> checkingStatements;
 
-    public DefaultSQLDefinition(String createScript, String dropScript) {
-        this(createScript, dropScript, null);
-    }
-
     public DefaultSQLDefinition(String createScript, String dropScript, List<String> checkingStatements) {
         this.createScript = createScript;
         this.dropScript = dropScript;

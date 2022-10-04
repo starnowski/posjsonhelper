@@ -3,6 +3,9 @@ package com.github.starnowski.posjsonhelper.core;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.StatementCallback;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class TestCoreUtils {
 
     public static boolean isAnyRecordExists(JdbcTemplate jdbcTemplate, final String sql) {
@@ -27,5 +30,13 @@ public class TestCoreUtils {
         sb.append(" AND ");
         sb.append("pg.pronamespace =  pgn.oid");
         return isAnyRecordExists(jdbcTemplate, sb.toString());
+    }
+
+    public static Set<Long> selectAndReturnSetOfLongObjects(JdbcTemplate jdbcTemplate, final String sql) {
+        return new HashSet<>(jdbcTemplate.queryForList(sql, Long.class));
+    }
+
+    public static String functionReference(String functionName, String schema){
+        return (schema == null ? "" : schema + ".") + functionName;
     }
 }
