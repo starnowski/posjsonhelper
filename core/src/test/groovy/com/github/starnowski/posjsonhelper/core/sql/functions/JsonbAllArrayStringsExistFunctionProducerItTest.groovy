@@ -52,9 +52,9 @@ class JsonbAllArrayStringsExistFunctionProducerItTest extends Specification {
         given:
             schema = functionSchema
             name = functionName
-            assertEquals(true, isFunctionExists(jdbcTemplate, functionName, schema))
             definition = tested.produce(new DefaultFunctionFactoryParameters(name, schema))
             jdbcTemplate.execute(definition.getCreateScript())
+            assertEquals(true, isFunctionExists(jdbcTemplate, functionName, schema))
 
         when:
             def results =  selectAndReturnSetOfLongObjects(jdbcTemplate, selectStatement(functionReference(name, schema), tags))
@@ -70,7 +70,7 @@ class JsonbAllArrayStringsExistFunctionProducerItTest extends Specification {
             "some_fun"                          |  "non_public_schema"  |   ['TAG21', 'TAG22']              ||  [1, 4].toSet()
     }
 
-    def selectStatement(String functionReference, Set<String> tags) {
+    def selectStatement(String functionReference, List<String> tags) {
         def pattern = "SELECT id FROM item WHERE %s(jsonb_extract_path(jsonb_content, 'top_element_with_set_of_values'), array[%s]) "
         String.format(pattern, functionReference, tags.stream().map({it -> return "'" + it + "'"}).collect(Collectors.joining(", ")))
     }
