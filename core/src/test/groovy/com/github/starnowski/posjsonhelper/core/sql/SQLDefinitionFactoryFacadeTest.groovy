@@ -10,7 +10,6 @@ import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
 
 class SQLDefinitionFactoryFacadeTest extends Specification {
-    //TODO
 
     @Unroll
     def "should return expected definitions with creation scripts (#creationScripts)"(){
@@ -27,6 +26,8 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
         where:
             factories   |   creationScripts
             [mockSQLDefinitionContextFactoryWithCreationScript("Script1")]  |   ["Script1"]
+            [mockSQLDefinitionContextFactoryWithCreationScript("Script1"), mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("Script2")]  |   ["Script1", "Script2"]
+            [mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("ScriptX"), mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("Script11")]  |   ["ScriptX", "Script11"]
     }
 
     private static ISQLDefinitionContextFactory mockSQLDefinitionContextFactoryWithCreationScript(String creationScript)
@@ -35,6 +36,13 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
         ISQLDefinition definition = mock(ISQLDefinition.class)
         when(definition.getCreateScript()).thenReturn(creationScript)
         when(factory.build(Mockito.any())).thenReturn(definition)
+        factory
+    }
+
+    private static ISQLDefinitionContextFactory mockSQLDefinitionContextFactoryThatReturnsNullDefinition()
+    {
+        ISQLDefinitionContextFactory factory = mock(ISQLDefinitionContextFactory.class)
+        when(factory.build(Mockito.any())).thenReturn(null)
         factory
     }
 }
