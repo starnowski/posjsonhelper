@@ -4,6 +4,8 @@ import com.github.starnowski.posjsonhelper.core.Context;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SQLDefinitionFactoryFacade {
 
@@ -13,9 +15,8 @@ public class SQLDefinitionFactoryFacade {
         this.factories = factories;
     }
 
-    public List<ISQLDefinition> build(Context context){
-        //TODO
-        return null;
+    public List<ISQLDefinition> build(Context context) {
+        return factories.stream().map(factory -> factory.build(context)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     List<ISQLDefinitionContextFactory> getFactoriesCopy() {
