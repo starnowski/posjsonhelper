@@ -35,7 +35,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        query.where(new JsonbAllArrayStringsExistPredicate(new Context(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        query.where(new JsonbAllArrayStringsExistPredicate(Context.builder().build(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -44,7 +44,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(new Context(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(Context.builder().build(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
         Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")));
         query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
         return entityManager.createQuery(query).getResultList();
@@ -55,7 +55,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        query.where(new JsonbAnyArrayStringsExistPredicate(new Context(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        query.where(new JsonbAnyArrayStringsExistPredicate(Context.builder().build(), (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
 
