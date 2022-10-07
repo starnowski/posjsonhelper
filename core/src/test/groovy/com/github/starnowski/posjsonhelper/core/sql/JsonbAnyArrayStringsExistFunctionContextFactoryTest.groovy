@@ -16,7 +16,7 @@ class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends Specification 
             def context = Mock(Context)
             def definition = Mock(DefaultSQLDefinition)
             DefaultFunctionFactoryParameters parameters
-            context.getJsonbAllArrayStringsExistFunctionReference() >> name
+            context.getJsonbAnyArrayStringsExistFunctionReference() >> name
             context.getSchema() >> schema
 
         when:
@@ -31,6 +31,8 @@ class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends Specification 
             result == definition
 
         and: "passed correct parameters"
+            parameters.getSchema() == schema
+            parameters.getFunctionName() == name
 
         where:
             schema      |   name
