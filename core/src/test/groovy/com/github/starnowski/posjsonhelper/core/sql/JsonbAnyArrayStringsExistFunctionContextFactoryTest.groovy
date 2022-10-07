@@ -1,7 +1,7 @@
 package com.github.starnowski.posjsonhelper.core.sql
 
 import com.github.starnowski.posjsonhelper.core.Context
-import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionFactoryParameters
+import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters
 import com.github.starnowski.posjsonhelper.core.sql.functions.JsonbAnyArrayStringsExistFunctionProducer
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -14,8 +14,8 @@ class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends Specification 
             def innerFactory = Mock(JsonbAnyArrayStringsExistFunctionProducer)
             def tested = new JsonbAnyArrayStringsExistFunctionContextFactory(innerFactory)
             def context = Mock(Context)
-            def definition = Mock(ISQLDefinition)
-            IFunctionFactoryParameters parameters
+            def definition = Mock(DefaultSQLDefinition)
+            DefaultFunctionFactoryParameters parameters
             context.getJsonbAllArrayStringsExistFunctionReference() >> name
             context.getSchema() >> schema
 
@@ -24,8 +24,8 @@ class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends Specification 
 
         then:
             1 * innerFactory.produce(_) >> {
-                it ->
-                    parameters = it
+                params ->
+                    parameters = params[0]
                     definition
             }
             result == definition
