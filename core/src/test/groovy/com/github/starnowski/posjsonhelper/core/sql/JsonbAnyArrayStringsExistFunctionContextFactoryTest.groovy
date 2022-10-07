@@ -3,10 +3,9 @@ package com.github.starnowski.posjsonhelper.core.sql
 import com.github.starnowski.posjsonhelper.core.Context
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters
 import com.github.starnowski.posjsonhelper.core.sql.functions.JsonbAnyArrayStringsExistFunctionProducer
-import spock.lang.Specification
 import spock.lang.Unroll
 
-class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends Specification {
+class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends AbstractSQLDefinitionContextFactoryTest<JsonbAnyArrayStringsExistFunctionContextFactory> {
 
     @Unroll
     def "should pass parameters (schema #schema, function name #name) to inner component and pass results"(){
@@ -39,5 +38,10 @@ class JsonbAnyArrayStringsExistFunctionContextFactoryTest extends Specification 
             null        |   "fun1"
             "public"    |   "produ"
             "schem_1"   |   "produ"
+    }
+
+    @Override
+    protected JsonbAnyArrayStringsExistFunctionContextFactory prepareFactory() {
+        new JsonbAnyArrayStringsExistFunctionContextFactory()
     }
 }
