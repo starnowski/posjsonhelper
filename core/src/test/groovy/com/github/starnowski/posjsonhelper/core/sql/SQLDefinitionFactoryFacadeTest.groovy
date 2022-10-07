@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.core.sql
 
 import com.github.starnowski.posjsonhelper.core.Context
 import org.mockito.Mockito
+import org.mockito.internal.verification.Times
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -24,6 +25,11 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
 
         then:
             results.stream().map({it -> it.getCreateScript()}).collect(toList()) == creationScripts
+
+        and:
+            factories.forEach({factory ->
+                Mockito.verify(factory, new Times(1)).build(context)
+            })
 
         where:
             factories   |   creationScripts
