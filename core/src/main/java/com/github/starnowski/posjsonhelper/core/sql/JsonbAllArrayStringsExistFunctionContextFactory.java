@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.core.sql;
 
 import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
 import com.github.starnowski.posjsonhelper.core.sql.functions.JsonbAllArrayStringsExistFunctionProducer;
 
 public class JsonbAllArrayStringsExistFunctionContextFactory implements ISQLDefinitionContextFactory {
@@ -17,6 +18,6 @@ public class JsonbAllArrayStringsExistFunctionContextFactory implements ISQLDefi
 
     @Override
     public ISQLDefinition build(Context context) {
-        return null;
+        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAnyArrayStringsExistFunctionReference(), context.getSchema()));
     }
 }
