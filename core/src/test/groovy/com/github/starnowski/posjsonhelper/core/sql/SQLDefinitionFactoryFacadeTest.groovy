@@ -5,6 +5,8 @@ import org.mockito.Mockito
 import spock.lang.Specification
 import spock.lang.Unroll
 
+import java.util.stream.Collectors
+
 import static java.util.stream.Collectors.toList
 import static org.mockito.Mockito.mock
 import static org.mockito.Mockito.when
@@ -28,6 +30,17 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
             [mockSQLDefinitionContextFactoryWithCreationScript("Script1")]  |   ["Script1"]
             [mockSQLDefinitionContextFactoryWithCreationScript("Script1"), mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("Script2")]  |   ["Script1", "Script2"]
             [mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("ScriptX"), mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("Script11")]  |   ["ScriptX", "Script11"]
+    }
+
+    def "should have expected list of factories" (){
+        given:
+            def tested = new SQLDefinitionFactoryFacade()
+
+        when:
+            def results = tested.getFactoriesCopy()
+
+        then:
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toList()) == [JsonbAllArrayStringsExistFunctionContextFactory.class, JsonbAnyArrayStringsExistFunctionContextFactory.class]
     }
 
     private static ISQLDefinitionContextFactory mockSQLDefinitionContextFactoryWithCreationScript(String creationScript)
