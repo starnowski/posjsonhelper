@@ -1,4 +1,4 @@
-package com.github.starnowski.posjsonhelper.core;
+package com.github.starnowski.posjsonhelper.core.operations;
 
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 
