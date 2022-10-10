@@ -5,7 +5,7 @@ import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 import javax.sql.DataSource;
 import java.util.List;
 
-public class CreateOperations implements IDatabaseOperations{
+public class CreateOperationsProcessor implements IDatabaseOperationsProcessor {
     @Override
     public void run(DataSource dataSource, List<ISQLDefinition> sqlDefinitions) {
 
