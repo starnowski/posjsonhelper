@@ -15,7 +15,9 @@ public class DatabaseOperationExecutor {
         this.operationsProcessorMap = operationsProcessorMap;
     }
 
-    public void execute(DataSource dataSource, List<ISQLDefinition> sqlDefinitions, DatabaseOperationType operationType){
+    public void execute(DataSource dataSource, List<ISQLDefinition> sqlDefinitions, DatabaseOperationType operationType) {
+        IDatabaseOperationsProcessor processor = operationsProcessorMap.get(operationType);
+        processor.run(dataSource, sqlDefinitions);
         //TODO
     }
 }
