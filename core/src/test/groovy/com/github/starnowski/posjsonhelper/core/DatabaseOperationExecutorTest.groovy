@@ -32,4 +32,54 @@ class DatabaseOperationExecutorTest extends Specification {
             0 * dropOperationProcessor.run(dataSource, sqlDefinitions)
             0 * validateOperationProcessor.run(dataSource, sqlDefinitions)
     }
+
+    def"should invoke correct operation processor for DROP operation"()
+    {
+        given:
+            def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def dropOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def validateOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>();
+            operationsProcessorMap.put(DatabaseOperationType.DROP, dropOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.VALIDATE, validateOperationProcessor)
+            def tested = new DatabaseOperationExecutor(operationsProcessorMap)
+            DataSource dataSource = Mock(DataSource)
+            List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
+
+        when:
+            tested.execute(dataSource, sqlDefinitions, DatabaseOperationType.DROP)
+
+        then:
+            1 * dropOperationProcessor.run(dataSource, sqlDefinitions)
+
+        and: "no other processor should be invoked"
+            0 * createOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * validateOperationProcessor.run(dataSource, sqlDefinitions)
+    }
+
+    def"should invoke correct operation processor for VALIDATE operation"()
+    {
+        given:
+            def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def dropOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def validateOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>();
+            operationsProcessorMap.put(DatabaseOperationType.DROP, dropOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.VALIDATE, validateOperationProcessor)
+            def tested = new DatabaseOperationExecutor(operationsProcessorMap)
+            DataSource dataSource = Mock(DataSource)
+            List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
+
+        when:
+            tested.execute(dataSource, sqlDefinitions, DatabaseOperationType.VALIDATE)
+
+        then:
+            1 * validateOperationProcessor.run(dataSource, sqlDefinitions)
+
+        and: "no other processor should be invoked"
+            0 * createOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * dropOperationProcessor.run(dataSource, sqlDefinitions)
+    }
 }
