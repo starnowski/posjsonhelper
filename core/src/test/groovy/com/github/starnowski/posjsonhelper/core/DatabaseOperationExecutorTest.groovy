@@ -1,10 +1,14 @@
 package com.github.starnowski.posjsonhelper.core
 
+import com.github.starnowski.posjsonhelper.core.operations.CreateOperationsProcessor
+import com.github.starnowski.posjsonhelper.core.operations.DropOperationsProcessor
 import com.github.starnowski.posjsonhelper.core.operations.IDatabaseOperationsProcessor
+import com.github.starnowski.posjsonhelper.core.operations.ValidateOperationsProcessor
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition
 import spock.lang.Specification
 
 import javax.sql.DataSource
+import java.util.stream.Collectors
 
 class DatabaseOperationExecutorTest extends Specification {
 
@@ -81,5 +85,16 @@ class DatabaseOperationExecutorTest extends Specification {
         and: "no other processor should be invoked"
             0 * createOperationProcessor.run(dataSource, sqlDefinitions)
             0 * dropOperationProcessor.run(dataSource, sqlDefinitions)
+    }
+
+    def "should have expected list of operation processor" (){
+        given:
+            def tested = new DatabaseOperationExecutor()
+
+        when:
+            def results = tested.getOperationsProcessorMap()
+
+        then:
+            results.values().stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([CreateOperationsProcessor.class, DropOperationsProcessor.class, ValidateOperationsProcessor.class])
     }
 }
