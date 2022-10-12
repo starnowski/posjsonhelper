@@ -7,9 +7,9 @@ import com.github.starnowski.posjsonhelper.core.util.Pair;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ValidateOperationsProcessor implements IDatabaseOperationsProcessor {
 
@@ -28,7 +28,7 @@ public class ValidateOperationsProcessor implements IDatabaseOperationsProcessor
         Map<String, List<String>> failedChecks = new HashMap<>();
         try (Connection connection = dataSource.getConnection()) {
             //TODO
-            sqlDefinitions.stream().flatMap(definition -> definition.getCheckingStatements().stream().map(cs -> new Pair<>(definition.getCreateScript(), cs)))
+            LinkedHashMap<String, HashSet> map = sqlDefinitions.stream().flatMap(definition -> definition.getCheckingStatements().stream().map(cs -> new Pair<>(definition.getCreateScript(), cs)))
                     .filter(csKey -> {
                                 try {
                                     long result = sqlUtil.returnLongResultForQuery(connection, csKey.getValue());
@@ -38,7 +38,10 @@ public class ValidateOperationsProcessor implements IDatabaseOperationsProcessor
                                     throw new RuntimeException(e);
                                 }
                             }
-                    );
+                    ).collect(Collectors.toMap(Pair::getKey, cs -> new HashSet(Arrays.asList(cs.getValue())), (o1, o2) -> Stream.concat(o1.stream(), o2.stream()).collect(Collectors.toSet()), ()-> new LinkedHashMap<String, HashSet>()));
+//            if (!map.isEmpty()) {
+//                throw new
+//            }
 //                    .collect(Collectors.toMap(sr -> sr.statement, sr -> sr.result));
         }
     }
