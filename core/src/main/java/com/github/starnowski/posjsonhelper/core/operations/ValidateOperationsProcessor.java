@@ -15,9 +15,13 @@ public class ValidateOperationsProcessor implements IDatabaseOperationsProcessor
         Map<String, List<String>> failedChecks = new HashMap<>();
         try (Connection connection = dataSource.getConnection()) {
             //TODO
-//            connection.prepareStatement()
-//            sqlDefinitions.stream().map(selectStatement -> {
-//                        Long result = jdbcTemplate.execute((StatementCallback<Long>) statement -> {
+//            sqlDefinitions.stream().flatMap(definition -> definition.getCheckingStatements().stream())
+//                    .map()
+
+//                    .map(definition -> {
+//
+//                connection.prepareStatement(selectStatement.getCheckingStatements())
+//                        Long result = connection.execute((StatementCallback<Long>) statement -> {
 //                            ResultSet rs = statement.executeQuery(selectStatement);
 //                            rs.next();
 //                            return rs.getLong(1);

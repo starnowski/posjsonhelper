@@ -7,6 +7,7 @@ import com.github.starnowski.posjsonhelper.core.operations.ValidateOperationsPro
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +34,7 @@ public class DatabaseOperationExecutor {
         return result;
     }
 
-    public void execute(DataSource dataSource, List<ISQLDefinition> sqlDefinitions, DatabaseOperationType operationType) {
+    public void execute(DataSource dataSource, List<ISQLDefinition> sqlDefinitions, DatabaseOperationType operationType) throws SQLException {
         IDatabaseOperationsProcessor processor = operationsProcessorMap.get(operationType);
         processor.run(dataSource, sqlDefinitions);
     }
