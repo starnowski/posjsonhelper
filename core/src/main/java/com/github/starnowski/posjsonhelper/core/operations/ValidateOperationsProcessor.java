@@ -1,9 +1,12 @@
 package com.github.starnowski.posjsonhelper.core.operations;
 
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
+import com.github.starnowski.posjsonhelper.core.util.Pair;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -15,20 +18,21 @@ public class ValidateOperationsProcessor implements IDatabaseOperationsProcessor
         Map<String, List<String>> failedChecks = new HashMap<>();
         try (Connection connection = dataSource.getConnection()) {
             //TODO
-//            sqlDefinitions.stream().flatMap(definition -> definition.getCheckingStatements().stream())
-//                    .map()
-
-//                    .map(definition -> {
-//
-//                connection.prepareStatement(selectStatement.getCheckingStatements())
-//                        Long result = connection.execute((StatementCallback<Long>) statement -> {
-//                            ResultSet rs = statement.executeQuery(selectStatement);
-//                            rs.next();
-//                            return rs.getLong(1);
-//                        });
-//                        return new StatementAndItLongResult(selectStatement, result);
-//                    }
-//            ).collect(Collectors.toMap(sr -> sr.statement, sr -> sr.result));
+            sqlDefinitions.stream().flatMap(definition -> definition.getCheckingStatements().stream().map(cs -> new Pair<>(definition.getCreateScript(), cs)))
+                    .filter(csKey -> {
+                        try {
+                            PreparedStatement statement = connection.prepareStatement(csKey.getValue());
+                            ResultSet rs = statement.executeQuery();
+                            rs.next();
+                            long result = rs.getLong(1);
+                            return result <= 0;
+                        } catch (SQLException e) {
+                            //TODO
+                            throw new RuntimeException(e);
+                        }
+                    }
+            );
+//                    .collect(Collectors.toMap(sr -> sr.statement, sr -> sr.result));
         }
     }
 }

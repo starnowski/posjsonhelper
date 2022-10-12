@@ -5,6 +5,10 @@ import java.util.Set;
 
 public class ValidationDatabaseOperationsException extends AbstractDatabaseOperationsException {
 
+    public Map<String, Set<String>> getFailedChecks() {
+        return failedChecks;
+    }
+
     private final Map<String, Set<String>> failedChecks;
 
     public ValidationDatabaseOperationsException(Map<String, Set<String>> failedChecks) {
