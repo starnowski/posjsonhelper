@@ -8,6 +8,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 import javax.sql.DataSource
+import java.sql.Connection
 
 class ValidateOperationsProcessorTest extends Specification {
 
@@ -25,11 +26,17 @@ class ValidateOperationsProcessorTest extends Specification {
     @Unroll
     def "should throw an exception when some checks fails #checkQueriersRestuls, expected failed checks map #expectedInvalidChecks"(){
         given:
-            def tested = new ValidateOperationsProcessor()
+            def sqlUtil = Mock(SQLUtil)
+            def tested = new ValidateOperationsProcessor(sqlUtil)
             def dataSource = Mock(DataSource)
+            def connection = Mock(Connection)
+            dataSource.getConnection() >> connection
+            checkQueriersRestuls.entrySet().forEach({ it ->
+                sqlUtil.returnLongResultForQuery(connection, it.getKey()) >> it.getValue()
+            })
 
         when:
-            tested.run(dataSource, null)
+            tested.run(dataSource, definitions)
 
         then:
             def ex = thrown(ValidationDatabaseOperationsException)
@@ -37,6 +44,7 @@ class ValidateOperationsProcessorTest extends Specification {
         where:
             definitions |   checkQueriersRestuls    ||  expectedInvalidChecks
             [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]   |   [check1:1, analyst:15, check:-1,check15:3]  || ["cre2":[new HashSet<>(Arrays.asList("check"))]]
+
     }
 
     private static ISQLDefinition sqlDef(String createScript, List<String> checkScripts){
