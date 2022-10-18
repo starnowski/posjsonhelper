@@ -40,11 +40,12 @@ class ValidateOperationsProcessorTest extends Specification {
 
         then:
             def ex = thrown(ValidationDatabaseOperationsException)
+            ex.failedChecks == expectedInvalidChecks
 
         where:
             definitions |   checkQueriersRestuls    ||  expectedInvalidChecks
-            [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]   |   [check1:1, analyst:15, check:-1,check15:3]  || ["cre2":[new HashSet<>(Arrays.asList("check"))]]
-
+            [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]   |   [check1:1, analyst:15, check:-1,check15:3]  || ["cre2":new HashSet<>(Arrays.asList("check"))]
+            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:3,checkX1:-9,checkX2:0]  || ["creY":new HashSet<>(Arrays.asList("check")), "creX":new HashSet<>(Arrays.asList("checkX1", "checkX2", "c1"))]
     }
 
     private static ISQLDefinition sqlDef(String createScript, List<String> checkScripts){
