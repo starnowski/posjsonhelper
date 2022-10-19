@@ -73,6 +73,30 @@ class ValidateOperationsProcessorTest extends Specification {
             [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:0,checkX1:-9,checkX2:0, c1:13]  || "Failed check statements for ddl instruction \"creY\", failed checks [\"check15\", \"check\"]"
     }
 
+    @Unroll
+    def "should not throw any exception when all checks passed #checkQueriersRestuls"(){
+        given:
+            def sqlUtil = Mock(SQLUtil)
+            def tested = new ValidateOperationsProcessor(sqlUtil)
+            def dataSource = Mock(DataSource)
+            def connection = Mock(Connection)
+            dataSource.getConnection() >> connection
+            checkQueriersRestuls.entrySet().forEach({ it ->
+                sqlUtil.returnLongResultForQuery(connection, it.getKey()) >> it.getValue()
+            })
+
+        when:
+            tested.run(dataSource, definitions)
+
+        then:
+            noExceptionThrown()
+
+        where:
+            definitions                                                                                                         |   checkQueriersRestuls
+            [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]                                       |   [check1:1, analyst:15, check:6,check15:3]
+            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:9,check15:3,checkX1:7,checkX2:1, c1:1]
+    }
+
     private static ISQLDefinition sqlDef(String createScript, List<String> checkScripts){
         ISQLDefinition definition = Mockito.mock(ISQLDefinition)
         Mockito.when(definition.getCreateScript()).thenReturn(createScript)
