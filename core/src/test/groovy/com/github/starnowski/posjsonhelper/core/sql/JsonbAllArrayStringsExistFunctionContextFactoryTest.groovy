@@ -15,7 +15,7 @@ class JsonbAllArrayStringsExistFunctionContextFactoryTest extends AbstractSQLDef
             def context = Mock(Context)
             def definition = Mock(DefaultSQLDefinition)
             DefaultFunctionFactoryParameters parameters
-            context.getJsonbAnyArrayStringsExistFunctionReference() >> name
+            context.getJsonbAllArrayStringsExistFunctionReference() >> name
             context.getSchema() >> schema
 
         when:

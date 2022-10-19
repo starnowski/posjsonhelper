@@ -18,6 +18,6 @@ public class JsonbAllArrayStringsExistFunctionContextFactory implements ISQLDefi
 
     @Override
     public ISQLDefinition build(Context context) {
-        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAnyArrayStringsExistFunctionReference(), context.getSchema()));
+        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAllArrayStringsExistFunctionReference(), context.getSchema()));
     }
 }
