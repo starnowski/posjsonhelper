@@ -1,9 +1,6 @@
 package com.github.starnowski.posjsonhelper.core;
 
-import com.github.starnowski.posjsonhelper.core.operations.CreateOperationsProcessor;
-import com.github.starnowski.posjsonhelper.core.operations.DropOperationsProcessor;
-import com.github.starnowski.posjsonhelper.core.operations.IDatabaseOperationsProcessor;
-import com.github.starnowski.posjsonhelper.core.operations.ValidateOperationsProcessor;
+import com.github.starnowski.posjsonhelper.core.operations.*;
 import com.github.starnowski.posjsonhelper.core.operations.exceptions.AbstractDatabaseOperationsException;
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 
@@ -32,6 +29,7 @@ public class DatabaseOperationExecutor {
         result.put(CREATE, new CreateOperationsProcessor());
         result.put(VALIDATE, new ValidateOperationsProcessor());
         result.put(DROP, new DropOperationsProcessor());
+        result.put(LOG_ALL, new DatabaseOperationsLoggerProcessor());
         return result;
     }
 

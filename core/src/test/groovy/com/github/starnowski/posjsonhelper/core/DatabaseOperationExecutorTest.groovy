@@ -1,9 +1,6 @@
 package com.github.starnowski.posjsonhelper.core
 
-import com.github.starnowski.posjsonhelper.core.operations.CreateOperationsProcessor
-import com.github.starnowski.posjsonhelper.core.operations.DropOperationsProcessor
-import com.github.starnowski.posjsonhelper.core.operations.IDatabaseOperationsProcessor
-import com.github.starnowski.posjsonhelper.core.operations.ValidateOperationsProcessor
+import com.github.starnowski.posjsonhelper.core.operations.*
 import com.github.starnowski.posjsonhelper.core.operations.exceptions.ValidationDatabaseOperationsException
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition
 import spock.lang.Specification
@@ -21,10 +18,12 @@ class DatabaseOperationExecutorTest extends Specification {
             def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
             def dropOperationProcessor = Mock(IDatabaseOperationsProcessor)
             def validateOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def databaseOperationsLoggerProcessor = Mock(DatabaseOperationsLoggerProcessor)
             Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>();
             operationsProcessorMap.put(DatabaseOperationType.DROP, dropOperationProcessor)
             operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
             operationsProcessorMap.put(DatabaseOperationType.VALIDATE, validateOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.LOG_ALL, databaseOperationsLoggerProcessor)
             def tested = new DatabaseOperationExecutor(operationsProcessorMap)
             DataSource dataSource = Mock(DataSource)
             List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
@@ -38,6 +37,7 @@ class DatabaseOperationExecutorTest extends Specification {
         and: "no other processor should be invoked"
             0 * dropOperationProcessor.run(dataSource, sqlDefinitions)
             0 * validateOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * databaseOperationsLoggerProcessor.run(dataSource, sqlDefinitions)
     }
 
     def"should invoke correct operation processor for DROP operation"()
@@ -46,10 +46,12 @@ class DatabaseOperationExecutorTest extends Specification {
             def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
             def dropOperationProcessor = Mock(IDatabaseOperationsProcessor)
             def validateOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def databaseOperationsLoggerProcessor = Mock(DatabaseOperationsLoggerProcessor)
             Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>();
             operationsProcessorMap.put(DatabaseOperationType.DROP, dropOperationProcessor)
             operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
             operationsProcessorMap.put(DatabaseOperationType.VALIDATE, validateOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.LOG_ALL, databaseOperationsLoggerProcessor)
             def tested = new DatabaseOperationExecutor(operationsProcessorMap)
             DataSource dataSource = Mock(DataSource)
             List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
@@ -63,6 +65,7 @@ class DatabaseOperationExecutorTest extends Specification {
         and: "no other processor should be invoked"
             0 * createOperationProcessor.run(dataSource, sqlDefinitions)
             0 * validateOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * databaseOperationsLoggerProcessor.run(dataSource, sqlDefinitions)
     }
 
     def"should invoke correct operation processor for VALIDATE operation"()
@@ -71,10 +74,12 @@ class DatabaseOperationExecutorTest extends Specification {
             def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
             def dropOperationProcessor = Mock(IDatabaseOperationsProcessor)
             def validateOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def databaseOperationsLoggerProcessor = Mock(DatabaseOperationsLoggerProcessor)
             Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>();
             operationsProcessorMap.put(DatabaseOperationType.DROP, dropOperationProcessor)
             operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
             operationsProcessorMap.put(DatabaseOperationType.VALIDATE, validateOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.LOG_ALL, databaseOperationsLoggerProcessor)
             def tested = new DatabaseOperationExecutor(operationsProcessorMap)
             DataSource dataSource = Mock(DataSource)
             List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
@@ -88,6 +93,35 @@ class DatabaseOperationExecutorTest extends Specification {
         and: "no other processor should be invoked"
             0 * createOperationProcessor.run(dataSource, sqlDefinitions)
             0 * dropOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * databaseOperationsLoggerProcessor.run(dataSource, sqlDefinitions)
+    }
+
+    def"should invoke correct operation processor for LOG_ALL operation"()
+    {
+        given:
+            def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def dropOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def validateOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            def databaseOperationsLoggerProcessor = Mock(DatabaseOperationsLoggerProcessor)
+            Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>();
+            operationsProcessorMap.put(DatabaseOperationType.DROP, dropOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.VALIDATE, validateOperationProcessor)
+            operationsProcessorMap.put(DatabaseOperationType.LOG_ALL, databaseOperationsLoggerProcessor)
+            def tested = new DatabaseOperationExecutor(operationsProcessorMap)
+            DataSource dataSource = Mock(DataSource)
+            List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
+
+        when:
+            tested.execute(dataSource, sqlDefinitions, DatabaseOperationType.LOG_ALL)
+
+        then:
+            1 * databaseOperationsLoggerProcessor.run(dataSource, sqlDefinitions)
+
+        and: "no other processor should be invoked"
+            0 * createOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * dropOperationProcessor.run(dataSource, sqlDefinitions)
+            0 * validateOperationProcessor.run(dataSource, sqlDefinitions)
     }
 
     def "should have expected list of operation processor" (){
@@ -98,7 +132,7 @@ class DatabaseOperationExecutorTest extends Specification {
             def results = tested.getOperationsProcessorMap()
 
         then:
-            results.values().stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([CreateOperationsProcessor.class, DropOperationsProcessor.class, ValidateOperationsProcessor.class])
+            results.values().stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([CreateOperationsProcessor.class, DropOperationsProcessor.class, ValidateOperationsProcessor.class, DatabaseOperationsLoggerProcessor.class])
     }
 
     @Unroll
