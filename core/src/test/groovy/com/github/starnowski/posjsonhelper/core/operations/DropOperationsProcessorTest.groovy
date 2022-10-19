@@ -21,12 +21,14 @@ class DropOperationsProcessorTest extends Specification {
             def statement = Mock(Statement)
             dataSource.getConnection() >> connection
             connection.createStatement() >> statement
+            LinkedList<ISQLDefinition> stack = new LinkedList<>()
 
         when:
             tested.run(dataSource, definitions)
 
         then:
-            definitions.forEach({it ->
+            definitions.forEach({it -> stack.push(it)})
+            stack.stream().forEach({it ->
                 1 * statement.execute(it.getDropScript())
             })
 
