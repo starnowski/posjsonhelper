@@ -48,6 +48,31 @@ class ValidateOperationsProcessorTest extends Specification {
             [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:3,checkX1:-9,checkX2:0]  || ["creY":new HashSet<>(Arrays.asList("check")), "creX":new HashSet<>(Arrays.asList("checkX1", "checkX2", "c1"))]
     }
 
+    @Unroll
+    def "should throw an exception when some checks fails #checkQueriersRestuls, expected error massege started with #errorMessageStart"(){
+        given:
+            def sqlUtil = Mock(SQLUtil)
+            def tested = new ValidateOperationsProcessor(sqlUtil)
+            def dataSource = Mock(DataSource)
+            def connection = Mock(Connection)
+            dataSource.getConnection() >> connection
+            checkQueriersRestuls.entrySet().forEach({ it ->
+                sqlUtil.returnLongResultForQuery(connection, it.getKey()) >> it.getValue()
+            })
+
+        when:
+            tested.run(dataSource, definitions)
+
+        then:
+            def ex = thrown(ValidationDatabaseOperationsException)
+            ex.message == errorMessageStart
+
+        where:
+            definitions |   checkQueriersRestuls    ||  errorMessageStart
+            [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]   |   [check1:1, analyst:15, check:-1,check15:3]  || "Failed check statements for ddl instruction \"cre2\", failed checks [\"check\"]"
+            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:0,checkX1:-9,checkX2:0]  || "Failed check statements for ddl instruction \"creY\", failed checks [\"check\", \"check15\"]"
+    }
+
     private static ISQLDefinition sqlDef(String createScript, List<String> checkScripts){
         ISQLDefinition definition = Mockito.mock(ISQLDefinition)
         Mockito.when(definition.getCreateScript()).thenReturn(createScript)
