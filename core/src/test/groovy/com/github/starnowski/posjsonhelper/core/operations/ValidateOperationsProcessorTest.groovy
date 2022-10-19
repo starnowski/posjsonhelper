@@ -45,7 +45,7 @@ class ValidateOperationsProcessorTest extends Specification {
         where:
             definitions |   checkQueriersRestuls    ||  expectedInvalidChecks
             [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]   |   [check1:1, analyst:15, check:-1,check15:3]  || ["cre2":new HashSet<>(Arrays.asList("check"))]
-            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:3,checkX1:-9,checkX2:0]  || ["creY":new HashSet<>(Arrays.asList("check")), "creX":new HashSet<>(Arrays.asList("checkX1", "checkX2", "c1"))]
+            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:3,checkX1:-9,checkX2:0, c1:-10]  || ["creY":new HashSet<>(Arrays.asList("check")), "creX":new HashSet<>(Arrays.asList("checkX1", "checkX2", "c1"))]
     }
 
     @Unroll
@@ -70,7 +70,7 @@ class ValidateOperationsProcessorTest extends Specification {
         where:
             definitions |   checkQueriersRestuls    ||  errorMessageStart
             [sqlDef("cre1", ["check1", "analyst"]), sqlDef("cre2", ["check", "check15"])]   |   [check1:1, analyst:15, check:-1,check15:3]  || "Failed check statements for ddl instruction \"cre2\", failed checks [\"check\"]"
-            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:0,checkX1:-9,checkX2:0]  || "Failed check statements for ddl instruction \"creY\", failed checks [\"check\", \"check15\"]"
+            [sqlDef("creX", ["c1", "analyst"]), sqlDef("creY", ["check", "check15"]), sqlDef("creX", ["checkX1", "checkX2"])]   |   [check1:1, analyst:15, check:-1,check15:0,checkX1:-9,checkX2:0, c1:13]  || "Failed check statements for ddl instruction \"creY\", failed checks [\"check15\", \"check\"]"
     }
 
     private static ISQLDefinition sqlDef(String createScript, List<String> checkScripts){
