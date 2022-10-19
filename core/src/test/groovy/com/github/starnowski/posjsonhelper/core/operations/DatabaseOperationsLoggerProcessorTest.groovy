@@ -18,9 +18,9 @@ class DatabaseOperationsLoggerProcessorTest extends Specification {
             expectedInfoLogs.add("Creation scripts")
             expectedInfoLogs.addAll(expectedCreateScriptsMessages)
             expectedInfoLogs.add("Drop scripts")
-            expectedInfoLogs.add(expectedDropScriptsMessages)
+            expectedInfoLogs.addAll(expectedDropScriptsMessages)
             expectedInfoLogs.add("Validation scripts")
-            expectedInfoLogs.add(expectedCheckScriptsMessages)
+            expectedInfoLogs.addAll(expectedCheckScriptsMessages)
 
         when:
             tested.run(null, definitions)

@@ -14,6 +14,11 @@ public class DatabaseOperationsLoggerProcessor implements IDatabaseOperationsPro
 
     @Override
     public void run(DataSource dataSource, List<ISQLDefinition> sqlDefinitions) throws SQLException, ValidationDatabaseOperationsException {
-
+        logger.info("Creation scripts");
+        sqlDefinitions.forEach(definition -> logger.info(definition.getCreateScript()));
+        logger.info("Drop scripts");
+        sqlDefinitions.forEach(definition -> logger.info(definition.getDropScript()));
+        logger.info("Validation scripts");
+        sqlDefinitions.stream().flatMap(definition -> definition.getCheckingStatements().stream()).forEach(script -> logger.info(script));
     }
 }
