@@ -4,7 +4,7 @@ import com.github.starnowski.posjsonhelper.core.operations.CreateOperationsProce
 import com.github.starnowski.posjsonhelper.core.operations.DropOperationsProcessor;
 import com.github.starnowski.posjsonhelper.core.operations.IDatabaseOperationsProcessor;
 import com.github.starnowski.posjsonhelper.core.operations.ValidateOperationsProcessor;
-import com.github.starnowski.posjsonhelper.core.operations.exceptions.ValidationDatabaseOperationsException;
+import com.github.starnowski.posjsonhelper.core.operations.exceptions.AbstractDatabaseOperationsException;
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 
 import javax.sql.DataSource;
@@ -35,7 +35,7 @@ public class DatabaseOperationExecutor {
         return result;
     }
 
-    public void execute(DataSource dataSource, List<ISQLDefinition> sqlDefinitions, DatabaseOperationType operationType) throws SQLException, ValidationDatabaseOperationsException {
+    public void execute(DataSource dataSource, List<ISQLDefinition> sqlDefinitions, DatabaseOperationType operationType) throws SQLException, AbstractDatabaseOperationsException {
         IDatabaseOperationsProcessor processor = operationsProcessorMap.get(operationType);
         processor.run(dataSource, sqlDefinitions);
     }

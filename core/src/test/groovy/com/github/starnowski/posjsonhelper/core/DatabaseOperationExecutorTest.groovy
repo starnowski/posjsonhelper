@@ -4,10 +4,13 @@ import com.github.starnowski.posjsonhelper.core.operations.CreateOperationsProce
 import com.github.starnowski.posjsonhelper.core.operations.DropOperationsProcessor
 import com.github.starnowski.posjsonhelper.core.operations.IDatabaseOperationsProcessor
 import com.github.starnowski.posjsonhelper.core.operations.ValidateOperationsProcessor
+import com.github.starnowski.posjsonhelper.core.operations.exceptions.ValidationDatabaseOperationsException
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import javax.sql.DataSource
+import java.sql.SQLException
 import java.util.stream.Collectors
 
 class DatabaseOperationExecutorTest extends Specification {
@@ -96,5 +99,28 @@ class DatabaseOperationExecutorTest extends Specification {
 
         then:
             results.values().stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([CreateOperationsProcessor.class, DropOperationsProcessor.class, ValidateOperationsProcessor.class])
+    }
+
+    @Unroll
+    def"should rethrow exception [#exception] thrown by database operation processor"()
+    {
+        given:
+            def createOperationProcessor = Mock(IDatabaseOperationsProcessor)
+            Map<DatabaseOperationType, IDatabaseOperationsProcessor> operationsProcessorMap = new HashMap<>()
+            operationsProcessorMap.put(DatabaseOperationType.CREATE, createOperationProcessor)
+            def tested = new DatabaseOperationExecutor(operationsProcessorMap)
+            DataSource dataSource = Mock(DataSource)
+            List<ISQLDefinition> sqlDefinitions = new ArrayList<>()
+
+        when:
+            tested.execute(dataSource, sqlDefinitions, DatabaseOperationType.CREATE)
+
+        then:
+            1 * createOperationProcessor.run(dataSource, sqlDefinitions) >> { throw exception }
+            def ex = thrown(exception.getClass())
+            ex.is(exception)
+
+        where:
+            exception << [new SQLException(), new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())]
     }
 }
