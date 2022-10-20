@@ -38,7 +38,7 @@ class DatabaseOperationExecutorFacadeTest extends Specification {
     }
 
     @Unroll
-    def"should rethrow exception [#exception] thrown by database operation processor"()
+    def"should rethrow exception [#exception] thrown by database operation processor #operation"()
     {
         given:
             def databaseOperationExecutor = Mock(DatabaseOperationExecutor)
@@ -50,15 +50,23 @@ class DatabaseOperationExecutorFacadeTest extends Specification {
 
 
         when:
-            tested.execute(dataSource, context, CREATE)
+            tested.execute(dataSource, context, operation)
 
         then:
             1 * sqlDefinitionFactoryFacade.build(context) >> sqlDefinitions
-            1 * databaseOperationExecutor.execute(dataSource, sqlDefinitions, CREATE) >> { throw exception }
+            1 * databaseOperationExecutor.execute(dataSource, sqlDefinitions, operation) >> { throw exception }
             def ex = thrown(exception.getClass())
             ex.is(exception)
 
         where:
-            exception << [new SQLException(), new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())]
+            exception                                                                       | operation
+            new SQLException()                                                              | CREATE
+            new SQLException()                                                              | LOG_ALL
+            new SQLException()                                                              | DROP
+            new SQLException()                                                              | VALIDATE
+            new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())   | CREATE
+            new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())   | LOG_ALL
+            new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())   | DROP
+            new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())   | VALIDATE
     }
 }
