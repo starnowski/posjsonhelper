@@ -1,10 +1,12 @@
 package com.github.starnowski.posjsonhelper.core;
 
 import com.github.starnowski.posjsonhelper.core.operations.exceptions.AbstractDatabaseOperationsException;
+import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
 import com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionFactoryFacade;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.List;
 
 public class DatabaseOperationExecutorFacade {
 
@@ -21,6 +23,7 @@ public class DatabaseOperationExecutorFacade {
     }
 
     public void execute(DataSource dataSource, Context context, DatabaseOperationType operationType) throws SQLException, AbstractDatabaseOperationsException {
-        //TODO
+        List<ISQLDefinition> definitions = sqlDefinitionFactoryFacade.build(context);
+        databaseOperationExecutor.execute(dataSource, definitions, operationType);
     }
 }
