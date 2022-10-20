@@ -11,8 +11,8 @@ import java.util.List;
 public class DatabaseOperationExecutorFacade {
 
     private final DatabaseOperationExecutor databaseOperationExecutor;
-    private final SQLDefinitionFactoryFacade sqlDefinitionFactoryFacade;
 
+    private final SQLDefinitionFactoryFacade sqlDefinitionFactoryFacade;
     public DatabaseOperationExecutorFacade(){
         this(new DatabaseOperationExecutor(), new SQLDefinitionFactoryFacade());
     }
@@ -25,5 +25,13 @@ public class DatabaseOperationExecutorFacade {
     public void execute(DataSource dataSource, Context context, DatabaseOperationType operationType) throws SQLException, AbstractDatabaseOperationsException {
         List<ISQLDefinition> definitions = sqlDefinitionFactoryFacade.build(context);
         databaseOperationExecutor.execute(dataSource, definitions, operationType);
+    }
+
+    DatabaseOperationExecutor getDatabaseOperationExecutor() {
+        return databaseOperationExecutor;
+    }
+
+    SQLDefinitionFactoryFacade getSqlDefinitionFactoryFacade() {
+        return sqlDefinitionFactoryFacade;
     }
 }

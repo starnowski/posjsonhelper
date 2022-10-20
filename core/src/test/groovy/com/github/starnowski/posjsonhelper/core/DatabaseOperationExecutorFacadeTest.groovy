@@ -69,4 +69,17 @@ class DatabaseOperationExecutorFacadeTest extends Specification {
             new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())   | DROP
             new ValidationDatabaseOperationsException(new HashMap<String, Set<String>>())   | VALIDATE
     }
+
+    def "should have expected components initialized" (){
+        given:
+            def tested = new DatabaseOperationExecutorFacade()
+
+        when:
+            def databaseOperationExecutor = tested.getDatabaseOperationExecutor()
+            def sqlDefinitionFactoryFacade = tested.getSqlDefinitionFactoryFacade()
+
+        then:
+            databaseOperationExecutor.getClass() == DatabaseOperationExecutor
+            sqlDefinitionFactoryFacade.getClass() == SQLDefinitionFactoryFacade
+    }
 }
