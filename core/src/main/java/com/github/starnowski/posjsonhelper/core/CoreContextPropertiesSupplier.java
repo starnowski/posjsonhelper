@@ -27,4 +27,8 @@ public class CoreContextPropertiesSupplier {
         }
         return builder.build();
     }
+
+    SystemPropertyReader getSystemPropertyReader() {
+        return systemPropertyReader;
+    }
 }

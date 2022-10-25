@@ -1,5 +1,6 @@
 package com.github.starnowski.posjsonhelper.core
 
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -46,5 +47,16 @@ class CoreContextPropertiesSupplierTest extends Specification {
 
         where:
             expectedFunctionName << ["some_fun", "this_is_right_function"]
+    }
+
+    def "should have expected components initialized" (){
+        given:
+            def tested = new CoreContextPropertiesSupplier()
+
+        when:
+            def systemPropertyReader = tested.getSystemPropertyReader()
+
+        then:
+            systemPropertyReader.getClass() == SystemPropertyReader
     }
 }
