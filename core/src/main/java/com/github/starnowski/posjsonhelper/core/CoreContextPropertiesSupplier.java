@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.core;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY;
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY;
+import static com.github.starnowski.posjsonhelper.core.Constants.SCHEMA_PROPERTY;
 
 public class CoreContextPropertiesSupplier {
 
@@ -24,6 +25,10 @@ public class CoreContextPropertiesSupplier {
         String jsonbAnyArrayStringsExistFunctionReference = systemPropertyReader.read(JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY);
         if (jsonbAnyArrayStringsExistFunctionReference != null) {
             builder.withJsonbAnyArrayStringsExistFunctionReference(jsonbAnyArrayStringsExistFunctionReference);
+        }
+        String schema = systemPropertyReader.read(SCHEMA_PROPERTY);
+        if (schema != null) {
+            builder.withSchema(schema);
         }
         return builder.build();
     }
