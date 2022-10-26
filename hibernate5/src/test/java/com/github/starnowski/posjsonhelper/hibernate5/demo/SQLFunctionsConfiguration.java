@@ -15,11 +15,12 @@ public class SQLFunctionsConfiguration implements
         ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
+    private Context context;
+    @Autowired
     private DataSource dataSource;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        Context context = Context.builder().build();
         DatabaseOperationExecutorFacade facade = new DatabaseOperationExecutorFacade();
         try {
             facade.execute(dataSource, context, DatabaseOperationType.LOG_ALL);
