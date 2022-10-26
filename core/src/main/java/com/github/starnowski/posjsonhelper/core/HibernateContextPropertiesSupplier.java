@@ -14,19 +14,15 @@ public class HibernateContextPropertiesSupplier {
         this.systemPropertyReader = systemPropertyReader;
     }
 
-    public Context get(){
-        Context.ContextBuilder builder = Context.builder();
-        String jsonbAllArrayStringsExistFunctionReference = systemPropertyReader.read(JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY);
-        if (jsonbAllArrayStringsExistFunctionReference != null) {
-            builder.withJsonbAllArrayStringsExistFunctionReference(jsonbAllArrayStringsExistFunctionReference);
+    public HibernateContext get(){
+        HibernateContext.ContextBuilder builder = HibernateContext.builder();
+        String jsonbAllArrayStringsExist = systemPropertyReader.read(JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY);
+        if (jsonbAllArrayStringsExist != null) {
+            builder.withJsonbAllArrayStringsExistOperator(jsonbAllArrayStringsExist);
         }
-        String jsonbAnyArrayStringsExistFunctionReference = systemPropertyReader.read(JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY);
-        if (jsonbAnyArrayStringsExistFunctionReference != null) {
-            builder.withJsonbAnyArrayStringsExistFunctionReference(jsonbAnyArrayStringsExistFunctionReference);
-        }
-        String schema = systemPropertyReader.read(SCHEMA_PROPERTY);
-        if (schema != null) {
-            builder.withSchema(schema);
+        String jsonbAnyArrayStringsExist = systemPropertyReader.read(JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY);
+        if (jsonbAnyArrayStringsExist != null) {
+            builder.withJsonbAnyArrayStringsExistOperator(jsonbAnyArrayStringsExist);
         }
         return builder.build();
     }
