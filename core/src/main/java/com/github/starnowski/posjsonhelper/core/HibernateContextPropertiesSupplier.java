@@ -24,6 +24,10 @@ public class HibernateContextPropertiesSupplier {
         if (jsonbAnyArrayStringsExist != null) {
             builder.withJsonbAnyArrayStringsExistOperator(jsonbAnyArrayStringsExist);
         }
+        String jsonFunctionJsonArrayOperator = systemPropertyReader.read(JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY);
+        if (jsonFunctionJsonArrayOperator != null) {
+            builder.withJsonFunctionJsonArrayOperator(jsonFunctionJsonArrayOperator);
+        }
         return builder.build();
     }
 
