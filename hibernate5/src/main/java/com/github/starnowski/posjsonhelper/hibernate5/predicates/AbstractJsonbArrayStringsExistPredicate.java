@@ -1,6 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate5.predicates;
 
-import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate5.JsonBExtractPath;
 import org.hibernate.query.criteria.internal.*;
 import org.hibernate.query.criteria.internal.compile.RenderingContext;
@@ -17,11 +17,11 @@ import java.util.List;
 
 public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSimplePredicate implements UnaryOperatorExpression<Boolean>, Serializable {
 
-    private final Context context;
+    private final HibernateContext context;
     private final JsonBExtractPath jsonBExtractPath;
     private final List<Expression> values;
 
-    public AbstractJsonbArrayStringsExistPredicate(Context context, CriteriaBuilderImpl criteriaBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
+    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, CriteriaBuilderImpl criteriaBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
         super(criteriaBuilder);
         this.jsonBExtractPath = jsonBExtractPath;
         this.context = context;
@@ -72,7 +72,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
 
     abstract protected String getFunctionName();
 
-    protected Context getContext() {
+    protected HibernateContext getContext() {
         return context;
     }
 

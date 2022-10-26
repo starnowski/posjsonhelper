@@ -8,6 +8,7 @@ import org.hibernate.type.StandardBasicTypes;
 public class PostgreSQLDialectEnricher {
 
     public void enrich(PostgreSQL81Dialect postgreSQL81Dialect) {
+        //TODO Add HibernateContext and Context
         postgreSQL81Dialect.getFunctions().put("json_function_json_array", new JsonArrayFunction());
         postgreSQL81Dialect.getFunctions().put("jsonb_all_array_strings_exist", new StandardSQLFunction("jsonb_all_array_strings_exist", StandardBasicTypes.BOOLEAN));
         postgreSQL81Dialect.getFunctions().put("jsonb_any_array_strings_exist", new StandardSQLFunction("jsonb_any_array_strings_exist", StandardBasicTypes.BOOLEAN));
