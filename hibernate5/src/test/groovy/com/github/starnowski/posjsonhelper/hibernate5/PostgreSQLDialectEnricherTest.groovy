@@ -41,6 +41,31 @@ class PostgreSQLDialectEnricherTest extends Specification {
             HibernateContext.builder().withJsonFunctionJsonArrayOperator("json_operator").build()  ||  ["jsonb_any_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_operator" : JsonArrayFunction]
     }
 
+    @Unroll
+    def "should enrich dialect with expected functions names #expectedFunctionNames" (){
+        given:
+            def coreContextPropertiesSupplier = Mock(CoreContextPropertiesSupplier)
+            def hibernateContextPropertiesSupplier = Mock(HibernateContextPropertiesSupplier)
+            def dialect = new PostgreSQL81Dialect()
+            coreContextPropertiesSupplier.get() >> context
+            hibernateContextPropertiesSupplier.get() >> hibernateContext
+            def tested = new PostgreSQLDialectEnricher(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier)
+
+        when:
+            tested.enrich(dialect)
+
+        then:
+            dialect.getFunctions().entrySet().stream().filter({it -> expectedFunctionNames.containsKey(it.getKey())}).collect(Collectors.toMap(new KeyMapper(), new ValueFunctionNameMapper())) == expectedFunctionNames
+
+        where:
+            context | hibernateContext    ||  expectedFunctionNames
+        Context.builder().build() | HibernateContext.builder().build()  ||  ["jsonb_all_array_strings_exist" : "jsonb_all_array_strings_exist", "jsonb_any_array_strings_exist" : "jsonb_any_array_strings_exist"]
+        Context.builder().build() | HibernateContext.builder().withJsonbAllArrayStringsExistOperator("jsonb_all_el").build()  ||  ["jsonb_all_el" : "jsonb_all_array_strings_exist", "jsonb_any_array_strings_exist" : "jsonb_any_array_strings_exist"]
+        Context.builder().build() | HibernateContext.builder().withJsonbAnyArrayStringsExistOperator("fun_2").build()  ||  ["jsonb_all_array_strings_exist" : "jsonb_all_array_strings_exist", "fun_2" : "jsonb_any_array_strings_exist"]
+        Context.builder().withJsonbAnyArrayStringsExistFunctionReference("test1").build() | HibernateContext.builder().withJsonbAnyArrayStringsExistOperator("fun_2").build()  ||  ["jsonb_all_array_strings_exist" : "jsonb_all_array_strings_exist", "fun_2" : "test1"]
+        Context.builder().withJsonbAllArrayStringsExistFunctionReference("funXXX").withJsonbAnyArrayStringsExistFunctionReference("test1").build() | HibernateContext.builder().withJsonbAnyArrayStringsExistOperator("fun_2").build()  ||  ["jsonb_all_array_strings_exist" : "funXXX", "fun_2" : "test1"]
+    }
+
     def "should have expected components initialized" (){
         given:
             def tested = new PostgreSQLDialectEnricher()
@@ -67,6 +92,14 @@ class PostgreSQLDialectEnricherTest extends Specification {
         @Override
         Class apply(Map.Entry<String, SQLFunction> entry) {
             return entry.getValue().getClass()
+        }
+    }
+
+    private static class ValueFunctionNameMapper implements Function<Map.Entry<String, SQLFunction>, String>{
+
+        @Override
+        String apply(Map.Entry<String, SQLFunction> entry) {
+            return entry.getValue() instanceof StandardSQLFunction ? ((StandardSQLFunction)entry.getValue()).name : null
         }
     }
 }
