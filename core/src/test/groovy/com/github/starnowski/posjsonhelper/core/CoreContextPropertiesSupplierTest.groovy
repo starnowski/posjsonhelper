@@ -10,7 +10,7 @@ import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_A
 class CoreContextPropertiesSupplierTest extends Specification {
 
     @Unroll
-    def "should set jsonb_all_array_strings_exist function name based on system property 'com.github.starnowski.posjsonhelper.core.jsonb_all_array_strings_exist', expected value #expectedFunctionName"(){
+    def "should set jsonb_all_array_strings_exist function name based on system property 'com.github.starnowski.posjsonhelper.core.functions.jsonb_all_array_strings_exist', expected value #expectedFunctionName"(){
         given:
             def spr = Mock(SystemPropertyReader)
             def tested = new CoreContextPropertiesSupplier(spr)
@@ -19,7 +19,7 @@ class CoreContextPropertiesSupplierTest extends Specification {
             def result = tested.get()
 
         then:
-            1 * spr.read("com.github.starnowski.posjsonhelper.core.jsonb_all_array_strings_exist") >> expectedFunctionName
+            1 * spr.read("com.github.starnowski.posjsonhelper.core.functions.jsonb_all_array_strings_exist") >> expectedFunctionName
             result.getJsonbAllArrayStringsExistFunctionReference() == expectedFunctionName
 
         and: "should not set other properties"
@@ -31,7 +31,7 @@ class CoreContextPropertiesSupplierTest extends Specification {
     }
 
     @Unroll
-    def "should set jsonb_any_array_strings_exist function name based on system property 'com.github.starnowski.posjsonhelper.core.jsonb_any_array_strings_exist', expected value #expectedFunctionName"(){
+    def "should set jsonb_any_array_strings_exist function name based on system property 'com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist', expected value #expectedFunctionName"(){
         given:
             def spr = Mock(SystemPropertyReader)
             def tested = new CoreContextPropertiesSupplier(spr)
@@ -40,7 +40,7 @@ class CoreContextPropertiesSupplierTest extends Specification {
             def result = tested.get()
 
         then:
-            1 * spr.read("com.github.starnowski.posjsonhelper.core.jsonb_any_array_strings_exist") >> expectedFunctionName
+            1 * spr.read("com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist") >> expectedFunctionName
             result.getJsonbAnyArrayStringsExistFunctionReference() == expectedFunctionName
 
         and: "should not set other properties"
