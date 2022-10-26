@@ -18,12 +18,12 @@ import java.util.stream.Collectors
 class PostgreSQLDialectEnricherTest extends Specification {
 
     @Unroll
-    def "should enrich dialect with expected functions types" (){
+    def "should enrich dialect with expected functions types #expectedFunctionTypes" (){
         given:
             def coreContextPropertiesSupplier = Mock(CoreContextPropertiesSupplier)
             def hibernateContextPropertiesSupplier = Mock(HibernateContextPropertiesSupplier)
             def dialect = new PostgreSQL81Dialect()
-            coreContextPropertiesSupplier.get() >> context
+            coreContextPropertiesSupplier.get() >> Context.builder().build()
             hibernateContextPropertiesSupplier.get() >> hibernateContext
             def tested = new PostgreSQLDialectEnricher(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier)
 
@@ -34,8 +34,11 @@ class PostgreSQLDialectEnricherTest extends Specification {
             dialect.getFunctions().entrySet().stream().filter({it -> expectedFunctionTypes.containsKey(it.getKey())}).collect(Collectors.toMap(new KeyMapper(), new ValueClassMapper())) == expectedFunctionTypes
 
         where:
-            context |   hibernateContext    ||  expectedFunctionTypes
-            Context.builder().build()   |   HibernateContext.builder().build()  ||  ["jsonb_all_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
+            hibernateContext    ||  expectedFunctionTypes
+            HibernateContext.builder().build()  ||  ["jsonb_all_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
+            HibernateContext.builder().withJsonbAllArrayStringsExistOperator("jsonb_all_el").build()  ||  ["jsonb_all_el" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
+            HibernateContext.builder().withJsonbAnyArrayStringsExistOperator("fun_2").build()  ||  ["fun_2" : StandardSQLFunction, "jsonb_all_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
+            HibernateContext.builder().withJsonFunctionJsonArrayOperator("json_operator").build()  ||  ["jsonb_any_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_operator" : JsonArrayFunction]
     }
 
     def "should have expected components initialized" (){
