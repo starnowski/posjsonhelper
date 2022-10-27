@@ -100,4 +100,32 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>pitest</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.pitest</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.9.9</version>
+                        <configuration>
+                            <mutators>
+                                <mutator>STRONGER</mutator>
+                            </mutators>
+                            <excludedTestClasses>
+                                <param>com.github.starnowski.posjsonhelper.hibernate5.*ItTest</param>
+                                <param>com.github.starnowski.posjsonhelper.hibernate5.**.*ItTest</param>
+                            </excludedTestClasses>
+                            <mutationThreshold>95</mutationThreshold>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
