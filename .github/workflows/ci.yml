@@ -4,18 +4,6 @@ on:
   push:
 
 jobs:
-#  compilation_and_unit_tests:
-#    runs-on: ubuntu-latest
-#    name: "Compilation and unit tests"
-#    steps:
-#      - name: Git checkout
-#        uses: actions/checkout@v2
-#      - name: Set up JDK 1.8
-#        uses: actions/setup-java@v1
-#        with:
-#          java-version: 1.8
-#      - name: Build with Maven
-#        run: ./mvnw clean install -DskipTests --quiet && ./mvnw test
 
   integraion_tests:
 #    needs: [compilation_and_unit_tests]
@@ -59,3 +47,6 @@ jobs:
 
       - name: Run tests
         run: ./mvnw -DskipTests --quiet clean install && ./mvnw test
+
+      - name: Run mutation tests
+        run: ./mvnw -P pitest test org.pitest:pitest-maven:mutationCoverage
