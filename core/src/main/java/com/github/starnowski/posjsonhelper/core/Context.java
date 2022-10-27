@@ -1,5 +1,8 @@
 package com.github.starnowski.posjsonhelper.core;
 
+import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
+import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
+
 public class Context {
 
     private final String jsonbAllArrayStringsExistFunctionReference;
@@ -29,8 +32,8 @@ public class Context {
     }
 
     public static class ContextBuilder {
-        private String jsonbAllArrayStringsExistFunctionReference = "jsonb_all_array_strings_exist";
-        private String jsonbAnyArrayStringsExistFunctionReference = "jsonb_any_array_strings_exist";
+        private String jsonbAllArrayStringsExistFunctionReference = DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
+        private String jsonbAnyArrayStringsExistFunctionReference = DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
         private String schema;
 
         public ContextBuilder withSchema(String schema) {
