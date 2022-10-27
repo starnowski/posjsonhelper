@@ -110,7 +110,7 @@
                             <excludedTestClasses>
                                 <param>com.github.starnowski.posjsonhelper.core.**.*ItTest</param>
                             </excludedTestClasses>
-                            <mutationThreshold>90</mutationThreshold>
+                            <mutationThreshold>95</mutationThreshold>
                         </configuration>
                     </plugin>
                 </plugins>
