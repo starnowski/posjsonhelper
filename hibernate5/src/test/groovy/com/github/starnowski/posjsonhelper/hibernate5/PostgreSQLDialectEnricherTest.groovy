@@ -38,7 +38,7 @@ class PostgreSQLDialectEnricherTest extends Specification {
             HibernateContext.builder().build()  ||  ["jsonb_all_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
             HibernateContext.builder().withJsonbAllArrayStringsExistOperator("jsonb_all_el").build()  ||  ["jsonb_all_el" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
             HibernateContext.builder().withJsonbAnyArrayStringsExistOperator("fun_2").build()  ||  ["fun_2" : StandardSQLFunction, "jsonb_all_array_strings_exist" : StandardSQLFunction, "json_function_json_array" : JsonArrayFunction]
-            HibernateContext.builder().withJsonFunctionJsonArrayOperator("json_operator").build()  ||  ["jsonb_any_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_operator" : JsonArrayFunction]
+            HibernateContext.builder().withJsonFunctionJsonArrayOperator("json_operator").build()  ||  ["jsonb_all_array_strings_exist" : StandardSQLFunction, "jsonb_any_array_strings_exist" : StandardSQLFunction, "json_operator" : JsonArrayFunction]
     }
 
     @Unroll
