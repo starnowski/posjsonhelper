@@ -18,15 +18,15 @@ public class HibernateContextPropertiesSupplier {
         HibernateContext.ContextBuilder builder = HibernateContext.builder();
         String jsonbAllArrayStringsExist = systemPropertyReader.read(JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY);
         if (jsonbAllArrayStringsExist != null) {
-            builder.withJsonbAllArrayStringsExistOperator(jsonbAllArrayStringsExist);
+            builder = builder.withJsonbAllArrayStringsExistOperator(jsonbAllArrayStringsExist);
         }
         String jsonbAnyArrayStringsExist = systemPropertyReader.read(JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY);
         if (jsonbAnyArrayStringsExist != null) {
-            builder.withJsonbAnyArrayStringsExistOperator(jsonbAnyArrayStringsExist);
+            builder = builder.withJsonbAnyArrayStringsExistOperator(jsonbAnyArrayStringsExist);
         }
         String jsonFunctionJsonArrayOperator = systemPropertyReader.read(JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY);
         if (jsonFunctionJsonArrayOperator != null) {
-            builder.withJsonFunctionJsonArrayOperator(jsonFunctionJsonArrayOperator);
+            builder = builder.withJsonFunctionJsonArrayOperator(jsonFunctionJsonArrayOperator);
         }
         return builder.build();
     }

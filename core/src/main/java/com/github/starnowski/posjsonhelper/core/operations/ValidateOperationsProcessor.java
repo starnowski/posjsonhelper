@@ -40,7 +40,7 @@ public class ValidateOperationsProcessor implements IDatabaseOperationsProcessor
                     )
                     .collect(Collectors.toMap(cs1 -> cs1.getKey(), cs2 -> (Set)new HashSet<String>(Arrays.asList(cs2.getValue())), (o1, o2) -> (Set)new HashSet<String>(Stream.concat(o1.stream(), o2.stream()).collect(Collectors.toSet())), ()-> new LinkedHashMap<String, Set<String>>()));
         }
-        if (failedChecks != null && !failedChecks.isEmpty()) {
+        if (!failedChecks.isEmpty()) {
             throw new ValidationDatabaseOperationsException(failedChecks);
         }
     }
