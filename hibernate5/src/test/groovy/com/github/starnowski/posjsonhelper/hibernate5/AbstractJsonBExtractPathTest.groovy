@@ -42,6 +42,31 @@ abstract class AbstractJsonBExtractPathTest<T extends AbstractJsonBExtractPath> 
             "non_public_schema.tab45.JSON_FIELDS" | ["z", "jjj", "enum_value"]  ||  "( non_public_schema.tab45.JSON_FIELDS , 'z', 'jjj', 'enum_value' )"
     }
 
+    @Unroll
+    def "should throw exception when path arguments are null or empty #path"(){
+
+        given:
+            RenderingContext renderingContext = Mock(RenderingContext)
+            org.hibernate.internal.util.collections.Stack< Clause> clauseStack = new StandardStack< Clause>()
+            renderingContext.getFunctionStack() >> new StandardStack()
+            renderingContext.getClauseStack() >> clauseStack
+            renderingContext.getDialect() >> new PostgreSQL81Dialect()
+            // Set select Clause
+            clauseStack.push(Clause.SELECT)
+
+        when:
+            getTested(path, new TestOperand("some_column"))
+
+        then:
+            def ex = thrown(IllegalArgumentException)
+
+        and:
+            ex.message == "Path argument can not be null or empty list"
+
+        where:
+            path << [null, []]
+    }
+
     protected abstract T getTested(List<String> path, Expression<?> operand);
 
     protected abstract String getFunctionName();

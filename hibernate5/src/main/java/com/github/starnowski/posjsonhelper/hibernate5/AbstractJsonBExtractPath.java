@@ -10,10 +10,7 @@ import javax.persistence.criteria.Expression;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyList;
 
 public abstract class AbstractJsonBExtractPath extends BasicFunctionExpression<String> implements Serializable {
 
@@ -25,7 +22,10 @@ public abstract class AbstractJsonBExtractPath extends BasicFunctionExpression<S
         super(criteriaBuilder, String.class, functionName);
         this.path = path;
         this.operand = operand;
-        this.pathValues = Optional.ofNullable(this.path).orElse(emptyList()).stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
+        if (this.path == null || this.path.isEmpty()) {
+            throw new IllegalArgumentException("Path argument can not be null or empty list");
+        }
+        this.pathValues = this.path.stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
     }
 
 
