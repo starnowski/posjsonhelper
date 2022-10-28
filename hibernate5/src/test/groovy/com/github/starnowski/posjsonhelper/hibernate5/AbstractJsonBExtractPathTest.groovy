@@ -67,15 +67,45 @@ abstract class AbstractJsonBExtractPathTest<T extends AbstractJsonBExtractPath> 
             path << [null, []]
     }
 
+    @Unroll
+    def "should java type based on operand, java type #javaType"(){
+
+        given:
+            RenderingContext renderingContext = Mock(RenderingContext)
+            org.hibernate.internal.util.collections.Stack< Clause> clauseStack = new StandardStack< Clause>()
+            renderingContext.getFunctionStack() >> new StandardStack()
+            renderingContext.getClauseStack() >> clauseStack
+            renderingContext.getDialect() >> new PostgreSQL81Dialect()
+            def tested = getTested(["some_json_path"], new TestOperand("some_column", javaType))
+
+            // Set select Clause
+            clauseStack.push(Clause.SELECT)
+
+        when:
+            def result = tested.getJavaType()
+
+        then:
+            result == javaType
+
+        where:
+            javaType << [String, Boolean, Integer, BigInteger, null]
+    }
+
     protected abstract T getTested(List<String> path, Expression<?> operand);
 
     protected abstract String getFunctionName();
 
     private static class TestOperand<X> implements Expression<X>, Renderable{
 
-        private final String reference;
+        private final String reference
+        private final Class javaType
         TestOperand(String reference) {
+            this(reference, null)
+        }
+
+        TestOperand(String reference, Class javaType) {
             this.reference = reference
+            this.javaType = javaType
         }
 
         @Override
@@ -130,7 +160,7 @@ abstract class AbstractJsonBExtractPathTest<T extends AbstractJsonBExtractPath> 
 
         @Override
         Class getJavaType() {
-            return null
+            javaType
         }
 
         @Override
