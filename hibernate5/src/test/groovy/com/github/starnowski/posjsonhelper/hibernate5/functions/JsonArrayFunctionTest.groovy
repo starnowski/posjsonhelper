@@ -25,4 +25,15 @@ class JsonArrayFunctionTest extends Specification {
         then:
             hasParenthesesIfNoArguments
     }
+
+    def "should declare as function that returns correct type"(){
+        given:
+            def tested = new JsonArrayFunction()
+
+        when:
+            def type = tested.getReturnType(null, null)
+
+        then:
+            type == org.hibernate.type.BooleanType.INSTANCE
+    }
 }
