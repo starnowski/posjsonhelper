@@ -1,5 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate5.functions
 
+import org.hibernate.QueryException
 import spock.lang.Specification
 
 class JsonArrayFunctionTest extends Specification {
@@ -35,5 +36,19 @@ class JsonArrayFunctionTest extends Specification {
 
         then:
             type == org.hibernate.type.BooleanType.INSTANCE
+    }
+
+    def "should throw exception when no arguments is being passed"(){
+        given:
+            def tested = new JsonArrayFunction()
+
+        when:
+            tested.render(null, [], null)
+
+        then:
+            def ex = thrown(QueryException)
+
+        and: "exception should has correct message"
+            ex.message == "json_array requires at least one argument"
     }
 }

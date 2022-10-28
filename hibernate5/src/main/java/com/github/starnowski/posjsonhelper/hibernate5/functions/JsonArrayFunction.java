@@ -28,7 +28,7 @@ public class JsonArrayFunction implements SQLFunction {
 
     @Override
     public String render(Type argumentType, List args, SessionFactoryImplementor factory) throws QueryException {
-        if ( args.size() <= 0  ) {
+        if ( args.size() < 1  ) {
             throw new QueryException( "json_array requires at least one argument");
         }
 
