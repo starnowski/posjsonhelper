@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.hibernate5.functions
 
 import org.hibernate.QueryException
 import spock.lang.Specification
+import spock.lang.Unroll
 
 class JsonArrayFunctionTest extends Specification {
 
@@ -50,5 +51,24 @@ class JsonArrayFunctionTest extends Specification {
 
         and: "exception should has correct message"
             ex.message == "json_array requires at least one argument"
+    }
+
+    @Unroll
+    def "should create expected statement '#expectedStatement'"(){
+        given:
+            def tested = new JsonArrayFunction()
+
+        when:
+            def result = tested.render(null, args, null)
+
+        then:
+            result == expectedStatement
+
+        where:
+            args || expectedStatement
+            ["x"]  ||  "array[x]"
+            ["x1"]  ||  "array[x1]"
+            ["x", "some value"]  ||  "array[x,some value]"
+            ["z", "x", "some value"]  ||  "array[z,x,some value]"
     }
 }
