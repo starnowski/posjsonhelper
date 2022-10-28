@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.SqlGroup
 import spock.lang.Unroll
 
 import javax.persistence.EntityManager
+import javax.persistence.PersistenceException
 import java.util.stream.Collectors
 
 import static com.github.starnowski.posjsonhelper.poc.TestUtils.CLEAR_DATABASE_SCRIPT_PATH
@@ -220,5 +221,24 @@ class NativeSQLItTest extends spock.lang.Specification {
             'end of'                            ||  [].toSet()
             'end of%'                           ||  [].toSet()
             '%end of%'                          ||  [18].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should throw exception when passing to #function function only one argument without path" () {
+        given:
+            def pattern = "SELECT id FROM item WHERE %s(jsonb_content)\\:\\:int = 562"
+            def query = String.format(pattern, function)
+
+        when:
+            TestUtils.selectAndReturnSetOfLongObjects(entityManager, query)
+
+        then:
+            thrown(PersistenceException)
+
+        where:
+            function << ["jsonb_extract_path_text", "jsonb_extract_path"]
     }
 }
