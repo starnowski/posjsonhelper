@@ -67,20 +67,12 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
 
     @Override
     public String render(boolean isNegated, RenderingContext renderingContext) {
-        return getFunctionName() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + " " + renderValues(renderingContext) + ") = " + (isNegated ? "FALSE" : "TRUE");
+        return getFunctionName() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + renderValues(renderingContext) + ") = " + (isNegated ? "FALSE" : "TRUE");
     }
 
     abstract protected String getFunctionName();
 
     protected HibernateContext getContext() {
         return context;
-    }
-
-    protected JsonBExtractPath getJsonBExtractPath() {
-        return jsonBExtractPath;
-    }
-
-    protected List<Expression> getValues() {
-        return values;
     }
 }
