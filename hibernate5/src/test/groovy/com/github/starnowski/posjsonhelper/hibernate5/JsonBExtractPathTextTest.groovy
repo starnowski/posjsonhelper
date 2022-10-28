@@ -36,10 +36,10 @@ class JsonBExtractPathTextTest extends Specification {
 
         where:
             tableColumnRef | path || expectedStatement
-            "json" | ["x"]  ||  "jsonb_extract_path_text(json, x)"
-            "json_field" | ["x1"]  ||  "jsonb_extract_path_text(json_field, x1)"
-            "table1.field_with_json" | ["x", "prop1"]  ||  "jsonb_extract_path_text(table1.field_with_json, x.prop1)"
-            "non_public_schema.tab45.JSON_FIELDS" | ["z", "jjj", "enum_value"]  ||  "jsonb_extract_path_text(non_public_schema.tab45.JSON_FIELDS, z.jjj.enum_value)"
+            "json" | ["x"]  ||  "jsonb_extract_path_text( json , 'x' )"
+            "json_field" | ["x1"]  ||  "jsonb_extract_path_text( json_field , 'x1' )"
+            "table1.field_with_json" | ["x", "prop1"]  ||  "jsonb_extract_path_text( table1.field_with_json , 'x', 'prop1' )"
+            "non_public_schema.tab45.JSON_FIELDS" | ["z", "jjj", "enum_value"]  ||  "jsonb_extract_path_text( non_public_schema.tab45.JSON_FIELDS , 'z', 'jjj', 'enum_value' )"
     }
 
     private static class TestOperand<X> implements Expression<X>, Renderable{
