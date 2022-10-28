@@ -8,9 +8,9 @@ import org.hibernate.query.criteria.internal.expression.function.BasicFunctionEx
 
 import javax.persistence.criteria.Expression;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -25,12 +25,9 @@ public abstract class AbstractJsonBExtractPath extends BasicFunctionExpression<S
         super(criteriaBuilder, String.class, functionName);
         this.path = path;
         this.operand = operand;
-        this.pathValues = getPath().stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
+        this.pathValues = Optional.ofNullable(this.path).orElse(emptyList()).stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
     }
 
-    protected List<String> getPath() {
-        return this.path == null ? emptyList() : new ArrayList<>(this.path);
-    }
 
     protected Expression<?> getOperand() {
         return operand;
@@ -44,6 +41,7 @@ public abstract class AbstractJsonBExtractPath extends BasicFunctionExpression<S
         renderingContext.getFunctionStack().push(this);
         String var3;
         try {
+            //TODO Checkin path can be empty (or null) from Postgres perspective
             var3 = getFunctionName() + "( " + ((Renderable) this.getOperand()).render(renderingContext) + " , " + renderJsonPath(renderingContext) + " )";
         } finally {
             renderingContext.getFunctionStack().pop();
