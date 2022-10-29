@@ -37,12 +37,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
 
     @Override
     public void registerParameters(ParameterRegistry registry) {
-        Iterator var2 = this.values.iterator();
-
-        while (var2.hasNext()) {
-            Expression value = (Expression) var2.next();
-            ParameterContainer.Helper.possibleParameter(value, registry);
-        }
+        // do nothing
     }
 
     private String renderValues(RenderingContext renderingContext) {
@@ -67,20 +62,12 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
 
     @Override
     public String render(boolean isNegated, RenderingContext renderingContext) {
-        return getFunctionName() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + " " + renderValues(renderingContext) + ") = " + (isNegated ? "FALSE" : "TRUE");
+        return getFunctionName() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + renderValues(renderingContext) + ") = " + (isNegated ? "FALSE" : "TRUE");
     }
 
     abstract protected String getFunctionName();
 
     protected HibernateContext getContext() {
         return context;
-    }
-
-    protected JsonBExtractPath getJsonBExtractPath() {
-        return jsonBExtractPath;
-    }
-
-    protected List<Expression> getValues() {
-        return values;
     }
 }
