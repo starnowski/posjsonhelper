@@ -49,6 +49,29 @@ abstract class AbstractJsonbArrayStringsExistPredicateTest <T extends AbstractJs
             "testFunction"     | jp("parent.path", null)  |   false   |   "array"|["13", "7"]   ||  "testFunction( parent.path , array('13', '7')) = TRUE"
     }
 
+    def "should return operand for jsonBExtractPath"(){
+
+        given:
+            RenderingContext renderingContext = Mock(RenderingContext)
+            renderingContext.getFunctionStack() >> new StandardStack()
+            renderingContext.getDialect() >> new PostgreSQL81Dialect()
+
+            def jsonBExtractPath = Mock(JsonBExtractPath)
+            jsonBExtractPath.getJavaType() >> String
+            jsonBExtractPath.render(renderingContext) >> "x1"
+            HibernateContext.ContextBuilder builder = HibernateContext.builder()
+            builder = enrichHibernateContextWithExpectedFunctionName("test1", builder)
+            builder = builder.withJsonFunctionJsonArrayOperator("json_array")
+
+            def tested = getTested(builder.build(), (CriteriaBuilderImpl)null, jsonBExtractPath, ["123"])
+
+        when:
+            def result = tested.getOperand()
+
+        then:
+            result == jsonBExtractPath
+    }
+
     protected abstract HibernateContext.ContextBuilder enrichHibernateContextWithExpectedFunctionName(String functionName, HibernateContext.ContextBuilder builder)
 
     protected abstract T getTested(HibernateContext context, CriteriaBuilderImpl criteriaBuilder, JsonBExtractPath jsonBExtractPath, List<String> values)
