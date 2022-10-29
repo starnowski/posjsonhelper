@@ -44,6 +44,9 @@ abstract class AbstractJsonbArrayStringsExistPredicateTest <T extends AbstractJs
             functionName | jp | isNegated | arrayFunction   | values || expectedStatement
             "test1"     | jp("json_path", String)  |   false   |   "json_array"| ["x"]   ||  "test1( json_path , json_array('x')) = TRUE"
             "test1"     | jp("json_path", String)  |   true   |   "array"|["xda"]   ||  "test1( json_path , array('xda')) = FALSE"
+            "functionMain"     | jp("somePath.child1.grandSon", String)  |   true   |   "array"|["xda", "fix1"]   ||  "functionMain( somePath.child1.grandSon , array('xda', 'fix1')) = FALSE"
+            "functionMain"     | jp("somePath.child1.grandSon", Integer)  |   true   |   "array"|["4", "7"]   ||  "functionMain( somePath.child1.grandSon , array(4, 7)) = FALSE"
+            "testFunction"     | jp("parent.path", null)  |   false   |   "array"|["13", "7"]   ||  "testFunction( parent.path , array('13', '7')) = TRUE"
     }
 
     protected abstract HibernateContext.ContextBuilder enrichHibernateContextWithExpectedFunctionName(String functionName, HibernateContext.ContextBuilder builder)
