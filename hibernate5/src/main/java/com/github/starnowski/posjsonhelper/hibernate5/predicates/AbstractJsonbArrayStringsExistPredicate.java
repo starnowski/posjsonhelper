@@ -37,12 +37,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
 
     @Override
     public void registerParameters(ParameterRegistry registry) {
-        Iterator var2 = this.values.iterator();
-
-        while (var2.hasNext()) {
-            Expression value = (Expression) var2.next();
-            ParameterContainer.Helper.possibleParameter(value, registry);
-        }
+        // do nothing
     }
 
     private String renderValues(RenderingContext renderingContext) {
