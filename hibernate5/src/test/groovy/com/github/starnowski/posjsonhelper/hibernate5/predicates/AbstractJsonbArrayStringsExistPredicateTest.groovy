@@ -47,6 +47,7 @@ abstract class AbstractJsonbArrayStringsExistPredicateTest <T extends AbstractJs
             "functionMain"     | jp("somePath.child1.grandSon", String)  |   true   |   "array"|["xda", "fix1"]   ||  "functionMain( somePath.child1.grandSon , array('xda', 'fix1')) = FALSE"
             "functionMain"     | jp("somePath.child1.grandSon", Integer)  |   true   |   "array"|["4", "7"]   ||  "functionMain( somePath.child1.grandSon , array(4, 7)) = FALSE"
             "testFunction"     | jp("parent.path", null)  |   false   |   "array"|["13", "7"]   ||  "testFunction( parent.path , array('13', '7')) = TRUE"
+            "funXX"     | jp("child33", JsonBExtractPathTestObject)  |   true   |   "array"|["13", "7"]   ||  "funXX( child33 , array('13', '7')) = FALSE"
     }
 
     def "should return operand for jsonBExtractPath"(){
