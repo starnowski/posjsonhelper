@@ -4,9 +4,10 @@ import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-//TODO Default profile
 @Configuration
+@Profile("!different-schema")
 public class PosjsonhelperConfiguration {
 
     @Bean
