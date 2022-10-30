@@ -1,3 +1,1 @@
-TRUNCATE  book_reader CASCADE;
-TRUNCATE employee CASCADE;
 TRUNCATE item CASCADE;
