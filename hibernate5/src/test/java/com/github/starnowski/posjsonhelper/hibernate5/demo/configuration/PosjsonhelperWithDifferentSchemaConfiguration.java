@@ -15,7 +15,7 @@ public class PosjsonhelperWithDifferentSchemaConfiguration {
     public HibernateContext getHibernateContext() {
         return HibernateContext.builder()
                 .withJsonFunctionJsonArrayOperator("array_fun")
-                .withJsonbAllArrayStringsExistOperator("all_string_in_json")
+                .withJsonbAnyArrayStringsExistOperator("any_string_in_json")
                 .withJsonbAllArrayStringsExistOperator("all_string_in_json").build();
     }
 

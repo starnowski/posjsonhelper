@@ -15,7 +15,7 @@ public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
                 .withJsonbAllArrayStringsExistFunctionReference("poshelper_json_array_all_string")
                 .build(), HibernateContext.builder()
                 .withJsonFunctionJsonArrayOperator("array_fun")
-                .withJsonbAllArrayStringsExistOperator("all_string_in_json")
+                .withJsonbAnyArrayStringsExistOperator("any_string_in_json")
                 .withJsonbAllArrayStringsExistOperator("all_string_in_json").build());
     }
 }
