@@ -44,7 +44,7 @@ class SQLInjectionItTest extends Specification {
     JdbcTemplate jdbcTemplate
 
     @Unroll
-    def "should not modify current configuration property #property with expected value #value when executing correct statement"(){
+    def "should not modify current configuration property #property with expected value #value when executing correct statement, sql pattern #sqlPattern, jsonPathInput #jsonPathInput, array input #arrayInput"(){
         given:
             jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
             def query = String.format(sqlPattern, jsonPathInput, arrayInput)
@@ -68,14 +68,14 @@ class SQLInjectionItTest extends Specification {
     }
 
     @Unroll
-    def "should modify current configuration property #property and change current value #value with expected #expected when using statements jsonPath #jsonPath, array elements #array"(){
+    def "should modify current configuration property #property and change current value #value with expected #expected when using statements jsonPath #jsonPath, array elements #array, sql statement #sqlPattern"(){
         given:
             jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
             def query = String.format(JSON_ALL_STATEMENT_PATTERN, jsonPath, array)
             System.out.println("Testing query : " + query)
 
         when:
-            jdbcTemplate.execute(String.format(JSON_ALL_STATEMENT_PATTERN, jsonPath, array))
+            jdbcTemplate.execute(String.format(sqlPattern, jsonPath, array))
 
         then:
             def currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String)
@@ -83,10 +83,12 @@ class SQLInjectionItTest extends Specification {
 
         // https://portswigger.net/web-security/sql-injection
         where:
-            property    |   value   | jsonPath  |   array   ||   expected
-            "c.prop1"   |   "some value"    |   "'top_element_with_set_of_values'), array['X1']); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"  |   "'TAG1', 'TAG2'"  ||  "SECURITY FAILED"
-            "conf.value"   |   "some value"    |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
-            "prop.value"   |   "this is a test" |   "'top_element_with_set_of_values'"  |   "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"  || "WARNING"
+            property    |   value   | sqlPattern | jsonPath  |   array   ||   expected
+            "c.prop1"   |   "some value"    | JSON_ALL_STATEMENT_PATTERN |   "'top_element_with_set_of_values'), array['X1']); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"  |   "'TAG1', 'TAG2'"  ||  "SECURITY FAILED"
+            "conf.value"   |   "some value"    | JSON_ALL_STATEMENT_PATTERN |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
+            "prop.value"   |   "this is a test" | JSON_ALL_STATEMENT_PATTERN |   "'top_element_with_set_of_values'"  |   "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"  || "WARNING"
+            "prop.value"   |   "this is a test" | JSON_ANY_STATEMENT_PATTERN |   "'top_element_with_set_of_values'"  |   "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"  || "WARNING"
+            "conf.value"   |   "some value"    | JSON_ANY_STATEMENT_PATTERN |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
     }
 
 
