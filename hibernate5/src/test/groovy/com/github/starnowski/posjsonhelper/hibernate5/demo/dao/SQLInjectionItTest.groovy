@@ -15,6 +15,15 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED
 
+/**
+ * Set of tests that check if used components are vulnerable to SQL injection attack.
+ * Test scenario:
+ * At the beginning of the test, the session configuration property is set with a specific value.
+ * Then test tries to pass injected SQL code that modifies the session configuration property with the new value.
+ * In the end, tests check if the value was changed.
+ * If the value was changed by injected code, then it means that the code is vulnerable to SQL injection attacks.
+ * Information about SQL injection attack: https://portswigger.net/web-security/sql-injection
+ */
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup([
         @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
