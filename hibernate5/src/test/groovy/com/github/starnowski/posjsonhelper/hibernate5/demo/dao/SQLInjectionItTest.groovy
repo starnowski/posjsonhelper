@@ -36,6 +36,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 class SQLInjectionItTest extends Specification {
 
     private static final String JSON_ALL_STATEMENT_PATTERN = "SELECT id FROM item WHERE jsonb_all_array_strings_exist(jsonb_extract_path(jsonb_content, %s), array[%s]) "
+    private static final String JSON_ANY_STATEMENT_PATTERN = "SELECT id FROM item WHERE jsonb_any_array_strings_exist(jsonb_extract_path(jsonb_content, %s), array[%s]) "
     private static final String SETTING_CONFIGURATION_PROPERTY_PATTERN = "SELECT set_config('%s', '%s', false);"
     private static final String GETTING_CONFIGURATION_PROPERTY_PATTERN = "SELECT current_setting('%s');"
 
@@ -46,9 +47,11 @@ class SQLInjectionItTest extends Specification {
     def "should not modify current configuration property #property with expected value #value when executing correct statement"(){
         given:
             jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
+            def query = String.format(sqlPattern, jsonPathInput, arrayInput)
+            System.out.println("Testing query : " + query)
 
         when:
-            def results = jdbcTemplate.queryForList(String.format(JSON_ALL_STATEMENT_PATTERN, "'top_element_with_set_of_values'", "'TAG1', 'TAG2'"), Integer)
+            def results = jdbcTemplate.queryForList(query, Integer)
 
         then:
             def currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String)
@@ -58,9 +61,10 @@ class SQLInjectionItTest extends Specification {
             new HashSet<>(results) == expectedQueryResults
 
         where:
-            property    |   value           ||  expectedQueryResults
-            "c.prop1"   |   "some value"        ||  new HashSet<>(Arrays.asList(1))
-            "prop.value"   |   "this is a test" ||  new HashSet<>(Arrays.asList(1))
+            property    |   value           |   sqlPattern  |   jsonPathInput   |   arrayInput ||  expectedQueryResults
+            "c.prop1"   |   "some value"        | JSON_ALL_STATEMENT_PATTERN | "'top_element_with_set_of_values'" | "'TAG1', 'TAG2'" ||  new HashSet<>(Arrays.asList(1))
+            "prop.value"   |   "this is a test" | JSON_ALL_STATEMENT_PATTERN | "'top_element_with_set_of_values'" | "'TAG1', 'TAG2'" ||  new HashSet<>(Arrays.asList(1))
+            "prop.value"   |   "this is a test" | JSON_ANY_STATEMENT_PATTERN | "'top_element_with_set_of_values'" | "'TAG1', 'TAG2'" ||  new HashSet<>(Arrays.asList(1, 3))
     }
 
     @Unroll
