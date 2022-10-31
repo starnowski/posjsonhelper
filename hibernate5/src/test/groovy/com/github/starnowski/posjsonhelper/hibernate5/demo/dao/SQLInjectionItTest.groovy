@@ -48,19 +48,19 @@ class SQLInjectionItTest extends Specification {
             jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
 
         when:
-            def result = jdbcTemplate.queryForObject(String.format(JSON_ALL_STATEMENT_PATTERN, "'top_element_with_set_of_values'", "'TAG1', 'TAG2'"), Integer)
+            def results = jdbcTemplate.queryForList(String.format(JSON_ALL_STATEMENT_PATTERN, "'top_element_with_set_of_values'", "'TAG1', 'TAG2'"), Integer)
 
         then:
             def currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String)
             currentValue == value
 
         and: "result should match"
-            result == 1
+            new HashSet<>(results) == expectedQueryResults
 
         where:
-            property    |   value
-            "c.prop1"   |   "some value"
-            "prop.value"   |   "this is a test"
+            property    |   value           ||  expectedQueryResults
+            "c.prop1"   |   "some value"        ||  new HashSet<>(Arrays.asList(1))
+            "prop.value"   |   "this is a test" ||  new HashSet<>(Arrays.asList(1))
     }
 
     @Unroll
@@ -84,4 +84,6 @@ class SQLInjectionItTest extends Specification {
             "conf.value"   |   "some value"    |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
             "prop.value"   |   "this is a test" |   "'top_element_with_set_of_values'"  |   "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"  || "WARNING"
     }
+
+
 }
