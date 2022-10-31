@@ -93,7 +93,7 @@ class SQLInjectionItTest extends Specification {
     }
 
     @Unroll
-    def "should not modify current configuration property #property and change current value #value with expected #expected when using array elements #tags as passed arguments"(){
+    def "should not modify current configuration property #property and change current value #value when using predicate JsonbAllArrayStringsExistPredicate with array elements #tags as passed arguments"(){
         given:
             jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
 
@@ -116,4 +116,27 @@ class SQLInjectionItTest extends Specification {
             "prop.value"   |   "this is a test" |  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"
     }
 
+    @Unroll
+    def "should not modify current configuration property #property and change current value #value when using predicate JsonbAnyArrayStringsExistPredicate with array elements #tags as passed arguments"(){
+        given:
+            jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
+
+        when:
+            def results = tested.findAllByAnyMatchingTags(new HashSet<String>(Arrays.asList(tags)))
+
+        then:
+            results.isEmpty()
+
+        then:
+            def currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String)
+            currentValue == value
+
+        and: "result is empty"
+            results.isEmpty()
+
+        // https://portswigger.net/web-security/sql-injection
+        where:
+            property    |   value | tags
+            "prop.value"   |   "this is a test" |  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"
+    }
 }
