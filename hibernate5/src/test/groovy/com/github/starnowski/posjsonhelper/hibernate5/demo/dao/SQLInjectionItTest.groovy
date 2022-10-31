@@ -51,4 +51,26 @@ class SQLInjectionItTest extends Specification {
             "c.prop1"   |   "some value"
             "prop.value"   |   "this is a test"
     }
+
+    @Unroll
+    def "should modify current configuration property #property and change current value #value with expected #expected when using statements jsonPath #jsonPath, array elements #array"(){
+        given:
+            jdbcTemplate.execute(String.format("SELECT set_config('%s', '%s', false);", property, value))
+            def query = String.format(JSON_ALL_STATEMENT_PATTERN, jsonPath, array)
+            System.out.println("Testing query : " + query)
+
+        when:
+            jdbcTemplate.execute(String.format(JSON_ALL_STATEMENT_PATTERN, jsonPath, array))
+
+        then:
+            def currentValue = jdbcTemplate.queryForObject(String.format("SELECT current_setting('%s')", property), String)
+            currentValue == expected
+
+
+        where:
+        property    |   value   | jsonPath  |   array   ||   expected
+        "c.prop1"   |   "some value"    |   "'top_element_with_set_of_values'), array['X1']); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"  |   "'TAG1', 'TAG2'"  ||  "SECURITY FAILED"
+        "conf.value"   |   "some value"    |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
+        "prop.value"   |   "this is a test" |   "'top_element_with_set_of_values'"  |   "]; SELECT set_config('c.prop1', 'WARNING', false)"  || "WARNING"
+    }
 }
