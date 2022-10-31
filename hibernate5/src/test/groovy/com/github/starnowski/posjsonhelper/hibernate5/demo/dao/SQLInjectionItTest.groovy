@@ -66,11 +66,11 @@ class SQLInjectionItTest extends Specification {
             def currentValue = jdbcTemplate.queryForObject(String.format("SELECT current_setting('%s')", property), String)
             currentValue == expected
 
-
+        // https://portswigger.net/web-security/sql-injection
         where:
         property    |   value   | jsonPath  |   array   ||   expected
         "c.prop1"   |   "some value"    |   "'top_element_with_set_of_values'), array['X1']); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"  |   "'TAG1', 'TAG2'"  ||  "SECURITY FAILED"
         "conf.value"   |   "some value"    |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
-        "prop.value"   |   "this is a test" |   "'top_element_with_set_of_values'"  |   "]; SELECT set_config('c.prop1', 'WARNING', false)"  || "WARNING"
+        "prop.value"   |   "this is a test" |   "'top_element_with_set_of_values'"  |   "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"  || "WARNING"
     }
 }
