@@ -14,7 +14,6 @@ import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.IT
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED
-
 /**
  * Set of tests that check if used components are vulnerable to SQL injection attack.
  * Test scenario:
@@ -42,6 +41,8 @@ class SQLInjectionItTest extends Specification {
 
     @Autowired
     JdbcTemplate jdbcTemplate
+    @Autowired
+    ItemDao tested
 
     @Unroll
     def "should not modify current configuration property #property with expected value #value when executing correct statement, sql pattern #sqlPattern, jsonPathInput #jsonPathInput, array input #arrayInput"(){
@@ -91,5 +92,28 @@ class SQLInjectionItTest extends Specification {
             "conf.value"   |   "some value"    | JSON_ANY_STATEMENT_PATTERN |   "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--"  |   "'Val1'"  ||  "New value"
     }
 
+    @Unroll
+    def "should not modify current configuration property #property and change current value #value with expected #expected when using array elements #tags as passed arguments"(){
+        given:
+            jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value))
+
+        when:
+            def results = tested.findAllByAllMatchingTags(new HashSet<String>(Arrays.asList(tags)))
+
+        then:
+            results.isEmpty()
+
+        then:
+        def currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String)
+        currentValue == value
+
+        and: "result is empty"
+            results.isEmpty()
+
+        // https://portswigger.net/web-security/sql-injection
+        where:
+            property    |   value | tags
+            "prop.value"   |   "this is a test" |  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--"
+    }
 
 }
