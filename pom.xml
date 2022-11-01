@@ -12,6 +12,7 @@
         <module>core</module>
         <module>test-utils</module>
         <module>hibernate5</module>
+        <module>hibernate6</module>
     </modules>
 
     <properties>
