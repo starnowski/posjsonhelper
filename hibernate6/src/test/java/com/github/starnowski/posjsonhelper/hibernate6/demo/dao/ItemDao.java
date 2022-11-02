@@ -1,22 +1,16 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
-import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
-import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import org.hibernate.dialect.function.CastFunction;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.math.BigDecimal;
 import java.util.List;
-
-import static java.util.Collections.singletonList;
 
 @Repository
 public class ItemDao {
@@ -88,7 +82,8 @@ public class ItemDao {
         Root<Item> root = query.from(Item.class);
         NodeBuilder nodeBuilder = (NodeBuilder) cb;
         query.select(root);
-        query.where((new JsonBExtractPathText(root.get("jsonbContent"), nodeBuilder, singletonList("enum_value"))).in(strings));
+//        query.where((new JsonBExtractPathText(root.get("jsonbContent"), nodeBuilder, singletonList("enum_value"))).in(strings));
+        query.where((root.get("jsonbContent")).in(strings));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -97,7 +92,8 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        query.where(cb.like(new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("string_value"), root.get("jsonbContent")), expression));
+//        query.where(cb.like(new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("string_value"), root.get("jsonbContent")), expression));
+        query.where(cb.like(root.get("jsonbContent"), expression));
         return entityManager.createQuery(query).getResultList();
     }
 }
