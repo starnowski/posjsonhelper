@@ -11,7 +11,7 @@ public class PostgreSQLDialectEnricher {
     private final CoreContextPropertiesSupplier coreContextPropertiesSupplier;
     private final HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier;
 
-    public PostgreSQLDialectEnricher() {
+    public PostgreSQLDialectEnricher() {//https://pl.escort.club/anons/80172.html
         this(new CoreContextPropertiesSupplier(), new HibernateContextPropertiesSupplier());
     }
 
