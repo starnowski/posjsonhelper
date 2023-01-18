@@ -23,7 +23,7 @@
         <org.codehaus.groovy.groovy-all.version>2.4.12</org.codehaus.groovy.groovy-all.version>
         <spock.core.version>1.1-groovy-2.4</spock.core.version>
         <org.springframework.boot.version>2.5.12</org.springframework.boot.version>
-        <org.postgresql.postgresql.version>42.4.1</org.postgresql.postgresql.version>
+        <org.postgresql.postgresql.version>42.4.3</org.postgresql.postgresql.version>
     </properties>
 
     <packaging>pom</packaging>
