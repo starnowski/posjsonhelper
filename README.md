@@ -17,3 +17,12 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
 ### TODO Implement 
 * get element - json_extract_path and jsonb_extract_path, json_extract_path_text, jsonb_extract_path_text
 * add option to chose if you want to user operators or functions for escaping characters
+
+
+* [Introduction](#introduction)
+
+# Introduction
+Posjsonhelper library is an open-source project that adds support of Hibernate query for [postgresql json functions](https://www.postgresql.org/docs/10/functions-json.html).
+The library is written in a java programming language.
+The 
+
