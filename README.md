@@ -22,8 +22,8 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
 * [Introduction](#introduction)
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
-#TODO
     * [Building project locally](#building-project-locally)
+#TODO
 * [How to attach postgresql dialect](#how-to-attach-postgresql dialect)
 * [How to use query helper](#how-to-use-query-helper)
 * [Reporting issues](#reporting-issues)
@@ -46,4 +46,8 @@ You can use it just by adding it as a dependency in the project descriptor file 
             <version>0.1.0</version>
         </dependency>
 ```
+
+### Building project locally
+If someone would like to build the project locally from the source please see the CONTRIBUTING.md file to check how to set up the project locally.
+
 #TODO
