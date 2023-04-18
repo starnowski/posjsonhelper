@@ -20,6 +20,14 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
 
 
 * [Introduction](#introduction)
+#TODO
+* [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
+    * [Setting maven dependency](#setting-maven-dependency)
+    * [Building project locally](#building-project-locally)
+* [How to attach postgresql dialect](#how-to-attach-postgresql dialect)
+* [How to use query helper](#how-to-use-query-helper)
+* [Reporting issues](#reporting-issues)
+* [Project contribution](#project-contribution)
 
 # Introduction
 Posjsonhelper library is an open-source project that adds support of Hibernate query for [postgresql json functions](https://www.postgresql.org/docs/10/functions-json.html).
@@ -27,3 +35,4 @@ The library is written in a java programming language.
 The project for this moment supports only Hibernate with version 5.
 The required version of java is at least version 8.
 
+#TODO
