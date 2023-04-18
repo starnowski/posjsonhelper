@@ -20,9 +20,9 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
 
 
 * [Introduction](#introduction)
-#TODO
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
+#TODO
     * [Building project locally](#building-project-locally)
 * [How to attach postgresql dialect](#how-to-attach-postgresql dialect)
 * [How to use query helper](#how-to-use-query-helper)
@@ -35,4 +35,15 @@ The library is written in a java programming language.
 The project for this moment supports only Hibernate with version 5.
 The required version of java is at least version 8.
 
+### Setting maven dependency
+The project is available in the central maven repository.
+You can use it just by adding it as a dependency in the project descriptor file (pom.xml).
+
+```xml
+        <dependency>
+            <groupId>com.github.starnowski.posjsonhelper</groupId>
+            <artifactId>hibernate5</artifactId>
+            <version>0.1.0</version>
+        </dependency>
+```
 #TODO
