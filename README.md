@@ -25,7 +25,10 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
     * [Building project locally](#building-project-locally)
 #TODO
 * [How to attach postgresql dialect](#how-to-attach-postgresql dialect)
+* [Apply DDL changes](#apply-ddl-changes)
+ * [Apply DDL Changes programicly](#TODO)
 * [How to use query helper](#how-to-use-query-helper)
+* [Properties](#TODO)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
 
@@ -49,5 +52,30 @@ You can use it just by adding it as a dependency in the project descriptor file 
 
 ### Building project locally
 If someone would like to build the project locally from the source please see the CONTRIBUTING.md file to check how to set up the project locally.
+
+### How to attach postgresql dialect
+
+To be able to use the posjsonhelper library in the project there has to be specified correct hibernate dialect.
+Library implements few wrappers that extends already existed hibernate dialects for postgresql:
+- com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL10DialectWrapper
+- com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL95DialectWrapper
+
+Dialect has to be set in hibernate configuation file for example:
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
+    <session-factory>
+        <property name="hibernate.dialect">com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL95DialectWrapper</property>
+...
+```
+
+or for example in spring framework configuration properties file:
+
+```properties
+...
+spring.jpa.properties.hibernate.dialect=com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL95DialectWrapper
+...
+```
 
 #TODO
