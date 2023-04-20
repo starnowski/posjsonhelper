@@ -78,4 +78,21 @@ spring.jpa.properties.hibernate.dialect=com.github.starnowski.posjsonhelper.hibe
 ...
 ```
 
+In case if you already have type that extends hibernate dialect type and it required for your project.
+You add adjustment to your type so that it would use PostgreSQLDialectEnricher component.
+
+```java
+import com.github.starnowski.posjsonhelper.hibernate5.PostgreSQLDialectEnricher;
+import org.hibernate.dialect.PostgreSQL95Dialect;
+
+public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
+
+    public PostgreSQLDialectWithDifferentSchema() {
+        PostgreSQLDialectEnricher enricher = new PostgreSQLDialectEnricher();
+        enricher.enrich(this);
+    }
+}
+
+```
+
 #TODO
