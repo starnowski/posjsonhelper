@@ -99,5 +99,16 @@ public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
 
 To use the posjsonhelper library it is required to create a few SQL functions that execute JSON operators.
 Some JSON operators can not be executed by hibernate because they must be escaped.
+For a default configuration, the library requires the below functions to be created.
+
+```sql
+CREATE OR REPLACE FUNCTION jsonb_all_array_strings_exist(jsonb, text[]) RETURNS boolean AS $$
+SELECT $1 ?& $2;
+$$ LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION jsonb_any_array_strings_exist(jsonb, text[]) RETURNS boolean AS $$
+SELECT $1 ?| $2;
+$$ LANGUAGE SQL;
+```
 
 #TODO
