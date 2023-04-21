@@ -23,8 +23,8 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
-#TODO
 * [How to attach postgresql dialect](#how-to-attach-postgresql dialect)
+#TODO
 * [Apply DDL changes](#apply-ddl-changes)
  * [Apply DDL Changes programicly](#TODO)
 * [How to use query helper](#how-to-use-query-helper)
@@ -94,5 +94,10 @@ public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
 }
 
 ```
+
+### Apply DDL changes
+
+To use the posjsonhelper library it is required to create a few SQL functions that execute JSON operators.
+Some JSON operators can not be executed by hibernate because they must be escaped.
 
 #TODO
