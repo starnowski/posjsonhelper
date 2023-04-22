@@ -159,7 +159,7 @@ There are a few operations that can be executed by the DatabaseOperationExecutor
 |CREATE         | Applies DDL changes to database |
 |VALIDATE       | Validates if DDL changes were applied to database |
 |DROP           | Drops DDL changes in database |
-|LOG_ALL        | Displays DDL changes |
+|LOG_ALL        | Displays DDL scripts for CREATE, VALIDATE and DROP operations |
 
 
 
