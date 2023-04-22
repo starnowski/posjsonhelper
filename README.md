@@ -152,6 +152,15 @@ public class SQLFunctionsConfiguration implements
 }
 ```
 
+There are a few operations that can be executed by the DatabaseOperationExecutorFacade object
+
+| Property name |   Description    |
+|---------------|------------------|
+|CREATE         | Applies DDL changes to database |
+|VALIDATE       | Validates if DDL changes were applied to database |
+|DROP           | Drops DDL changes in database |
+|LOG_ALL        | Displays DDL changes |
+
 
 
 #TODO
