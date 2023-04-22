@@ -24,11 +24,11 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
 * [How to attach postgresql dialect](#how-to-attach-postgresql dialect)
-#TODO
 * [Apply DDL changes](#apply-ddl-changes)
- * [Apply DDL Changes programicly](#TODO)
+ * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
+#TODO
 * [How to use query helper](#how-to-use-query-helper)
-* [Properties](#TODO)
+* [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
 
@@ -111,4 +111,49 @@ SELECT $1 ?| $2;
 $$ LANGUAGE SQL;
 ```
 
+Generated DDL statement can be executed during integration tests or used by tools that apply changes to the database, like [Liquibase](https://www.liquibase.org/) or [Flyway](https://flywaydb.org/).
+
+### Apply DDL changes programmatically
+
+It is posible also to add DDL programmatically by using DatabaseOperationExecutorFacade type.
+Below there is example on how to apply DDL changes in application with Spring framework context.
+
+```java
+import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.DatabaseOperationExecutorFacade;
+import com.github.starnowski.posjsonhelper.core.DatabaseOperationType;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+
+import javax.sql.DataSource;
+
+@Configuration
+public class SQLFunctionsConfiguration implements
+        ApplicationListener<ContextRefreshedEvent> {
+
+    @Autowired
+    private Context context;
+    @Autowired
+    private DataSource dataSource;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
+        DatabaseOperationExecutorFacade facade = new DatabaseOperationExecutorFacade();
+        try {
+            facade.execute(dataSource, context, DatabaseOperationType.LOG_ALL);
+            facade.execute(dataSource, context, DatabaseOperationType.CREATE);
+            facade.execute(dataSource, context, DatabaseOperationType.VALIDATE);
+        } catch (Exception e) {
+            throw new RuntimeException("Error during initialization of sql functions for jsonb type operations", e);
+        }
+    }
+}
+```
+
+
+
 #TODO
+
+### Properties
