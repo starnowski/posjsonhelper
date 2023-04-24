@@ -163,7 +163,7 @@ There are a few operations that can be executed by the DatabaseOperationExecutor
 
 ### How to use query helper
 
-For easier explanation lets assume that we have database table with one column that stores jsonb type.
+For easier explanation let's assume that we have a database table with one column that stores jsonb type.
 
 ```sql
 create table item (
@@ -173,7 +173,7 @@ create table item (
     )
 ```
 
-For this table we can insert row with anyallowed json, like in example below:
+For this table, we can insert row with any json, like in example below:
 
 ```sql 
 INSERT INTO item (id, jsonb_content) VALUES (1, '{"top_element_with_set_of_values":["TAG1","TAG2","TAG11","TAG12","TAG21","TAG22"]}');
