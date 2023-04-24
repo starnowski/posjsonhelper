@@ -28,7 +28,7 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
  * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
 #TODO
 * [How to use query helper](#how-to-use-query-helper)
- * [jsonb_extract_path](#jsonb_extract_path)
+ * [JsonBExtractPath - jsonb_extract_path](#jsonbextractpath---jsonb_extract_path)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -197,11 +197,14 @@ INSERT INTO item (id, jsonb_content) VALUES (13, '{"enum_value": "SUPER"}');
 INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of records"}');
 ```
 
-#### jsonb_extract_path
+#### JsonBExtractPath - jsonb_extract_path
 
 The "jsonb_extract_path" is postgresql function that returns jsonb value pointed to by path elements passed as "text[]" (equivalent to #> operator).
 It is useful because a lot of functions use the "jsonb" type for execution.
 Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
+Below there is an example of a method that returns a list of items object for which json content property "top_element_with_set_of_values".
+And this property contains an exact set of values.
+
 
 ```java
     @Autowired
@@ -243,6 +246,8 @@ select
 ```
 
 For more details please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
+
+
 
 #TODO
 
