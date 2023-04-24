@@ -28,6 +28,7 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
  * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
 #TODO
 * [How to use query helper](#how-to-use-query-helper)
+ * [jsonb_extract_path](#jsonb_extract_path)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -199,7 +200,7 @@ INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of r
 #### jsonb_extract_path
 
 The "jsonb_extract_path" is postgresql function that returns jsonb value pointed to by path elements passed as "text[]" (equivalent to #> operator).
-It is useful because a lot functions uses the "jsonb" type for execution.
+It is useful because a lot of functions use the "jsonb" type for execution.
 Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
 
 ```java
@@ -218,7 +219,7 @@ Please check [postgresql documentation](https://www.postgresql.org/docs/10/funct
     }
 ```
 
-For abore method Hibernate will execute HQL query:
+For the above method, Hibernate will execute the HQL query:
 
 ```hql 
 select
