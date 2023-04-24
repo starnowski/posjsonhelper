@@ -241,6 +241,7 @@ select
             jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?])=true
 ```
 
+For more details please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
 #TODO
 
