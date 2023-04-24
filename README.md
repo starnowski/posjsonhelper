@@ -198,6 +198,49 @@ INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of r
 
 #### jsonb_extract_path
 
+The "jsonb_extract_path" is postgresql function that returns jsonb value pointed to by path elements passed as "text[]" (equivalent to #> operator).
+It is useful because a lot functions uses the "jsonb" type for execution.
+Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
+
+```java
+    @Autowired
+    private HibernateContext hibernateContext;
+    @Autowired
+    private EntityManager entityManager;
+
+    public List<Item> findAllByAllMatchingTags(Set<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAllArrayStringsExistPredicate(hibernateContext, (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For abore method Hibernate will execute HQL query:
+
+```hql 
+select
+        generatedAlias0 
+    from
+        Item as generatedAlias0 
+    where
+        jsonb_all_array_strings_exist( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1)) = TRUE
+```
+
+Native sql is going to have below form:
+
+```sql 
+select
+            item0_.id as id1_0_,
+            item0_.jsonb_content as jsonb_co2_0_ 
+        from
+            item item0_ 
+        where
+            jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?])=true
+```
+
 
 #TODO
 
