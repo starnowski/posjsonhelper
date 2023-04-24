@@ -113,7 +113,7 @@ $$ LANGUAGE SQL;
 
 Generated DDL statement can be executed during integration tests or used by tools that apply changes to the database, like [Liquibase](https://www.liquibase.org/) or [Flyway](https://flywaydb.org/).
 
-### Apply DDL changes programmatically
+#### Apply DDL changes programmatically
 
 It is posible also to add DDL programmatically by using DatabaseOperationExecutorFacade type.
 Below there is example on how to apply DDL changes in application with Spring framework context.
@@ -161,6 +161,42 @@ There are a few operations that can be executed by the DatabaseOperationExecutor
 |DROP           | Drops DDL changes in database |
 |LOG_ALL        | Displays DDL scripts for CREATE, VALIDATE and DROP operations |
 
+### How to use query helper
+
+For easier explanation lets assume that we have database table with one column that stores jsonb type.
+
+```sql
+create table item (
+       id int8 not null,
+        jsonb_content jsonb,
+        primary key (id)
+    )
+```
+
+For this table we can insert row with anyallowed json, like in example below:
+
+```sql 
+INSERT INTO item (id, jsonb_content) VALUES (1, '{"top_element_with_set_of_values":["TAG1","TAG2","TAG11","TAG12","TAG21","TAG22"]}');
+INSERT INTO item (id, jsonb_content) VALUES (2, '{"top_element_with_set_of_values":["TAG3"]}');
+
+-- item without any properties, just an empty json
+INSERT INTO item (id, jsonb_content) VALUES (6, '{}');
+
+-- int values
+INSERT INTO item (id, jsonb_content) VALUES (7, '{"integer_value": 132}');
+
+-- double values
+INSERT INTO item (id, jsonb_content) VALUES (10, '{"double_value": 353.01}');
+INSERT INTO item (id, jsonb_content) VALUES (11, '{"double_value": -1137.98}');
+
+-- enum values
+INSERT INTO item (id, jsonb_content) VALUES (13, '{"enum_value": "SUPER"}');
+
+-- string values
+INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of records"}');
+```
+
+#### jsonb_extract_path
 
 
 #TODO
