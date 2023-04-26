@@ -31,6 +31,7 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
  * [JsonBExtractPathText - jsonb_extract_path_text](#jsonbextractpathtext---jsonb_extract_path_text)
  * [#TODO]
  * [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate)
+ * [JsonbAnyArrayStringsExistPredicate](#jsonbanyarraystringsexistpredicate)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -292,5 +293,7 @@ For more details and examples with the IN operator or how to use numeric values 
 #TODO
 
 #### JsonbAllArrayStringsExistPredicate
+
+#### JsonbAnyArrayStringsExistPredicate
 
 ### Properties
