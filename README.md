@@ -247,7 +247,46 @@ select
 
 For more details please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
+#### JsonBExtractPathText - jsonb_extract_path_text
 
+The "jsonb_extract_path_text" is postgresql function that returns JSON value as text pointed to by path elements passed as "text[]" (equivalent to #>> operator).
+Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
+Below is an example of a method that looks for items containing specific string values matched by the "LIKE" operator.
+
+```java
+    public List<Item> findAllByStringValueAndLikeOperator(String expression) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(cb.like(new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("string_value"), root.get("jsonbContent")), expression));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For the above method, Hibernate will execute the HQL query:
+
+```hql
+select
+        generatedAlias0 
+    from
+        Item as generatedAlias0 
+    where
+        jsonb_extract_path_text( generatedAlias0.jsonbContent , :param0 ) like :param1
+```
+Native sql is going to have below form:
+
+```sql
+select
+            item0_.id as id1_0_,
+            item0_.jsonb_content as jsonb_co2_0_ 
+        from
+            item item0_ 
+        where
+            jsonb_extract_path_text(item0_.jsonb_content,?) like ?
+```
+
+For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
 #TODO
 
