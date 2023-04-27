@@ -344,4 +344,19 @@ select
 
 #### JsonbAnyArrayStringsExistPredicate
 
+The JsonbAnyArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
+These predicates assume that the SQL function with default name jsonb_any_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
+Below there is an example of method that looks for all items that property that holds array containa at least one string passed from array passed as method argument.
+
+```java
+    public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
 ### Properties
