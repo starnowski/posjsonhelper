@@ -290,8 +290,6 @@ select
 
 For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
-#TODO
-
 #### JsonbAllArrayStringsExistPredicate
 
 The JsonbAllArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
@@ -341,7 +339,6 @@ select
             or jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=false
 ```
 
-
 #### JsonbAnyArrayStringsExistPredicate
 
 The JsonbAnyArrayStringsExistPredicate type represents a predicate that checks if passed string arrays exist in json array property.
@@ -357,6 +354,26 @@ Below there is an example of a method that looks for all items that property tha
         query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
+```
+
+```hql
+select
+        generatedAlias0 
+    from
+        Item as generatedAlias0 
+    where
+        jsonb_any_array_strings_exist( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2)) = TRUE
+```
+Native sql is going to have below form:
+
+```sql
+select
+            item0_.id as id1_0_,
+            item0_.jsonb_content as jsonb_co2_0_ 
+        from
+            item item0_ 
+        where
+            jsonb_any_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=true
 ```
 
 ### Properties
