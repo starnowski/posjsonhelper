@@ -296,7 +296,8 @@ For more details and examples with the IN operator or how to use numeric values 
 
 The JsonbAllArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
 First example for this predicate was introduce in ["JsonBExtractPath - jsonb_extract_path"](#jsonbextractpath---jsonb_extract_path) section.
-Below example ....
+This predicates assume that SQL function with default name jsonb_all_array_strings_exist, mentioned in section ["Apply DDL changes"](#apply-ddl-changes) exists.
+Below example with combination with operator NOT presents items that do not have all searched strings. 
 
 
 ```java
@@ -311,6 +312,35 @@ Below example ....
         return entityManager.createQuery(query).getResultList();
     }
 ```
+
+For the above method, Hibernate will execute the HQL query:
+
+```hql
+select
+        generatedAlias0 
+    from
+        Item as generatedAlias0 
+    where
+        (
+            jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) is null 
+        ) 
+        or (
+            jsonb_all_array_strings_exist( jsonb_extract_path( generatedAlias0.jsonbContent , :param1 ) , json_function_json_array(:param2, :param3)) = FALSE 
+        )
+```
+Native sql is going to have below form:
+
+```sql
+select
+            item0_.id as id1_0_,
+            item0_.jsonb_content as jsonb_co2_0_ 
+        from
+            item item0_ 
+        where
+            jsonb_extract_path(item0_.jsonb_content,?) is null 
+            or jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=false
+```
+
 
 #### JsonbAnyArrayStringsExistPredicate
 
