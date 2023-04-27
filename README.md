@@ -356,6 +356,8 @@ Below there is an example of a method that looks for all items that property tha
     }
 ```
 
+For the above method, Hibernate will execute the HQL query:
+
 ```hql
 select
         generatedAlias0 
