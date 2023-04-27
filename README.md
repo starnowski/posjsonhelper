@@ -294,6 +294,24 @@ For more details and examples with the IN operator or how to use numeric values 
 
 #### JsonbAllArrayStringsExistPredicate
 
+The JsonbAllArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
+First example for this predicate was introduce in ["JsonBExtractPath - jsonb_extract_path"](#jsonbextractpath---jsonb_extract_path) section.
+Below example ....
+
+
+```java
+    public List<Item> findAllThatDoNotMatchByAllMatchingTags(Set<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(hibernateContext, (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")));
+        query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
 #### JsonbAnyArrayStringsExistPredicate
 
 ### Properties
