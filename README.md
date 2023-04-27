@@ -344,9 +344,9 @@ select
 
 #### JsonbAnyArrayStringsExistPredicate
 
-The JsonbAnyArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
+The JsonbAnyArrayStringsExistPredicate type represents a predicate that checks if passed string arrays exist in json array property.
 These predicates assume that the SQL function with default name jsonb_any_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
-Below there is an example of method that looks for all items that property that holds array containa at least one string passed from array passed as method argument.
+Below there is an example of a method that looks for all items that property that holds array contains at least one string passed from the array passed as method argument.
 
 ```java
     public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
