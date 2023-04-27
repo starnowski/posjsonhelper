@@ -296,8 +296,8 @@ For more details and examples with the IN operator or how to use numeric values 
 
 The JsonbAllArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
 First example for this predicate was introduce in ["JsonBExtractPath - jsonb_extract_path"](#jsonbextractpath---jsonb_extract_path) section.
-This predicates assume that SQL function with default name jsonb_all_array_strings_exist, mentioned in section ["Apply DDL changes"](#apply-ddl-changes) exists.
-Below example with combination with operator NOT presents items that do not have all searched strings. 
+These predicates assume that the SQL function with default name jsonb_all_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
+The below example with a combination with the operator NOT presents items that do not have all searched strings.
 
 
 ```java
