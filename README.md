@@ -27,6 +27,7 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
 * [Apply DDL changes](#apply-ddl-changes)
     * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
 * [How to use query helper](#how-to-use-query-helper)
+    * TODO - Context and Hibernate Context
     * [JsonBExtractPath - jsonb_extract_path](#jsonbextractpath---jsonb_extract_path)
     * [JsonBExtractPathText - jsonb_extract_path_text](#jsonbextractpathtext---jsonb_extract_path_text)
     * [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate)
