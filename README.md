@@ -378,3 +378,13 @@ select
 ```
 
 ### Properties
+### TODO
+
+# Reporting issues
+* Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
+
+# Project contribution
+* Look for open issues or create your own
+* Fork repository on Github and start applying your changes to master branch or release branch
+* Follow CONTRIBUTING.md document for coding rules
+* Create pull request
