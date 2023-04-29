@@ -30,37 +30,6 @@ public class HibernateContext {
         return jsonFunctionJsonArrayOperator;
     }
 
-    @Override
-    public String toString() {
-        return "HibernateContext{" +
-                "jsonbAllArrayStringsExistOperator='" + jsonbAllArrayStringsExistOperator + '\'' +
-                ", jsonbAnyArrayStringsExistOperator='" + jsonbAnyArrayStringsExistOperator + '\'' +
-                ", jsonFunctionJsonArrayOperator='" + jsonFunctionJsonArrayOperator + '\'' +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        HibernateContext that = (HibernateContext) o;
-
-        if (jsonbAllArrayStringsExistOperator != null ? !jsonbAllArrayStringsExistOperator.equals(that.jsonbAllArrayStringsExistOperator) : that.jsonbAllArrayStringsExistOperator != null)
-            return false;
-        if (jsonbAnyArrayStringsExistOperator != null ? !jsonbAnyArrayStringsExistOperator.equals(that.jsonbAnyArrayStringsExistOperator) : that.jsonbAnyArrayStringsExistOperator != null)
-            return false;
-        return jsonFunctionJsonArrayOperator != null ? jsonFunctionJsonArrayOperator.equals(that.jsonFunctionJsonArrayOperator) : that.jsonFunctionJsonArrayOperator == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = jsonbAllArrayStringsExistOperator != null ? jsonbAllArrayStringsExistOperator.hashCode() : 0;
-        result = 31 * result + (jsonbAnyArrayStringsExistOperator != null ? jsonbAnyArrayStringsExistOperator.hashCode() : 0);
-        result = 31 * result + (jsonFunctionJsonArrayOperator != null ? jsonFunctionJsonArrayOperator.hashCode() : 0);
-        return result;
-    }
-
     public static class ContextBuilder {
 
         private String jsonbAllArrayStringsExistOperator = DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR;
