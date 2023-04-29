@@ -87,7 +87,9 @@ public class HibernateContext {
         }
 
         public ContextBuilder withHibernateContext(HibernateContext hibernateContext) {
-            return withJsonbAllArrayStringsExistOperator(hibernateContext.getJsonbAllArrayStringsExistOperator());
+            return withJsonbAllArrayStringsExistOperator(hibernateContext.getJsonbAllArrayStringsExistOperator())
+                    .withJsonbAnyArrayStringsExistOperator(hibernateContext.getJsonbAnyArrayStringsExistOperator())
+                    .withJsonFunctionJsonArrayOperator(hibernateContext.getJsonFunctionJsonArrayOperator());
         }
     }
 }
