@@ -105,6 +105,10 @@
             <version>${bmunit.extension.project.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-random-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

@@ -30,7 +30,7 @@ https://stackoverflow.com/questions/50464741/how-to-escape-question-mark-charact
     * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
     
 * [How to use query helper](#how-to-use-query-helper)
-    * [Core and Hibernate Context](#core-and-hibernate-context)
+    * [Hibernate Context](#hibernate-context)
     * [JsonBExtractPath - jsonb_extract_path](#jsonbextractpath---jsonb_extract_path)
     * [JsonBExtractPathText - jsonb_extract_path_text](#jsonbextractpathtext---jsonb_extract_path_text)
     * [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate)
@@ -122,7 +122,7 @@ Generated DDL statement can be executed during integration tests or used by tool
 **Important!**
 If there would be requirement to use similar function but with different names then this has to be specified in application [properties](#properties).
 It is required because types extends hibernate dialect type, mentioned in the ["how to attach postgresql dialect"](#how-to-attach-postgresql dialect) section may not have access to application context (IoC).
-However in case if such properties should be passed in different way then the PostgreSQLDialectEnricher type has also method to pass context objects (please check [Core and Hibernate Context](#core-and-hibernate-context))
+However in case if such properties should be passed in different way then the PostgreSQLDialectEnricher type has also method to pass context objects (please check [Hibernate Context](#hibernate-context))
 
 #### Apply DDL changes programmatically
 
@@ -207,7 +207,10 @@ INSERT INTO item (id, jsonb_content) VALUES (13, '{"enum_value": "SUPER"}');
 INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of records"}');
 ```
 
-#### Core and Hibernate Context
+#### Hibernate Context
+
+Most predicate components use Hibernate Context object.
+It holds mostly the names of hibernate function names used in project.
 TODO
 
 #### JsonBExtractPath - jsonb_extract_path
