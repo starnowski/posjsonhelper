@@ -6,9 +6,7 @@
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
-    
 * [How to attach postgresql_dialect](#how-to-attach-postgresql-dialect)
-
 * [Apply DDL changes](#apply-ddl-changes)
     * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
     * [Core context](#core-context)
