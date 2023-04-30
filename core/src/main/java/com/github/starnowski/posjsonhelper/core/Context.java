@@ -36,6 +36,12 @@ public class Context {
         private String jsonbAnyArrayStringsExistFunctionReference = DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
         private String schema;
 
+        public ContextBuilder withContext(Context context) {
+            return withJsonbAllArrayStringsExistFunctionReference(context.getJsonbAllArrayStringsExistFunctionReference())
+                    .withJsonbAnyArrayStringsExistFunctionReference(context.getJsonbAnyArrayStringsExistFunctionReference())
+                    .withSchema(context.getSchema());
+        }
+
         public ContextBuilder withSchema(String schema) {
             this.schema = schema;
             return this;
