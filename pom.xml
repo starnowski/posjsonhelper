@@ -24,6 +24,7 @@
         <spock.core.version>1.1-groovy-2.4</spock.core.version>
         <org.springframework.boot.version>2.5.12</org.springframework.boot.version>
         <org.postgresql.postgresql.version>42.4.3</org.postgresql.postgresql.version>
+        <easy.random.core.org.jeasy.version>4.2.0</easy.random.core.org.jeasy.version>
     </properties>
 
     <packaging>pom</packaging>
@@ -84,6 +85,12 @@
                 <groupId>org.spockframework</groupId>
                 <artifactId>spock-spring</artifactId>
                 <version>${spock.core.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jeasy</groupId>
+                <artifactId>easy-random-core</artifactId>
+                <version>${easy.random.core.org.jeasy.version}</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
