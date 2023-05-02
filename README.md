@@ -386,7 +386,7 @@ select
 |com.github.starnowski.posjsonhelper.core.schema   |   Name of database schema where the SQL functions should be created |
 |com.github.starnowski.posjsonhelper.core.hibernate.functions.jsonb_all_array_strings_exist   |   Name of HQL function that invokes SQL function specified by the com.github.starnowski.posjsonhelper.core.functions.jsonb_all_array_strings_exist property. By default, the name is the jsonb_all_array_strings_exist |
 |com.github.starnowski.posjsonhelper.core.hibernate.functions.jsonb_any_array_strings_exist   |   Name of HQL function that invokes SQL function specified by the com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist property. By default, the name is the jsonb_any_array_strings_exist |
-|com.github.starnowski.posjsonhelper.core.hibernate.functions.json_function_json_array   |   Name of HQL function that wraps Postgresql the array operator. By default, the name is the json_function_json_array |
+|com.github.starnowski.posjsonhelper.core.hibernate.functions.json_function_json_array   |   	Name of HQL function that wraps the array operator in Postgresql. By default, the name is the json_function_json_array |
 
 # Reporting issues
 * Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
