@@ -382,8 +382,8 @@ select
 
 | Property name |   Description |
 |---------------|---------------|
-|com.github.starnowski.posjsonhelper.core.functions.jsonb_all_array_strings_exist   |   Name of SQL function that checks if all passed elements in text[] do exist in json array property. By default the name is the jsonb_all_array_strings_exist |
-|com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist   |   Name of SQL function that checks if any passed elements in text[] do exist in json array property. By default the name is the jsonb_any_array_strings_exist |
+|com.github.starnowski.posjsonhelper.core.functions.jsonb_all_array_strings_exist   |   Name of SQL function that checks if all passed elements as the text[] exist in the JSON array property. By default, the name is the jsonb_all_array_strings_exist |
+|com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist   |   Name of SQL function that checks if any passed elements as the text[] exist in the JSON array property. By default, the name is the jsonb_any_array_strings_exist |
 
 # Reporting issues
 * Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
