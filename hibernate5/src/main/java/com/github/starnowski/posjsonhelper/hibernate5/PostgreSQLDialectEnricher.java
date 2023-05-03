@@ -10,7 +10,7 @@ import org.hibernate.dialect.function.StandardSQLFunction;
 import org.hibernate.type.StandardBasicTypes;
 
 /**
- * Component that enrich {@link PostgreSQL81Dialect} object with Hibernate and SQL definitions used by library.
+ * The component that enriches the {@link PostgreSQL81Dialect} object with Hibernate and SQL definitions used by the library.
  */
 public class PostgreSQLDialectEnricher {
 
