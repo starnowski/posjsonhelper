@@ -24,6 +24,10 @@ package com.github.starnowski.posjsonhelper.hibernate5.dialects;
 import com.github.starnowski.posjsonhelper.hibernate5.PostgreSQLDialectEnricher;
 import org.hibernate.dialect.PostgreSQL95Dialect;
 
+/**
+ * The type that extends {@link PostgreSQL95Dialect} and uses the  {@link PostgreSQLDialectEnricher} to adjust changes to
+ * dialect.
+ */
 public class PostgreSQL95DialectWrapper extends PostgreSQL95Dialect {
 
     private final PostgreSQLDialectEnricher enricher;
