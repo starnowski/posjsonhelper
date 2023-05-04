@@ -36,6 +36,11 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Component that renders arguments into below form.TODO
+ *
+ * {{main_func}}( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2)) = TRUE
+ */
 public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSimplePredicate implements UnaryOperatorExpression<Boolean>, Serializable {
 
     private final HibernateContext context;
@@ -86,6 +91,10 @@ public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSi
         return getFunctionName() + "( " + this.jsonBExtractPath.render(renderingContext) + " , " + renderValues(renderingContext) + ") = " + (isNegated ? "FALSE" : "TRUE");
     }
 
+    /**
+     * Main HQL function for predicate.
+     * @return name of the HQL function
+     */
     abstract protected String getFunctionName();
 
     protected HibernateContext getContext() {
