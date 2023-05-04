@@ -31,6 +31,31 @@ import org.hibernate.type.Type;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Component that renders arguments into postgres operator "array".
+ * For example lest assume that the "json_function_json_array" is HQL function that is going to be rendered into the 'array operator:
+ *
+ * Hibernate:
+ * <pre>{@code
+ * select
+ *         generatedAlias0
+ *     from
+ *         Item as generatedAlias0
+ *     where
+ *         jsonb_all_array_strings_exist( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2)) = TRUE
+ * }</pre>
+ *
+ * SQL:
+ * <pre>{@code
+ * select
+ *        item0_.id as id1_0_,
+ *        item0_.jsonb_content as jsonb_co2_0_
+ *        from
+ *        item item0_
+ *        where
+ *        jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?),array[?,?])=true
+ * }</pre>
+ */
 public class JsonArrayFunction implements SQLFunction {
     @Override
     public boolean hasArguments() {
