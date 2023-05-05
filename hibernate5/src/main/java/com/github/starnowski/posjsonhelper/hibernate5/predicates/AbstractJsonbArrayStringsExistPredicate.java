@@ -37,9 +37,21 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Component that renders arguments into below form.TODO
+ * Component that renders arguments into below form.
+ * Based on string arguments, json path and main function.
  *
+ * Lets assume that for below example we have two arguments, json path
+ * <pre>{@code
  * {{main_func}}( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2)) = TRUE
+ * }</pre>
+ *
+ * where:
+ * {{main_func}} - name of main function returned by method {@link #getFunctionName()}
+ * jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) - json path part, with this example path has only one element normally this could part could contain more elements "param"
+ * {{json_function_json_array}} - hibernate operator that wraps the "array" operator in postgres. Values comes from  {@link HibernateContext#getJsonFunctionJsonArrayOperator()}
+ * (:param1, :param2) - rendered string arguments
+ * TRUE - expected predicate value, by default it is "TRUE"
+ *
  */
 public abstract class AbstractJsonbArrayStringsExistPredicate extends AbstractSimplePredicate implements UnaryOperatorExpression<Boolean>, Serializable {
 
