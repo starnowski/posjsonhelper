@@ -28,6 +28,10 @@ import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME;
 
+/**
+ * Type that extends {@link AbstractJsonBExtractPath}.
+ * Implemented of HQL function defined by constant {@link com.github.starnowski.posjsonhelper.core.Constants#JSONB_EXTRACT_PATH_FUNCTION_NAME}
+ */
 public class JsonBExtractPath extends AbstractJsonBExtractPath {
     public JsonBExtractPath(CriteriaBuilderImpl criteriaBuilder, List<String> path, Expression<?> operand) {
         super(criteriaBuilder, path, operand, JSONB_EXTRACT_PATH_FUNCTION_NAME);
