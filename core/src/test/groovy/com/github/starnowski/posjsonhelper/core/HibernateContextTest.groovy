@@ -19,4 +19,28 @@ class HibernateContextTest extends Specification {
         then:
             reflectionEquals(result, randomObject)
     }
+
+    def "should build context based on already existing one and override it with other values"()
+    {
+        given:
+            EasyRandom easyRandom = new EasyRandom()
+            def randomObject = easyRandom.nextObject(HibernateContext)
+            def randomObject1 = easyRandom.nextObject(HibernateContext)
+            def builder = HibernateContext.builder().withHibernateContext(randomObject)
+            def result = builder.build()
+
+        when:
+            def result1 = builder
+                    .withJsonbAnyArrayStringsExistOperator(randomObject1.getJsonbAnyArrayStringsExistOperator())
+                    .withJsonFunctionJsonArrayOperator(randomObject1.getJsonFunctionJsonArrayOperator())
+                    .withJsonbAllArrayStringsExistOperator(randomObject1.getJsonbAllArrayStringsExistOperator()).build()
+
+
+
+        then:
+            reflectionEquals(result, randomObject)
+            !reflectionEquals(result, randomObject1)
+            reflectionEquals(result1, randomObject1)
+            !reflectionEquals(result1, randomObject)
+    }
 }
