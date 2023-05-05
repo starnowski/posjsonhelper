@@ -37,10 +37,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Component that renders arguments into below form.
- * Based on string arguments, json path and main function.
+ * The component renders arguments in the below form. Based on string arguments, JsonPath, and main function.
+ * Let's assume that for the below example, we have two arguments, JsonPath
  *
- * Lets assume that for below example we have two arguments, json path
  * <pre>{@code
  * {{main_func}}( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2)) = TRUE
  * }</pre>
