@@ -110,6 +110,25 @@ class ItemDaoItTest extends Specification {
     @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by any matching tags [#tags] in inner elements" () {
+        when:
+            def results = tested.findAllByAnyMatchingTagsInInnerElement(new HashSet<String>(tags))
+
+        then:
+            results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+
+        where:
+            tags                            ||  expectedIds
+            ['dog']                         ||  [19, 21].toSet()
+            ['cat']                         ||  [20, 21].toSet()
+            ['hamster']                     ||  [22].toSet()
+            ['hamster', 'cat']              ||  [20, 21, 22].toSet()
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     def "should return correct id #expectedIds when searching by #operator operator to compare double value #value" () {
         when:
             def results = tested.findAllByNumericValue(value, operator)

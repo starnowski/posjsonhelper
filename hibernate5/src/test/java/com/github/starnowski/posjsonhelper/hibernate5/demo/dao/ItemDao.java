@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 @Repository
@@ -58,6 +59,15 @@ public class ItemDao {
         Root<Item> root = query.from(Item.class);
         query.select(root);
         query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, singletonList("top_element_with_set_of_values"), root.get("jsonbContent")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Item> findAllByAnyMatchingTagsInInnerElement(HashSet<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (CriteriaBuilderImpl) cb, new JsonBExtractPath((CriteriaBuilderImpl) cb, asList("child", "pets"), root.get("jsonbContent")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
 
