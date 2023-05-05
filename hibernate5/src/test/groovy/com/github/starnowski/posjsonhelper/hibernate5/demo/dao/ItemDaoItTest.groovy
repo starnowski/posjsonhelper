@@ -1,6 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate5.demo.dao
 
-import com.github.starnowski.posjsonhelper.test.utils.TestUtils
+
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.jdbc.Sql
@@ -11,16 +11,12 @@ import spock.lang.Unroll
 
 import java.util.stream.Collectors
 
-import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.EQ
-import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.GE
-import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.GT
-import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.LE
-import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.LT
+import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.CLEAR_DATABASE_SCRIPT_PATH
+import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.ITEMS_SCRIPT_PATH
+import static com.github.starnowski.posjsonhelper.test.utils.NumericComparator.*
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED
-import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.CLEAR_DATABASE_SCRIPT_PATH
-import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.ITEMS_SCRIPT_PATH
 
 @SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT)
 @SqlGroup([
@@ -33,7 +29,7 @@ import static com.github.starnowski.posjsonhelper.hibernate5.demo.Application.IT
 ])
 class ItemDaoItTest extends Specification {
 
-    private static Set<Long> ALL_ITEMS_IDS = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L).toSet()
+    private static Set<Long> ALL_ITEMS_IDS = Arrays.asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L).toSet()
 
     @Autowired
     private ItemDao tested
