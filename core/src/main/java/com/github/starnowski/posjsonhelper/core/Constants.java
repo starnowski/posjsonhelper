@@ -33,7 +33,13 @@ public class Constants {
      * Please check <a href="https://www.postgresql.org/docs/9.4/functions-json.html">Postgres doc</a>
      */
     public static final String JSONB_EXTRACT_PATH_FUNCTION_NAME = "jsonb_extract_path";
+    /**
+     * Default value for property {@link Context#jsonbAllArrayStringsExistFunctionReference}
+     */
     public static final String DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_all_array_strings_exist";
+    /**
+     * Default value for property {@link Context#jsonbAnyArrayStringsExistFunctionReference}
+     */
     public static final String DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_any_array_strings_exist";
     /**
      * System property that is being used to set the name of SQL function that checks if all passed elements as the text[] exist in the JSON array property.
