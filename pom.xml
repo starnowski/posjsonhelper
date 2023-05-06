@@ -25,6 +25,7 @@
         <org.springframework.boot.version>2.5.12</org.springframework.boot.version>
         <org.postgresql.postgresql.version>42.4.3</org.postgresql.postgresql.version>
         <easy.random.core.org.jeasy.version>4.2.0</easy.random.core.org.jeasy.version>
+        <license.dir>${basedir}</license.dir>
     </properties>
 
     <packaging>pom</packaging>
@@ -95,5 +96,46 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>com.mycila.maven-license-plugin</groupId>
+                    <artifactId>maven-license-plugin</artifactId>
+                    <version>1.10.b1</version>
+                    <configuration>
+                        <header>${license.dir}/license.txt</header>
+                        <properties>
+                            <project>${project.name}</project>
+                            <founder>${project.organization.name}</founder>
+                            <year>${project.inceptionYear}</year>
+                        </properties>
+                        <includes>
+                            <include>src/main/java/**</include>
+                        </includes>
+                        <excludes>
+                            <exclude>**/package-info.java</exclude>
+                        </excludes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>format</goal>
+                            </goals>
+                            <phase>process-sources</phase>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.mycila</groupId>
+                            <artifactId>licenses</artifactId>
+                            <version>1</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
 </project>
