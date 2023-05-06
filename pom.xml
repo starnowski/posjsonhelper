@@ -33,7 +33,7 @@
     <name>posjsonhelper</name>
 
     <description>
-        Integration of Posmulten and Hibernate libraries
+        Posjsonhelper library is an open-source project that adds support of Hibernate query for postgresql json functions.
     </description>
     <url>https://github.com/starnowski/posjsonhelper</url>
 
