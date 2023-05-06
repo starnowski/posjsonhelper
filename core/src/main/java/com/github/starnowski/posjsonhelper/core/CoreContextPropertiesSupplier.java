@@ -25,6 +25,9 @@ import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_ALL_ARRAY
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY;
 import static com.github.starnowski.posjsonhelper.core.Constants.SCHEMA_PROPERTY;
 
+/**
+ * Supplier of  {@link Context} based on system properties.
+ */
 public class CoreContextPropertiesSupplier {
 
     private final SystemPropertyReader systemPropertyReader;
@@ -37,6 +40,14 @@ public class CoreContextPropertiesSupplier {
         this.systemPropertyReader = systemPropertyReader;
     }
 
+    /**
+     * Generates object to type {@link HibernateContext}, based on system properties.
+     * Component sets below properties:
+     * {@link Context#jsonbAllArrayStringsExistFunctionReference} based on {@link Constants#JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY}
+     * {@link Context#jsonbAnyArrayStringsExistFunctionReference} based on {@link Constants#JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY}
+     * {@link Context#schema} based on {@link Constants#SCHEMA_PROPERTY}
+     * @return
+     */
     public Context get(){
         Context.ContextBuilder builder = Context.builder();
         String jsonbAllArrayStringsExistFunctionReference = systemPropertyReader.read(JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY);
