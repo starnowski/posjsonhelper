@@ -24,10 +24,25 @@ package com.github.starnowski.posjsonhelper.core;
 import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
 import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
 
+/**
+ * Component that store properties used by core components
+ */
 public class Context {
 
+    /**
+     * Name of SQL function that checks if all passed elements as the text[] exist in the JSON array property.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME} constant.
+     */
     private final String jsonbAllArrayStringsExistFunctionReference;
+    /**
+     * Name of SQL function that checks if any passed elements as the text[] exist in the JSON array property.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME} constant.
+     */
     private final String jsonbAnyArrayStringsExistFunctionReference;
+    /**
+     * Name of database schema where the SQL functions should be created.
+     * By default, the property is initialized with the null value.
+     */
     private final String schema;
 
     public Context(String jsonbAllArrayStringsExistFunctionReference, String jsonbAnyArrayStringsExistFunctionReference, String schema) {
