@@ -55,14 +55,26 @@ public class Context {
         return new ContextBuilder();
     }
 
+    /**
+     * Returns value of property {@link #schema}
+     * @return
+     */
     public String getSchema() {
         return schema;
     }
 
+    /**
+     * Returns value of property {@link #jsonbAllArrayStringsExistFunctionReference}
+     * @return
+     */
     public String getJsonbAllArrayStringsExistFunctionReference() {
         return jsonbAllArrayStringsExistFunctionReference;
     }
 
+    /**
+     * Returns value of property {@link #jsonbAnyArrayStringsExistFunctionReference}
+     * @return
+     */
     public String getJsonbAnyArrayStringsExistFunctionReference() {
         return jsonbAnyArrayStringsExistFunctionReference;
     }
