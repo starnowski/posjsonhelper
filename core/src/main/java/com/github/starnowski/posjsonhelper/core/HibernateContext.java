@@ -23,10 +23,25 @@ package com.github.starnowski.posjsonhelper.core;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.*;
 
+/**
+ * Component that store properties used by hibernate components
+ */
 public class HibernateContext {
 
+    /**
+     * Name of HQL function that wraps SQL function {@link Context#jsonbAllArrayStringsExistFunctionReference}.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR} constant.
+     */
     private final String jsonbAllArrayStringsExistOperator;
+    /**
+     * Name of HQL function that wraps SQL function {@link Context#jsonbAnyArrayStringsExistFunctionReference}.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR} constant.
+     */
     private final String jsonbAnyArrayStringsExistOperator;
+    /**
+     * Name of HQL function that wraps Postgres "ARRAY" operator.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR} constant.
+     */
     private final String jsonFunctionJsonArrayOperator;
 
     public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator) {
@@ -39,14 +54,26 @@ public class HibernateContext {
         return new ContextBuilder();
     }
 
+    /**
+     * Returns value of property {@link #jsonbAllArrayStringsExistOperator}
+     * @return
+     */
     public String getJsonbAllArrayStringsExistOperator() {
         return jsonbAllArrayStringsExistOperator;
     }
 
+    /**
+     * Returns value of property {@link #jsonbAnyArrayStringsExistOperator}
+     * @return
+     */
     public String getJsonbAnyArrayStringsExistOperator() {
         return jsonbAnyArrayStringsExistOperator;
     }
 
+    /**
+     * Returns value of property {@link #jsonFunctionJsonArrayOperator}
+     * @return
+     */
     public String getJsonFunctionJsonArrayOperator() {
         return jsonFunctionJsonArrayOperator;
     }
