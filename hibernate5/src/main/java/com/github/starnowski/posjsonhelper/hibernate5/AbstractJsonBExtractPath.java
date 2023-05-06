@@ -38,10 +38,13 @@ import java.util.stream.Collectors;
  * The component renders arguments in the below form. Based on string arguments and main function.
  *
  * Examples:
- * <ul>only one argument</ul>
+ *
+ * Only one argument
+ *
  * {@code {{main_func}}( generatedAlias0.jsonbContent , :param0 )}
  *
- * <ul>two arguments</ul>
+ * Two arguments
+ *
  * {@code {{main_func}}( generatedAlias0.jsonbContent , :param0, :param1 )}
  */
 public abstract class AbstractJsonBExtractPath extends BasicFunctionExpression<String> implements Serializable {
