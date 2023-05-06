@@ -23,7 +23,15 @@ package com.github.starnowski.posjsonhelper.core;
 
 public class Constants {
 
+    /**
+     * Name of the Postgres function 'jsonb_extract_path_text' that returns JSON value pointed to by path elements as text.
+     * Please check <a href="https://www.postgresql.org/docs/9.4/functions-json.html">Postgres doc</a>
+     */
     public static final String JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME = "jsonb_extract_path_text";
+    /**
+     * Name of the Postgres function 'jsonb_extract_path' that returns JSON value pointed to by path elements.
+     * Please check <a href="https://www.postgresql.org/docs/9.4/functions-json.html">Postgres doc</a>
+     */
     public static final String JSONB_EXTRACT_PATH_FUNCTION_NAME = "jsonb_extract_path";
     public static final String DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_all_array_strings_exist";
     public static final String DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_any_array_strings_exist";
