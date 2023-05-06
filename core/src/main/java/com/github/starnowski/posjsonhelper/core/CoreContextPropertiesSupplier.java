@@ -41,12 +41,12 @@ public class CoreContextPropertiesSupplier {
     }
 
     /**
-     * Generates object to type {@link HibernateContext}, based on system properties.
+     * Generates object to type {@link Context}, based on system properties.
      * Component sets below properties:
      * {@link Context#jsonbAllArrayStringsExistFunctionReference} based on {@link Constants#JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY}
      * {@link Context#jsonbAnyArrayStringsExistFunctionReference} based on {@link Constants#JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY}
      * {@link Context#schema} based on {@link Constants#SCHEMA_PROPERTY}
-     * @return
+     * @return core context
      */
     public Context get(){
         Context.ContextBuilder builder = Context.builder();

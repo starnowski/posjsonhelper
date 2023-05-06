@@ -57,7 +57,7 @@ public class Context {
 
     /**
      * Returns value of property {@link #schema}
-     * @return
+     * @return value of property {@link #schema}
      */
     public String getSchema() {
         return schema;
@@ -65,7 +65,7 @@ public class Context {
 
     /**
      * Returns value of property {@link #jsonbAllArrayStringsExistFunctionReference}
-     * @return
+     * @return value of property {@link #jsonbAllArrayStringsExistFunctionReference}
      */
     public String getJsonbAllArrayStringsExistFunctionReference() {
         return jsonbAllArrayStringsExistFunctionReference;
@@ -73,7 +73,7 @@ public class Context {
 
     /**
      * Returns value of property {@link #jsonbAnyArrayStringsExistFunctionReference}
-     * @return
+     * @return value of property {@link #jsonbAnyArrayStringsExistFunctionReference}
      */
     public String getJsonbAnyArrayStringsExistFunctionReference() {
         return jsonbAnyArrayStringsExistFunctionReference;

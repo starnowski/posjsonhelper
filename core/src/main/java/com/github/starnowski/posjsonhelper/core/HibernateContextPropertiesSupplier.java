@@ -44,7 +44,7 @@ public class HibernateContextPropertiesSupplier {
      * {@link HibernateContext#jsonbAllArrayStringsExistOperator} based on {@link Constants#JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY}
      * {@link HibernateContext#jsonbAnyArrayStringsExistOperator} based on {@link Constants#JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY}
      * {@link HibernateContext#jsonFunctionJsonArrayOperator} based on {@link Constants#JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY}
-     * @return
+     * @return hibernate context
      */
     public HibernateContext get(){
         HibernateContext.ContextBuilder builder = HibernateContext.builder();

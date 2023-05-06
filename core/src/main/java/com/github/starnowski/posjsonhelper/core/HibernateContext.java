@@ -56,7 +56,7 @@ public class HibernateContext {
 
     /**
      * Returns value of property {@link #jsonbAllArrayStringsExistOperator}
-     * @return
+     * @return value of property {@link #jsonbAllArrayStringsExistOperator}
      */
     public String getJsonbAllArrayStringsExistOperator() {
         return jsonbAllArrayStringsExistOperator;
@@ -64,7 +64,7 @@ public class HibernateContext {
 
     /**
      * Returns value of property {@link #jsonbAnyArrayStringsExistOperator}
-     * @return
+     * @return value of property {@link #jsonbAnyArrayStringsExistOperator}
      */
     public String getJsonbAnyArrayStringsExistOperator() {
         return jsonbAnyArrayStringsExistOperator;
@@ -72,7 +72,7 @@ public class HibernateContext {
 
     /**
      * Returns value of property {@link #jsonFunctionJsonArrayOperator}
-     * @return
+     * @return value of property {@link #jsonFunctionJsonArrayOperator}
      */
     public String getJsonFunctionJsonArrayOperator() {
         return jsonFunctionJsonArrayOperator;
