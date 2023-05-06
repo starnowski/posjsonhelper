@@ -35,7 +35,13 @@ public class Constants {
     public static final String JSONB_EXTRACT_PATH_FUNCTION_NAME = "jsonb_extract_path";
     public static final String DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_all_array_strings_exist";
     public static final String DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_any_array_strings_exist";
+    /**
+     * System property that is being used to set the name of SQL function that checks if all passed elements as the text[] exist in the JSON array property.
+     */
     public static final String JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY = "com.github.starnowski.posjsonhelper.core.functions.jsonb_all_array_strings_exist";
+    /**
+     * System property that is being used to set the name of SQL function that checks if any passed elements as the text[] exist in the JSON array property.
+     */
     public static final String JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY = "com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist";
     /**
      * 	System property that is being used to set the name of database schema where the SQL functions should be created
