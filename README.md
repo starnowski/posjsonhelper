@@ -1,6 +1,7 @@
 # posjsonhelper
 
-[![Run tests for posmulten hibernate](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml/badge.svg)](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml)
+[![Run tests for posjsonhelper](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml/badge.svg)](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.starnowski.posjsonhelper/parent.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.starnowski.posjsonhelper%22%20AND%20a:%22parent%22)
 
 * [Introduction](#introduction)
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
