@@ -114,4 +114,9 @@ public class ItemDao {
         query.where(cb.like(new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("string_value"), root.get("jsonbContent")), expression));
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Item> findAllByStringValueAndLikeOperatorWithNativeQuery(String expression) {
+        return entityManager.createNativeQuery("SELECT * FROM item i WHERE i.jsonb_content#>>'{string_value}' LIKE '" + expression + "'", Item.class).getResultList();
+    }
+
 }
