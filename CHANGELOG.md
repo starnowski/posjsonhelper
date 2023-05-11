@@ -10,9 +10,16 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.1.1](#011---2023-05-11)
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.1.1] - 2023-05-11
+
+### Changed
+    
+- Change scope for dependency com.github.starnowski.posjsonhelper:test-utils to the test  [39](https://github.com/starnowski/posjsonhelper/issues/39)
 
 ## [0.1.0] - 2023-05-06
 
