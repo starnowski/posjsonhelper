@@ -63,6 +63,7 @@
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>test-utils</artifactId>
             <version>${project.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.github.hakky54</groupId>
