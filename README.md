@@ -30,7 +30,7 @@ The required version of java is at least version 8.
 ### Setting maven dependency
 The project is available in the central maven repository.
 You can use it just by adding it as a dependency in the project descriptor file (pom.xml).
-
+ 
 ```xml
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
