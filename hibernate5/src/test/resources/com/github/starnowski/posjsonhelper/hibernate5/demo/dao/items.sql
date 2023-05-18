@@ -27,3 +27,9 @@ INSERT INTO item (id, jsonb_content) VALUES (15, '{"enum_value": "ANONYMOUS"}');
 INSERT INTO item (id, jsonb_content) VALUES (16, '{"string_value": "this is full sentence"}');
 INSERT INTO item (id, jsonb_content) VALUES (17, '{"string_value": "this is part of sentence"}');
 INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of records"}');
+
+-- inner elements
+INSERT INTO item (id, jsonb_content) VALUES (19, '{"child": {"pets" : ["dog"]}}');
+INSERT INTO item (id, jsonb_content) VALUES (20, '{"child": {"pets" : ["cat"]}}');
+INSERT INTO item (id, jsonb_content) VALUES (21, '{"child": {"pets" : ["dog", "cat"]}}');
+INSERT INTO item (id, jsonb_content) VALUES (22, '{"child": {"pets" : ["hamster"]}}');

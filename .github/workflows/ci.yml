@@ -1,4 +1,4 @@
-name: Run tests for posmulten hibernate
+name: Run tests for posjsonhelper
 
 on:
   push:
@@ -50,3 +50,27 @@ jobs:
 
       - name: Run mutation tests
         run: ./mvnw -P pitest test org.pitest:pitest-maven:mutationCoverage
+
+  publish:
+    runs-on: ubuntu-latest
+    name: "Publish to the Maven Central Repository"
+    needs: [integraion_tests]
+    steps:
+      - name: Git checkout
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/checkout@v2
+      - name: Set up JDK 1.8
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - name: Build with Maven
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: ./deploy/release.sh
+        env:
+          GPG_KEYNAME: '${{ secrets.GPG_KEYNAME }}'
+          GPG_PASSPHRASE: '${{ secrets.GPG_PASSPHRASE }}'
+          ENCRYPTION_PASSWORD: '${{ secrets.ENCRYPTION_PASSWORD }}'
+          GPG_PUBLIC_KEYNAME: '${{ secrets.GPG_PUBLIC_KEYNAME }}'
+          MAVEN_USERNAME: '${{ secrets.POSJSONHELPER_MAVEN_USERNAME }}'
+          MAVEN_PASSWORD: '${{ secrets.POSJSONHELPER_MAVEN_PASSWORD }}'
