@@ -1,29 +1,36 @@
 package com.github.starnowski.posjsonhelper.hibernate6;
 
-public abstract class AbstractJsonBExtractPath {}
-//extends SqmMapEntryReference<String> implements Serializable {
-//
-//    private final List<String> path;
-//    private final List<Expression> pathValues;
-//
-//    public AbstractJsonBExtractPath(SqmPath<?> mapPath, NodeBuilder nodeBuilder, List<String> path, String functionName) {
-//        super(mapPath, nodeBuilder);
-//        this.path = path;
-//        if (this.path == null || this.path.isEmpty()) {
-//            throw new IllegalArgumentException("Path argument can not be null or empty list");
-//        }
-//        this.pathValues = this.path.stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
+import jakarta.persistence.criteria.Expression;
+import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.SqmPathSource;
+import org.hibernate.query.sqm.tree.expression.AbstractSqmExpression;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public abstract class AbstractJsonBExtractPath
+//{}
+extends AbstractSqmExpression<String> implements Serializable {
+
+    private final List<String> path;
+    private final List<Expression> pathValues;
+
+    public AbstractJsonBExtractPath( SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
+        super(referencedPathSource, nodeBuilder);
+        this.path = path;
+        if (this.path == null || this.path.isEmpty()) {
+            throw new IllegalArgumentException("Path argument can not be null or empty list");
+        }
+        this.pathValues = this.path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList());
+    }
+
+//    public SqmPath<?> resolvePathPart(String name, boolean isTerminal, SqmCreationState creationState) {
+//        SqmPath<?> sqmPath = this.get(name);
+//        ((SqmCreationProcessingState)creationState.getProcessingStateStack().getCurrent()).getPathRegistry().register(sqmPath);
+//        return sqmPath;
 //    }
-//
-//
-//    protected Expression<?> getOperand() {
-//        return operand;
-//    }
-//
-//    public Class getJavaType() {
-//        return operand.getJavaType();
-//    }
-//
+
 //    public String render(RenderingContext renderingContext) {
 //        renderingContext.getFunctionStack().push(this);
 //        String var3;
@@ -45,4 +52,4 @@ public abstract class AbstractJsonBExtractPath {}
 //        }
 //        return sb.toString();
 //    }
-//}
+}

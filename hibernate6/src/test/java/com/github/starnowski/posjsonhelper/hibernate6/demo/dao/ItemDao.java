@@ -1,16 +1,23 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
+import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.SqmPathSource;
+import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 @Repository
 public class ItemDao {
@@ -49,51 +56,48 @@ public class ItemDao {
 //        return entityManager.createQuery(query).getResultList();
 //    }
 
-//    public List<Item> findAllByNumericValue(BigDecimal bigDecimal, NumericComparator numericComparator) {
+    public List<Item> findAllByNumericValue(BigDecimal bigDecimal, NumericComparator numericComparator) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        NodeBuilder nodeBuilder = (NodeBuilder) cb;
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        SqmExpression castFunction = nodeBuilder.cast(new JsonBExtractPathText((SqmPathSource<String>)root.get("jsonbContent"), nodeBuilder, singletonList("double_value")), BigDecimal.class);
+        switch (numericComparator) {
+            case EQ:
+                query.where(cb.equal(castFunction, bigDecimal));
+                break;
+            case GE:
+                query.where(cb.ge(castFunction, bigDecimal));
+                break;
+            case GT:
+                query.where(cb.gt(castFunction, bigDecimal));
+                break;
+            case LE:
+                query.where(cb.le(castFunction, bigDecimal));
+                break;
+            case LT:
+                query.where(cb.lt(castFunction, bigDecimal));
+                break;
+        }
+        return entityManager.createQuery(query).getResultList();
+    }
+//
+//    public List<Item> findAllByStringThatMatchInValues(List<String> strings) {
 //        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-//        NodeBuilder nodeBuilder = (NodeBuilder) cb;
 //        CriteriaQuery<Item> query = cb.createQuery(Item.class);
 //        Root<Item> root = query.from(Item.class);
 //        query.select(root);
-//        CastFunction castFunction = new CastFunction(cb, BigDecimal.class, new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("double_value"), root.get("jsonbContent")));
-//        switch (numericComparator) {
-//            case EQ:
-//                query.where(cb.equal(castFunction, bigDecimal));
-//                break;
-//            case GE:
-//                query.where(cb.ge(castFunction, bigDecimal));
-//                break;
-//            case GT:
-//                query.where(cb.gt(castFunction, bigDecimal));
-//                break;
-//            case LE:
-//                query.where(cb.le(castFunction, bigDecimal));
-//                break;
-//            case LT:
-//                query.where(cb.lt(castFunction, bigDecimal));
-//                break;
-//        }
+//        query.where((new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("enum_value"), root.get("jsonbContent"))).in(strings));
 //        return entityManager.createQuery(query).getResultList();
 //    }
 
-    public List<Item> findAllByStringThatMatchInValues(List<String> strings) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Item> query = cb.createQuery(Item.class);
-        Root<Item> root = query.from(Item.class);
-        NodeBuilder nodeBuilder = (NodeBuilder) cb;
-        query.select(root);
-//        query.where((new JsonBExtractPathText(root.get("jsonbContent"), nodeBuilder, singletonList("enum_value"))).in(strings));
-        query.where((root.get("jsonbContent")).in(strings));
-        return entityManager.createQuery(query).getResultList();
-    }
-
-    public List<Item> findAllByStringValueAndLikeOperator(String expression) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Item> query = cb.createQuery(Item.class);
-        Root<Item> root = query.from(Item.class);
-        query.select(root);
+//    public List<Item> findAllByStringValueAndLikeOperator(String expression) {
+//        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+//        Root<Item> root = query.from(Item.class);
+//        query.select(root);
 //        query.where(cb.like(new JsonBExtractPathText((CriteriaBuilderImpl) cb, singletonList("string_value"), root.get("jsonbContent")), expression));
-        query.where(cb.like(root.get("jsonbContent"), expression));
-        return entityManager.createQuery(query).getResultList();
-    }
+//        return entityManager.createQuery(query).getResultList();
+//    }
 }
