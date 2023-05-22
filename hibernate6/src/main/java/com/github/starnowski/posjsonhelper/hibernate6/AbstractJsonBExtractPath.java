@@ -38,11 +38,6 @@ extends SelfRenderingSqmFunction<String> implements Serializable {
     private final List<SqmExpression> pathValues;
 
     public AbstractJsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
-//        super(functionName,
-//                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
-//                referencedPathSource,
-//                path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList()),
-//                nodeBuilder);
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
                 new FunctionExpression(functionName, path.size() + 1),
                 parameters(referencedPathSource, nodeBuilder, path),
