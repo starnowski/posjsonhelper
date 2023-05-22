@@ -1,13 +1,18 @@
 package com.github.starnowski.posjsonhelper.hibernate6;
 
 import jakarta.persistence.criteria.Path;
+import org.hibernate.query.ReturnableType;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.SemanticQueryWalker;
 import org.hibernate.query.sqm.SqmPathSource;
+import org.hibernate.query.sqm.function.SelfRenderingFunctionSqlAstExpression;
+import org.hibernate.query.sqm.sql.SqmToSqlAstConverter;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
 import org.hibernate.query.sqm.tree.domain.SqmPath;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.hibernate.query.sqm.tree.select.SqmSelectableNode;
+import org.hibernate.sql.ast.tree.SqlAstNode;
+import org.hibernate.sql.ast.tree.expression.Expression;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -30,4 +35,8 @@ public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractP
         return new JsonBExtractPathText(referencedPathSource, nodeBuilder, path);
     }
 
+    @Override
+    public Expression convertToSqlAst(SqmToSqlAstConverter sqmToSqlAstConverter) {
+        return null;
+    }
 }

@@ -9,6 +9,7 @@ import org.hibernate.query.sqm.tree.domain.SqmPath;
 import org.hibernate.query.sqm.tree.expression.AbstractSqmExpression;
 import org.hibernate.query.sqm.tree.expression.SqmCoalesce;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
+import org.hibernate.query.sqm.tree.expression.SqmFunction;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,7 +21,7 @@ import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_P
 
 public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPath>
 //{}
-extends AbstractSqmExpression<String> implements Serializable {
+extends SqmFunction<String> implements Serializable {
 
     private final String functionName;
     private final SqmPathSource<String> referencedPathSource;
@@ -28,7 +29,11 @@ extends AbstractSqmExpression<String> implements Serializable {
     private final List<SqmExpression> pathValues;
 
     public AbstractJsonBExtractPath( SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
-        super(referencedPathSource, nodeBuilder);
+        super(functionName,
+                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
+                referencedPathSource,
+                path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList()),
+                nodeBuilder);
         this.functionName = functionName;
         this.referencedPathSource = referencedPathSource;
         this.path = new ArrayList<>(path);
@@ -38,26 +43,26 @@ extends AbstractSqmExpression<String> implements Serializable {
         this.pathValues = path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList());
     }
 
-    @Override
-    public void appendHqlString(StringBuilder sb) {
-        sb.append(functionName + "(");
-        ((SqmExpression)this.pathValues.get(0)).appendHqlString(sb);
+//    @Override
+//    public void appendHqlString(StringBuilder sb) {
+//        sb.append(functionName + "(");
+//        ((SqmExpression)this.pathValues.get(0)).appendHqlString(sb);
+//
+//        for(int i = 1; i < this.pathValues.size(); ++i) {
+//            sb.append(", ");
+//            ((SqmExpression)this.pathValues.get(i)).appendHqlString(sb);
+//        }
+//
+//        sb.append(')');
+//    }
 
-        for(int i = 1; i < this.pathValues.size(); ++i) {
-            sb.append(", ");
-            ((SqmExpression)this.pathValues.get(i)).appendHqlString(sb);
-        }
-
-        sb.append(')');
-    }
-
-    @Override
-    public <X> X accept(SemanticQueryWalker<X> semanticQueryWalker) {
-        this.pathValues.forEach((e) -> {
-            e.accept(semanticQueryWalker);
-        });
-        return (X) this;
-    }
+//    @Override
+//    public <X> X accept(SemanticQueryWalker<X> semanticQueryWalker) {
+//        this.pathValues.forEach((e) -> {
+//            e.accept(semanticQueryWalker);
+//        });
+//        return (X) this;
+//    }
 
     @Override
     public T copy(SqmCopyContext context) {
