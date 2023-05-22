@@ -35,8 +35,4 @@ public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractP
         return new JsonBExtractPathText(referencedPathSource, nodeBuilder, path);
     }
 
-    @Override
-    public Expression convertToSqlAst(SqmToSqlAstConverter sqmToSqlAstConverter) {
-        return null;
-    }
 }

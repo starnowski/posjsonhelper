@@ -1,9 +1,12 @@
 package com.github.starnowski.posjsonhelper.hibernate6;
 
 import jakarta.persistence.criteria.Expression;
+import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.SemanticQueryWalker;
 import org.hibernate.query.sqm.SqmPathSource;
+import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
+import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
 import org.hibernate.query.sqm.tree.domain.SqmPath;
 import org.hibernate.query.sqm.tree.expression.AbstractSqmExpression;
@@ -21,7 +24,7 @@ import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_P
 
 public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPath>
 //{}
-extends SqmFunction<String> implements Serializable {
+extends SelfRenderingSqmFunction<String> implements Serializable {
 
     private final String functionName;
     private final SqmPathSource<String> referencedPathSource;
@@ -29,11 +32,19 @@ extends SqmFunction<String> implements Serializable {
     private final List<SqmExpression> pathValues;
 
     public AbstractJsonBExtractPath( SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
-        super(functionName,
-                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
-                referencedPathSource,
+//        super(functionName,
+//                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
+//                referencedPathSource,
+//                path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList()),
+//                nodeBuilder);
+        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
+                new FunctionExpression(functionName, path.size() + 1),
                 path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList()),
-                nodeBuilder);
+                null,
+                null,
+                StandardFunctionReturnTypeResolvers.useFirstNonNull(),
+                nodeBuilder,
+                functionName);
         this.functionName = functionName;
         this.referencedPathSource = referencedPathSource;
         this.path = new ArrayList<>(path);
