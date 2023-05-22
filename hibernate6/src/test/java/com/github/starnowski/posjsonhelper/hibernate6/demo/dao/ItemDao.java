@@ -62,7 +62,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        SqmExpression castFunction = nodeBuilder.cast(new JsonBExtractPathText((SqmPathSource<String>)root.get("jsonbContent"), nodeBuilder, singletonList("double_value")), BigDecimal.class);
+        SqmExpression castFunction = nodeBuilder.cast(new JsonBExtractPathText(root.get("jsonbContent"), nodeBuilder, singletonList("double_value")), BigDecimal.class);
         switch (numericComparator) {
             case EQ:
                 query.where(cb.equal(castFunction, bigDecimal));

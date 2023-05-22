@@ -2,28 +2,78 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 
 import jakarta.persistence.criteria.Expression;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.SemanticQueryWalker;
 import org.hibernate.query.sqm.SqmPathSource;
+import org.hibernate.query.sqm.tree.SqmCopyContext;
+import org.hibernate.query.sqm.tree.domain.SqmPath;
 import org.hibernate.query.sqm.tree.expression.AbstractSqmExpression;
+import org.hibernate.query.sqm.tree.expression.SqmCoalesce;
+import org.hibernate.query.sqm.tree.expression.SqmExpression;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractJsonBExtractPath
+import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME;
+
+public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPath>
 //{}
 extends AbstractSqmExpression<String> implements Serializable {
 
+    private final String functionName;
+    private final SqmPathSource<String> referencedPathSource;
     private final List<String> path;
-    private final List<Expression> pathValues;
+    private final List<SqmExpression> pathValues;
 
     public AbstractJsonBExtractPath( SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
         super(referencedPathSource, nodeBuilder);
-        this.path = path;
-        if (this.path == null || this.path.isEmpty()) {
+        this.functionName = functionName;
+        this.referencedPathSource = referencedPathSource;
+        this.path = new ArrayList<>(path);
+        if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Path argument can not be null or empty list");
         }
-        this.pathValues = this.path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList());
+        this.pathValues = path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList());
     }
+
+    @Override
+    public void appendHqlString(StringBuilder sb) {
+        sb.append(functionName + "(");
+        ((SqmExpression)this.pathValues.get(0)).appendHqlString(sb);
+
+        for(int i = 1; i < this.pathValues.size(); ++i) {
+            sb.append(", ");
+            ((SqmExpression)this.pathValues.get(i)).appendHqlString(sb);
+        }
+
+        sb.append(')');
+    }
+
+    @Override
+    public <X> X accept(SemanticQueryWalker<X> semanticQueryWalker) {
+        this.pathValues.forEach((e) -> {
+            e.accept(semanticQueryWalker);
+        });
+        return (X) this;
+    }
+
+    @Override
+    public T copy(SqmCopyContext context) {
+        T existing = (T)context.getCopy(this);
+        if (existing != null) {
+            return existing;
+        } else {
+//            T coalesce = (SqmCoalesce)context.registerCopy(this, new SqmCoalesce(this.getNodeType(), this.arguments.size(), this.nodeBuilder()));
+            T copy = context.registerCopy((T)this, generate(this.referencedPathSource, this.nodeBuilder(), this.path));
+
+            this.copyTo(copy, context);
+            return copy;
+        }
+    }
+
+    abstract protected T generate(SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path);
 
 //    public SqmPath<?> resolvePathPart(String name, boolean isTerminal, SqmCreationState creationState) {
 //        SqmPath<?> sqmPath = this.get(name);

@@ -48,19 +48,16 @@ import java.util.stream.Collectors;
  * {@code {{main_func}}( generatedAlias0.jsonbContent , :param0, :param1 )}
  */
 public abstract class AbstractJsonBExtractPath extends BasicFunctionExpression<String> implements Serializable {
-
-    private final List<String> path;
     private final List<Expression> pathValues;
     private final Expression<?> operand;
 
     public AbstractJsonBExtractPath(CriteriaBuilderImpl criteriaBuilder, List<String> path, Expression<?> operand, String functionName) {
         super(criteriaBuilder, String.class, functionName);
-        this.path = path;
         this.operand = operand;
-        if (this.path == null || this.path.isEmpty()) {
+        if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Path argument can not be null or empty list");
         }
-        this.pathValues = this.path.stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
+        this.pathValues = path.stream().map(p -> new LiteralExpression(criteriaBuilder, p)).collect(Collectors.toList());
     }
 
 

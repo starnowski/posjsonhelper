@@ -1,34 +1,33 @@
 package com.github.starnowski.posjsonhelper.hibernate6;
 
+import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.SemanticQueryWalker;
 import org.hibernate.query.sqm.SqmPathSource;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
 import org.hibernate.query.sqm.tree.domain.SqmPath;
+import org.hibernate.query.sqm.tree.expression.SqmExpression;
+import org.hibernate.query.sqm.tree.select.SqmSelectableNode;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME;
 
-public class JsonBExtractPathText extends AbstractJsonBExtractPath {
+public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractPathText> {
 //TODO
 
-    public JsonBExtractPathText(SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
+    public JsonBExtractPathText(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
+        super((SqmPathSource<String>) referencedPathSource.getModel(), nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
+    }
+
+    protected JsonBExtractPathText(SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
     }
 
     @Override
-    public SqmPath<String> copy(SqmCopyContext sqmCopyContext) {
-        return null;
+    protected JsonBExtractPathText generate(SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
+        return new JsonBExtractPathText(referencedPathSource, nodeBuilder, path);
     }
 
-    @Override
-    public <X> X accept(SemanticQueryWalker<X> semanticQueryWalker) {
-        return null;
-    }
-
-    @Override
-    public void appendHqlString(StringBuilder stringBuilder) {
-
-    }
 }
