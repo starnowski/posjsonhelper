@@ -23,15 +23,11 @@ public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractP
 //TODO
 
     public JsonBExtractPathText(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
-        super((SqmPathSource<String>) referencedPathSource.getModel(), nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
-    }
-
-    protected JsonBExtractPathText(SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
     }
 
     @Override
-    protected JsonBExtractPathText generate(SqmPathSource<String> referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
+    protected JsonBExtractPathText generate(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
         return new JsonBExtractPathText(referencedPathSource, nodeBuilder, path);
     }
 
