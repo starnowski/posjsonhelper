@@ -4,6 +4,7 @@ import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
+import org.hibernate.query.sqm.tree.SqmTypedNode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,5 +20,20 @@ public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implemen
                 StandardFunctionReturnTypeResolvers.useFirstNonNull(),
                 nodeBuilder,
                 "array");
+    }
+
+    @Override
+    public void appendHqlString(StringBuilder sb) {
+        sb.append(this.getFunctionName());
+        if (this.getArguments().isEmpty()) {
+            sb.append("[]");
+            return;
+        }
+        sb.append('[');
+        for (int i = 1; i < this.getArguments().size(); ++i) {
+            sb.append(", ");
+            this.getArguments().get(i).appendHqlString(sb);
+        }
+        sb.append(']');
     }
 }
