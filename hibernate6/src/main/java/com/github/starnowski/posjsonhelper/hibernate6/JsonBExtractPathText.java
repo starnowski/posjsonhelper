@@ -12,9 +12,4 @@ public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractP
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
     }
 
-    @Override
-    protected JsonBExtractPathText generate(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
-        return new JsonBExtractPathText(referencedPathSource, nodeBuilder, path);
-    }
-
 }

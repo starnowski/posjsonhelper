@@ -11,10 +11,4 @@ public class JsonBExtractPath extends AbstractJsonBExtractPath<JsonBExtractPath>
     public JsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_FUNCTION_NAME);
     }
-
-    @Override
-    protected JsonBExtractPath generate(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
-        return new JsonBExtractPath(referencedPathSource, nodeBuilder, path);
-    }
-
 }
