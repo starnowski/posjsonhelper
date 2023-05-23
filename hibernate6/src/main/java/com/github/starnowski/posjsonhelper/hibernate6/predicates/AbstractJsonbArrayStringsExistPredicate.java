@@ -22,15 +22,18 @@
 package com.github.starnowski.posjsonhelper.hibernate6.predicates;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
-import com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
+import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.SqmExpressible;
+import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
+import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
+import org.hibernate.query.sqm.tree.SqmCopyContext;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
-import org.hibernate.query.sqm.tree.predicate.SqmInListPredicate;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,56 +53,54 @@ import java.util.stream.Stream;
  * (:param1, :param2) - rendered string arguments
  * TRUE - expected predicate value, by default it is "TRUE"
  */
-public abstract class AbstractJsonbArrayStringsExistPredicate<T extends AbstractJsonbArrayStringsExistPredicate> extends SqmInListPredicate<String> {
+public abstract class AbstractJsonbArrayStringsExistPredicate<T extends AbstractJsonbArrayStringsExistPredicate> extends SelfRenderingSqmFunction<Boolean> {
 
     private final HibernateContext context;
     private final JsonBExtractPath jsonBExtractPath;
-    private final List<SqmExpression> values;
+    private final String[] values;
 
-    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, boolean negated) {
-        super(jsonBExtractPath, parameters(nodeBuilder, values), negated, nodeBuilder);
+    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, String functionName) {
+        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
+                new FunctionExpression(functionName, 2),
+                parameters(jsonBExtractPath, nodeBuilder, values),
+                null,
+                null,
+                StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.BOOLEAN)),
+                nodeBuilder,
+                functionName);
         this.jsonBExtractPath = jsonBExtractPath;
         this.context = context;
-        Iterator var6 = Arrays.asList(values).iterator();
-        this.values = new ArrayList(values.length);
-        while (var6.hasNext()) {
-            Object value = var6.next();
-            this.values.add(nodeBuilder.literal(value));
-        }
+        this.values = values;
     }
 
-    private static List<? extends SqmExpression<String>> parameters(NodeBuilder nodeBuilder, String... values) {
+    private static List<? extends SqmExpression<String>> parameters(JsonBExtractPath jsonBExtractPath, NodeBuilder nodeBuilder, String... values) {
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Values can not be null or empty list");
         }
         List<SqmExpression<String>> result = new ArrayList<>();
-        result.addAll(Stream.of(values).map(p -> nodeBuilder.literal(p)).collect(Collectors.toList()));
+        result.add(jsonBExtractPath);
+
+        //array
+        List<SqmExpression<String>> arrayArguments = new ArrayList<>();
+        arrayArguments.addAll(Stream.of(values).map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
+        JsonArrayFunction jsonArrayFunction = new JsonArrayFunction(nodeBuilder, arrayArguments);
+        result.add(jsonArrayFunction);
         return result;
     }
 
-//    private String renderValues(RenderingContext renderingContext) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(context.getJsonFunctionJsonArrayOperator());
-//        sb.append("(");
-//
-//        String sep = "";
-//        for (Iterator var11 = this.values.iterator(); var11.hasNext(); sep = ", ") {
-//            Expression value = (Expression) var11.next();
-//            sb.append(sep).append(((Renderable) value).render(renderingContext));
-//        }
-//
-//        sb.append(")");
-//        return sb.toString();
-//    }
+    public T copy(SqmCopyContext context) {
+        T existing = (T) context.getCopy(this);
+        if (existing != null) {
+            return existing;
+        } else {
+            T predicate = (T) context.registerCopy(this, generateCopy(this.context, nodeBuilder(), jsonBExtractPath, values));
+            this.copyTo(predicate, context);
+            return predicate;
+        }
+    }
 
-    /**
-     * Main HQL function for predicate.
-     *
-     * @return name of the HQL function
-     */
-    abstract protected String getFunctionName();
 
-    abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, boolean negated);
+    abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values);
 
     protected HibernateContext getContext() {
         return context;

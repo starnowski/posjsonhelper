@@ -34,7 +34,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
         }
         List<SqmTypedNode<?>> result = new ArrayList<>();
         result.add((SqmBasicValuedSimplePath) referencedPathSource);
-        result.addAll(path.stream().map(p -> nodeBuilder.literal(p)).collect(Collectors.toList()));
+        result.addAll(path.stream().map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
         return result;
     }
 }

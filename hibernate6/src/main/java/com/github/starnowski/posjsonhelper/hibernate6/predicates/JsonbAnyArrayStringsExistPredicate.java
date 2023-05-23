@@ -30,17 +30,12 @@ import org.hibernate.query.sqm.NodeBuilder;
  * Implemented of HQL function defined by method {@link HibernateContext#getJsonbAnyArrayStringsExistOperator()} }
  */
 public class JsonbAnyArrayStringsExistPredicate extends AbstractJsonbArrayStringsExistPredicate<JsonbAnyArrayStringsExistPredicate> {
-    public JsonbAnyArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, boolean negated) {
-        super(context, nodeBuilder, jsonBExtractPath, values, negated);
+    public JsonbAnyArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
+        super(context, nodeBuilder, jsonBExtractPath, values, context.getJsonbAnyArrayStringsExistOperator());
     }
 
     @Override
-    protected String getFunctionName() {
-        return getContext().getJsonbAnyArrayStringsExistOperator();
-    }
-
-    @Override
-    protected JsonbAnyArrayStringsExistPredicate generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, boolean negated) {
-        return new JsonbAnyArrayStringsExistPredicate(context, nodeBuilder, jsonBExtractPath, values, negated);
+    protected JsonbAnyArrayStringsExistPredicate generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
+        return new JsonbAnyArrayStringsExistPredicate(context, nodeBuilder, jsonBExtractPath, values);
     }
 }

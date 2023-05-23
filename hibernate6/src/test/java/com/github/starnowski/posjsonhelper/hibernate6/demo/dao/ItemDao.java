@@ -38,7 +38,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        query.where(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0]), false));
+        query.where(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -47,7 +47,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        Predicate notAllMatchingTags = new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0]), true);
+        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
         Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")));
         query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
         return entityManager.createQuery(query).getResultList();
@@ -58,7 +58,7 @@ public class ItemDao {
         CriteriaQuery<Item> query = cb.createQuery(Item.class);
         Root<Item> root = query.from(Item.class);
         query.select(root);
-        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0]), false));
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
         return entityManager.createQuery(query).getResultList();
     }
 
