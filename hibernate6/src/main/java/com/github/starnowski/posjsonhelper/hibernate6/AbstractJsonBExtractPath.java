@@ -3,7 +3,6 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
-import org.hibernate.query.sqm.SqmPathSource;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
@@ -18,9 +17,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPath>
         extends SelfRenderingSqmFunction<String> implements Serializable {
 
-    private final String functionName;
     private final Path referencedPathSourcePath;
-    private final SqmPathSource<String> referencedPathSource;
     private final List<String> path;
 
     public AbstractJsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
@@ -32,9 +29,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
                 StandardFunctionReturnTypeResolvers.useFirstNonNull(),
                 nodeBuilder,
                 functionName);
-        this.functionName = functionName;
         this.referencedPathSourcePath = referencedPathSource;
-        this.referencedPathSource = (SqmPathSource<String>) referencedPathSourcePath.getModel();
         this.path = new ArrayList<>(path);
         if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Path argument can not be null or empty list");
