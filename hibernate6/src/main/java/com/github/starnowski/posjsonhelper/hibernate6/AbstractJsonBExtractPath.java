@@ -7,6 +7,7 @@ import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
                 parameters(referencedPathSource, nodeBuilder, path),
                 null,
                 null,
-                StandardFunctionReturnTypeResolvers.useFirstNonNull(),
+                StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
                 nodeBuilder,
                 functionName);
     }
