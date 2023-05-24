@@ -10,9 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.CLEAR_DATABASE_SCRIPT_PATH;
@@ -62,25 +64,29 @@ public class ItemDaoTest {
         assertThat(results.get(0).getId()).isEqualTo(expectedId);
     }
 
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1))),
+                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3, 2))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1, 4)))
+        );
+    }
 
-//
-//    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id #expectedIds when searching by all matching tags [#tags]" () {
-//        when:
-//        def results = tested.findAllByAllMatchingTags(new HashSet<String>(tags))
-//
-//        then:
-//        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
-//
-//        where:
-//        tags                            ||  expectedIds
-//                ['TAG1', 'TAG2']                ||  [1].toSet()
-//                ['TAG3']                        ||  [3, 2].toSet()
-//                ['TAG21', 'TAG22']              ||  [1, 4].toSet()
-//    }
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by all matching tags [#tags]")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags(List<String> tags, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByAllMatchingTags(new HashSet<>(tags));
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(r -> r.getId()).collect(Collectors.toSet())).isEqualTo(expectedIds);
+    }
 //
 //    @Unroll
 //    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
