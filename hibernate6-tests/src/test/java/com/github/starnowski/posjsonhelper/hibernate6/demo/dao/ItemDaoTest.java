@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
+import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -139,31 +141,34 @@ public class ItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
+        return Stream.of(
+                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(Arrays.asList(11L))),
+                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(Arrays.asList(10L))),
+                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(Arrays.asList(10L, 11L, 12L))),
+                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(Arrays.asList(10L, 12L))),
+                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(Arrays.asList(11L))),
+                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(Arrays.asList())),
+                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(Arrays.asList(10L, 11L)))
+        );
+    }
 
-//    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id #expectedIds when searching by #operator operator to compare double value #value" () {
-//        when:
-//        def results = tested.findAllByNumericValue(value, operator)
-//        //https://www.cinqict.nl/blog/how-to-run-spock-with-the-newest-java-versions-without
-//        //https://stackoverflow.com/questions/63265708/how-to-configure-spock-in-spring-boot-with-gradle-6-and-java-11
-//        //https://spockframework.org/spock/docs/1.2/release_notes.html
-//
-//        then:
-//        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
-//
-//        where:
-//        operator    |   value       ||  expectedIds
-//        EQ          |   -1137.98    ||  [11].toSet()
-//        EQ          |   353.01      ||  [10].toSet()
-//        GE          |   -1137.98    ||  [10, 11, 12].toSet()
-//        GT          |   -1137.98    ||  [10, 12].toSet()
-//        LE          |   -1137.98    ||  [11].toSet()
-//        LT          |   -1137.98    ||  [].toSet()
-//        LT          |   20490.04    ||  [10, 11].toSet()
-//    }
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by #operator operator to compare double value #value")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue(NumericComparator operator, Double value, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByNumericValue(BigDecimal.valueOf(value), operator);
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
         return Stream.of(
