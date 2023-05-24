@@ -2,45 +2,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>parent</artifactId>
         <groupId>com.github.starnowski.posjsonhelper</groupId>
+        <artifactId>parent</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.github.starnowski.posjsonhelper</groupId>
-    <artifactId>hibernate6</artifactId>
+    <artifactId>hibernate6-tests</artifactId>
 
     <properties>
-        <org.hibernate.hibernate.core.version>6.1.5.Final</org.hibernate.hibernate.core.version>
-        <java.version>11</java.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>${org.hibernate.hibernate.core.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>hibernate6</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <!--        tests   -->
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>test-utils</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>3.0.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>3.0.7</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.4.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -52,6 +67,12 @@
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
+            <version>2.4-M1-groovy-4.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.spockframework</groupId>
+            <artifactId>spock-spring</artifactId>
             <version>2.4-M1-groovy-4.0</version>
             <scope>test</scope>
         </dependency>
@@ -70,7 +91,7 @@
                         <configuration>
                             <toolchains>
                                 <jdk>
-                                    <version>11</version>
+                                    <version>17</version>
                                 </jdk>
                             </toolchains>
                         </configuration>
@@ -97,32 +118,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>pitest</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.pitest</groupId>
-                        <artifactId>pitest-maven</artifactId>
-                        <version>1.9.9</version>
-                        <configuration>
-                            <mutators>
-                                <mutator>STRONGER</mutator>
-                            </mutators>
-                            <excludedTestClasses>
-                                <param>com.github.starnowski.posjsonhelper.hibernate6.*ItTest</param>
-                                <param>com.github.starnowski.posjsonhelper.hibernate6.**.*ItTest</param>
-                            </excludedTestClasses>
-                            <mutationThreshold>95</mutationThreshold>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>
