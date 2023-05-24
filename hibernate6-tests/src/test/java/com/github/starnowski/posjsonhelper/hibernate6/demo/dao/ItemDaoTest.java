@@ -66,9 +66,9 @@ public class ItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
         return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3, 2))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1, 4)))
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
+                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
         );
     }
 
@@ -87,25 +87,33 @@ public class ItemDaoTest {
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(r -> r.getId()).collect(Collectors.toSet())).isEqualTo(expectedIds);
     }
-//
-//    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags]" () {
-//        when:
-//        def results = tested.findAllThatDoNotMatchByAllMatchingTags(new HashSet<String>(tags))
-//
-//        then:
-//        results.stream().map({it.getId()}).collect(Collectors.toSet()) == ALL_ITEMS_IDS.stream().filter({id -> !expectedIds.contains(id)}).collect(Collectors.toSet())
-//
-//        where:
-//        tags                            ||  expectedIds
-//                ['TAG1', 'TAG2']                ||  [1L].toSet()
-//                ['TAG3']                        ||  [3L, 2L].toSet()
-//                ['TAG21', 'TAG22']              ||  [1L, 4L].toSet()
-//    }
-//
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
+                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags]")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags")
+    public void shouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags(List<String> tags, Set<Long> nonIncludedIds) {
+
+        // when
+        List<Item> results = tested.findAllThatDoNotMatchByAllMatchingTags(new HashSet<>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        Set<Long> expectedIds = ALL_ITEMS_IDS.stream().filter(id -> !nonIncludedIds.contains(id)).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
 //    @Unroll
 //    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
 //            config = @SqlConfig(transactionMode = ISOLATED),
