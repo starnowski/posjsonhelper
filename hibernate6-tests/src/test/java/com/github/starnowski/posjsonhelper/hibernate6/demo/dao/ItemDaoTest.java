@@ -164,26 +164,33 @@ public class ItemDaoTest {
 //        LT          |   -1137.98    ||  [].toSet()
 //        LT          |   20490.04    ||  [10, 11].toSet()
 //    }
-//
-//    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id #expectedIds when searching by IN operator to compare enum value #values" () {
-//        when:
-//        def results = tested.findAllByStringThatMatchInValues(values)
-//
-//        then:
-//        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
-//
-//        where:
-//        values                              ||  expectedIds
-//                ['SUPER', 'USER']                   ||  [14, 13].toSet()
-//                ['SUPER']                           ||  [13].toSet()
-//                ['ANONYMOUS', 'SUPER']              ||  [15, 13].toSet()
-//    }
-//
-//    @Unroll
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
+        return Stream.of(
+                Arguments.of(asList("SUPER", "USER"), new HashSet<>(Arrays.asList(14L, 13L))),
+                Arguments.of(asList("SUPER"), new HashSet<>(Arrays.asList(13L))),
+                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(Arrays.asList(13L, 15L)))
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by IN operator to compare enum value #values")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue(List<String> values, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByStringThatMatchInValues(values);
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    //    @Unroll
 //    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
 //            config = @SqlConfig(transactionMode = ISOLATED),
 //            executionPhase = BEFORE_TEST_METHOD)
