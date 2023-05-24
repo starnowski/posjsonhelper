@@ -42,11 +42,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <version>3.1.0</version>
@@ -59,23 +54,29 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.groovy</groupId>
-            <artifactId>groovy</artifactId>
-            <version>4.0.12</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-core</artifactId>
-            <version>2.4-M1-groovy-4.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-spring</artifactId>
-            <version>2.4-M1-groovy-4.0</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.groovy</groupId>-->
+<!--            <artifactId>groovy</artifactId>-->
+<!--            <version>4.0.12</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.spockframework</groupId>-->
+<!--            <artifactId>spock-core</artifactId>-->
+<!--            <version>2.4-M1-groovy-4.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.spockframework</groupId>-->
+<!--            <artifactId>spock-spring</artifactId>-->
+<!--            <version>2.4-M1-groovy-4.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
@@ -103,29 +104,30 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
             </plugin>
-            <plugin>
-                <groupId>org.codehaus.gmavenplus</groupId>
-                <artifactId>gmavenplus-plugin</artifactId>
-                <version>2.1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>execute</goal>
-                            <goal>addSources</goal>
-                            <goal>addTestSources</goal>
-                            <goal>generateStubs</goal>
-                            <goal>compile</goal>
-                            <goal>generateTestStubs</goal>
-                            <goal>compileTests</goal>
-                            <goal>removeStubs</goal>
-                            <goal>removeTestStubs</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <targetBytecode>17</targetBytecode>
-                </configuration>
-            </plugin>
+<!--            Missing support for the toolchan-->
+<!--            <plugin>-->
+<!--                <groupId>org.codehaus.gmavenplus</groupId>-->
+<!--                <artifactId>gmavenplus-plugin</artifactId>-->
+<!--                <version>2.1.0</version>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>execute</goal>-->
+<!--                            <goal>addSources</goal>-->
+<!--                            <goal>addTestSources</goal>-->
+<!--                            <goal>generateStubs</goal>-->
+<!--                            <goal>compile</goal>-->
+<!--                            <goal>generateTestStubs</goal>-->
+<!--                            <goal>compileTests</goal>-->
+<!--                            <goal>removeStubs</goal>-->
+<!--                            <goal>removeTestStubs</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--                <configuration>-->
+<!--                    <targetBytecode>17</targetBytecode>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
