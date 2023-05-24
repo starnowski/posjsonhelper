@@ -190,24 +190,31 @@ public class ItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    //    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id #expectedIds when searching by LIKE operator with #expresion" () {
-//        when:
-//        def results = tested.findAllByStringValueAndLikeOperator(expresion)
-//
-//        then:
-//        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
-//
-//        where:
-//        expresion                           ||  expectedIds
-//        'this is full sentence'             ||  [16].toSet()
-//        'this is '                          ||  [].toSet()
-//        'this is %'                         ||  [16, 17].toSet()
-//        'end of'                            ||  [].toSet()
-//        'end of%'                           ||  [].toSet()
-//        '%end of%'                          ||  [18].toSet()
-//    }
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression() {
+        return Stream.of(
+                Arguments.of("this is full sentence", new HashSet<>(Arrays.asList(16L))),
+                Arguments.of("this is ", new HashSet<>(Arrays.asList())),
+                Arguments.of("this is %", new HashSet<>(Arrays.asList(16L, 17L))),
+                Arguments.of("end of", new HashSet<>(Arrays.asList())),
+                Arguments.of("end of%", new HashSet<>(Arrays.asList())),
+                Arguments.of("%end of%", new HashSet<>(Arrays.asList(18L)))
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by LIKE operator with #expresion")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression(String expression, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByStringValueAndLikeOperator(expression);
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
 }
