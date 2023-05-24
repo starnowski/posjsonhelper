@@ -114,24 +114,32 @@ public class ItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-//    @Unroll
-//    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-//            config = @SqlConfig(transactionMode = ISOLATED),
-//            executionPhase = BEFORE_TEST_METHOD)
-//    def "should return correct id #expectedIds when searching by any matching tags [#tags]" () {
-//        when:
-//        def results = tested.findAllByAnyMatchingTags(new HashSet<String>(tags))
-//
-//        then:
-//        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
-//
-//        where:
-//        tags                            ||  expectedIds
-//                ['TAG1', 'TAG2']                ||  [1, 3].toSet()
-//                ['TAG3']                        ||  [3, 2].toSet()
-//                ['TAG1', 'TAG32']               ||  [1, 3, 5].toSet()
-//    }
-//
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L, 3L))),
+                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
+                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(Arrays.asList(1L, 3L, 5L)))
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by any matching tags [#tags]")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags(List<String> tags, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByAnyMatchingTags(new HashSet<>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+
 //    @Unroll
 //    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
 //            config = @SqlConfig(transactionMode = ISOLATED),
