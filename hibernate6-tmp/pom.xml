@@ -9,7 +9,7 @@
         <version>0.2.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hibernate6-tests</artifactId>
+    <artifactId>hibernate6-tmp</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

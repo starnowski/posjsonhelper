@@ -13,7 +13,7 @@
         <module>test-utils</module>
         <module>hibernate5</module>
         <module>hibernate6</module>
-        <module>hibernate6-tests</module>
+        <module>hibernate6-tmp</module>
     </modules>
 
     <properties>
