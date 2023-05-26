@@ -26,7 +26,6 @@ import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
 import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
-import org.hibernate.query.sqm.SqmExpressible;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmCopyContext;

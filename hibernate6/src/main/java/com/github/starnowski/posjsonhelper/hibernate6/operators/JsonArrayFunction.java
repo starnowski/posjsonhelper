@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implements Serializable {
     public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().register("array",
-                new JsonArrayFunctionDescriptor()),
+                        new JsonArrayFunctionDescriptor()),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor("array"),
                 arguments,
                 null,
