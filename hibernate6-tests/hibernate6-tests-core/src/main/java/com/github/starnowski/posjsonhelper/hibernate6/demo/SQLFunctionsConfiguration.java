@@ -1,4 +1,4 @@
-package demo;
+package com.github.starnowski.posjsonhelper.hibernate6.demo;
 
 import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.DatabaseOperationExecutorFacade;

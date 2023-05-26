@@ -1,4 +1,4 @@
-package demo.dao;
+package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;

@@ -1,4 +1,4 @@
-package demo;
+package com.github.starnowski.posjsonhelper.hibernate6.demo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

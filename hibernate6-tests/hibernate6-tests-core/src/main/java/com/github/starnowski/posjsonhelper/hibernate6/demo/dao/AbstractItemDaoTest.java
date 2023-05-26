@@ -1,4 +1,4 @@
-package demo.dao;
+package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;

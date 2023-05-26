@@ -1,4 +1,4 @@
-package demo.model;
+package com.github.starnowski.posjsonhelper.hibernate6.demo.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
