@@ -23,6 +23,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.predicates;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
 import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
@@ -59,7 +60,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
     private final String[] values;
 
     public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, String functionName) {
-        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().registerNamed(functionName),
+        super((new FunctionByNameRegister(functionName, true)).registerFunction(nodeBuilder),
                 new FunctionExpression(functionName, 2),
                 parameters(jsonBExtractPath, nodeBuilder, context, values),
                 null,
