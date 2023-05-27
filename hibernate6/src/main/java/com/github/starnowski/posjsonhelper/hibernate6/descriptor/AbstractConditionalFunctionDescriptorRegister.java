@@ -1,4 +1,4 @@
-package com.github.starnowski.posjsonhelper.hibernate6.descriptors;
+package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;

@@ -1,6 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate6.operators;
 
-import com.github.starnowski.posjsonhelper.hibernate6.descriptors.JsonArrayFunctionDescriptor;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
