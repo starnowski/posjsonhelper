@@ -1,6 +1,8 @@
 package com.github.starnowski.posjsonhelper.hibernate6.operators;
 
+import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
@@ -11,16 +13,20 @@ import java.io.Serializable;
 import java.util.List;
 
 public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implements Serializable {
-    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments) {
-        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().register("array",
-                        new JsonArrayFunctionDescriptor()),
-                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor("array"),
+
+    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext) {
+        this(nodeBuilder, arguments, hibernateContext, true);
+    }
+
+    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext, boolean shouldTryToRegisterFunction) {
+        super((new JsonArrayFunctionDescriptorRegister(hibernateContext, shouldTryToRegisterFunction)).registerFunction(nodeBuilder),
+                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 arguments,
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.useFirstNonNull(),
                 nodeBuilder,
-                "array_agg");
+                hibernateContext.getJsonFunctionJsonArrayOperator());
     }
 
     @Override
