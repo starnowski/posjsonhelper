@@ -4,11 +4,11 @@ import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
-public abstract class ConditionalFunctionDescriptor {
+public abstract class AbstractConditionalFunctionDescriptorRegister {
 
     final boolean shouldTryToRegisterFunction;
 
-    protected ConditionalFunctionDescriptor(boolean shouldTryToRegisterFunction) {
+    protected AbstractConditionalFunctionDescriptorRegister(boolean shouldTryToRegisterFunction) {
         this.shouldTryToRegisterFunction = shouldTryToRegisterFunction;
     }
 
