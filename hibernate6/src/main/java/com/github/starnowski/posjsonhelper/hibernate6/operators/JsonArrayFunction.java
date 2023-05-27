@@ -1,17 +1,14 @@
 package com.github.starnowski.posjsonhelper.hibernate6.operators;
 
-import jakarta.persistence.criteria.Expression;
-import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptors.JsonArrayFunctionDescriptor;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderingSupport;
-import org.hibernate.query.sqm.function.NamedSqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implements Serializable {
     public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments) {

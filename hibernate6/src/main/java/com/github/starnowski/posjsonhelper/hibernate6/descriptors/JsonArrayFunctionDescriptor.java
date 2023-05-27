@@ -1,4 +1,4 @@
-package com.github.starnowski.posjsonhelper.hibernate6.operators;
+package com.github.starnowski.posjsonhelper.hibernate6.descriptors;
 
 import org.hibernate.query.sqm.function.AbstractSqmSelfRenderingFunctionDescriptor;
 import org.hibernate.sql.ast.SqlAstNodeRenderingMode;
