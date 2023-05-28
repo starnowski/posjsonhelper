@@ -1,8 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate6.operators;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
@@ -19,7 +17,7 @@ public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implemen
     }
 
     public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext, boolean shouldTryToRegisterFunction) {
-        super((new JsonArrayFunctionDescriptorRegister(hibernateContext, shouldTryToRegisterFunction)).registerFunction(nodeBuilder),
+        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 arguments,
                 null,
