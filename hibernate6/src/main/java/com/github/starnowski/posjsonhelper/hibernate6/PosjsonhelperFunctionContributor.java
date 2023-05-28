@@ -6,6 +6,7 @@ import org.hibernate.boot.model.FunctionContributor;
 public class PosjsonhelperFunctionContributor implements FunctionContributor {
     @Override
     public void contributeFunctions(FunctionContributions functionContributions) {
-        //TODO
+        SqmFunctionRegistryEnricher sqmFunctionRegistryEnricher = new SqmFunctionRegistryEnricher();
+        sqmFunctionRegistryEnricher.enrich(functionContributions.getFunctionRegistry());
     }
 }
