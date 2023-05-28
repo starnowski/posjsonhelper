@@ -15,12 +15,12 @@ public class JsonArrayFunctionDescriptorRegister extends AbstractConditionalFunc
 
     @Override
     protected SqmFunctionDescriptor register(SqmFunctionRegistry registry) {
-        return registry.register(getFunctionName(),
+        return registry.register(getHqlFunctionName(),
                 new JsonArrayFunctionDescriptor());
     }
 
     @Override
-    protected String getFunctionName() {
+    protected String getHqlFunctionName() {
         return hibernateContext.getJsonFunctionJsonArrayOperator();
     }
 }

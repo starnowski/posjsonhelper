@@ -4,8 +4,6 @@ import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
-import java.util.Optional;
-
 public abstract class AbstractConditionalFunctionDescriptorRegister {
 
     final boolean shouldTryToRegisterFunction;
@@ -16,13 +14,13 @@ public abstract class AbstractConditionalFunctionDescriptorRegister {
 
     public SqmFunctionDescriptor registerFunction(NodeBuilder nodeBuilder) {
         SqmFunctionRegistry sqmFunctionRegistry = nodeBuilder.getQueryEngine().getSqmFunctionRegistry();
-        SqmFunctionDescriptor functionDescriptor = sqmFunctionRegistry.findFunctionDescriptor(getFunctionName());
+        SqmFunctionDescriptor functionDescriptor = sqmFunctionRegistry.findFunctionDescriptor(getHqlFunctionName());
         return functionDescriptor == null && isShouldTryToRegisterFunction() ? register(sqmFunctionRegistry) : functionDescriptor;
     }
 
     protected abstract SqmFunctionDescriptor register(SqmFunctionRegistry registry);
 
-    protected abstract String getFunctionName();
+    protected abstract String getHqlFunctionName();
 
     public boolean isShouldTryToRegisterFunction() {
         return shouldTryToRegisterFunction;

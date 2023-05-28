@@ -5,19 +5,19 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 public class FunctionByNameRegister extends AbstractConditionalFunctionDescriptorRegister {
 
-    private final String functionName;
-    public FunctionByNameRegister(String functionName, boolean shouldTryToRegisterFunction) {
+    private final String hqlFunctionName;
+    public FunctionByNameRegister(String hqlFunctionName, boolean shouldTryToRegisterFunction) {
         super(shouldTryToRegisterFunction);
-        this.functionName = functionName;
+        this.hqlFunctionName = hqlFunctionName;
     }
 
     @Override
     protected SqmFunctionDescriptor register(SqmFunctionRegistry registry) {
-        return registry.registerNamed(functionName);
+        return registry.registerNamed(hqlFunctionName);
     }
 
     @Override
-    protected String getFunctionName() {
-        return functionName;
+    protected String getHqlFunctionName() {
+        return hqlFunctionName;
     }
 }
