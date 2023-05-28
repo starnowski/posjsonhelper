@@ -18,18 +18,18 @@ class SqmFunctionRegistryEnricherTest extends Specification {
     @Unroll
     def "should enrich sqmFunctionRegistry with expected functions types #expectedFunctionTypes"() {
         given:
-        def coreContextPropertiesSupplier = Mock(CoreContextPropertiesSupplier)
-        def hibernateContextPropertiesSupplier = Mock(HibernateContextPropertiesSupplier)
-        def sqmFunctionRegistry = new SqmFunctionRegistry()
-        coreContextPropertiesSupplier.get() >> context
-        hibernateContextPropertiesSupplier.get() >> hibernateContext
-        def tested = new SqmFunctionRegistryEnricher(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier)
+            def coreContextPropertiesSupplier = Mock(CoreContextPropertiesSupplier)
+            def hibernateContextPropertiesSupplier = Mock(HibernateContextPropertiesSupplier)
+            def sqmFunctionRegistry = new SqmFunctionRegistry()
+            coreContextPropertiesSupplier.get() >> context
+            hibernateContextPropertiesSupplier.get() >> hibernateContext
+            def tested = new SqmFunctionRegistryEnricher(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier)
 
         when:
-        tested.enrich(sqmFunctionRegistry)
+            tested.enrich(sqmFunctionRegistry)
 
         then:
-        sqmFunctionRegistry.getFunctions().entrySet().stream().filter({ it -> expectedFunctionTypes.containsKey(it.getKey()) }).collect(Collectors.toMap(new KeyMapper(), new ValueClassMapper())) == expectedFunctionTypes
+            sqmFunctionRegistry.getFunctions().entrySet().stream().filter({ it -> expectedFunctionTypes.containsKey(it.getKey()) }).collect(Collectors.toMap(new KeyMapper(), new ValueClassMapper())) == expectedFunctionTypes
 
         where:
             hibernateContext    | context                   || expectedFunctionTypes
