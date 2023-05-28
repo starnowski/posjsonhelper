@@ -25,11 +25,11 @@ public class SqmFunctionRegistryEnricher {
      */
     private final HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier;
 
-    public SqmFunctionRegistryEnricher(){
+    public SqmFunctionRegistryEnricher() {
         this(new CoreContextPropertiesSupplier(), new HibernateContextPropertiesSupplier());
     }
 
-    public SqmFunctionRegistryEnricher(CoreContextPropertiesSupplier coreContextPropertiesSupplier, HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier) {
+    SqmFunctionRegistryEnricher(CoreContextPropertiesSupplier coreContextPropertiesSupplier, HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier) {
         this.coreContextPropertiesSupplier = coreContextPropertiesSupplier;
         this.hibernateContextPropertiesSupplier = hibernateContextPropertiesSupplier;
     }
@@ -55,6 +55,10 @@ public class SqmFunctionRegistryEnricher {
     public void enrich(SqmFunctionRegistry sqmFunctionRegistry) {
         Context context = coreContextPropertiesSupplier.get();
         HibernateContext hibernateContext = hibernateContextPropertiesSupplier.get();
+        this.enrich(sqmFunctionRegistry, context, hibernateContext);
+    }
+
+    public void enrich(SqmFunctionRegistry sqmFunctionRegistry, Context context, HibernateContext hibernateContext) {
         functionDescriptorRegisterSuppliers.stream().map(supplier -> supplier.get(context, hibernateContext)).forEach(functionDescriptorRegister ->
                 functionDescriptorRegister.registerFunction(sqmFunctionRegistry));
     }
