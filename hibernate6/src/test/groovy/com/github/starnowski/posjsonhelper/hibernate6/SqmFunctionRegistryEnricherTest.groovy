@@ -29,7 +29,7 @@ class SqmFunctionRegistryEnricherTest extends Specification {
             tested.enrich(sqmFunctionRegistry)
 
         then:
-        sqmFunctionRegistry.getFunctions().entrySet().stream().filter({it -> expectedFunctionTypes.containsKey(it.getKey())}).collect(Collectors.toMap(new KeyMapper(), new ValueClassMapper())) == expectedFunctionTypes
+            sqmFunctionRegistry.getFunctions().entrySet().stream().filter({it -> expectedFunctionTypes.containsKey(it.getKey())}).collect(Collectors.toMap(new KeyMapper(), new ValueClassMapper())) == expectedFunctionTypes
 
         where:
             hibernateContext    ||  expectedFunctionTypes
@@ -44,10 +44,10 @@ class SqmFunctionRegistryEnricherTest extends Specification {
         }
     }
 
-    private static class ValueClassMapper implements Function<Map.Entry<String, SqmFunctionDescriptor>, Class>{
+    private static class ValueClassMapper implements Function<Map.Entry<String, SqmFunctionDescriptor>, String>{
 
         @Override
-        Class apply(Map.Entry<String, SqmFunctionDescriptor> entry) {
+        String apply(Map.Entry<String, SqmFunctionDescriptor> entry) {
             return ((AbstractSqmFunctionDescriptor)entry.getValue()).getName();
         }
     }

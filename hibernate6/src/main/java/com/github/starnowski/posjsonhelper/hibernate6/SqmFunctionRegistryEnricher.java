@@ -38,7 +38,7 @@ public class SqmFunctionRegistryEnricher {
         AbstractConditionalFunctionDescriptorRegister get(Context context, HibernateContext hibernateContext);
     }
 
-    List<FunctionDescriptorRegisterSupplier> functionDescriptorRegisters = List.of(
+    private final List<FunctionDescriptorRegisterSupplier> functionDescriptorRegisterSuppliers = List.of(
             (context, hibernateContext) ->
                     new FunctionByNameRegister(JSONB_EXTRACT_PATH_FUNCTION_NAME, JSONB_EXTRACT_PATH_FUNCTION_NAME, true),
             (context, hibernateContext) ->
@@ -46,6 +46,9 @@ public class SqmFunctionRegistryEnricher {
     );
 
     public void enrich(SqmFunctionRegistry sqmFunctionRegistry) {
-//        sqmFunctionRegistry
+        Context context = coreContextPropertiesSupplier.get();
+        HibernateContext hibernateContext = hibernateContextPropertiesSupplier.get();
+        functionDescriptorRegisterSuppliers.stream().map(supplier -> supplier.get(context, hibernateContext)).forEach(functionDescriptorRegister ->
+                functionDescriptorRegister.registerFunction(sqmFunctionRegistry));
     }
 }
