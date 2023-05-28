@@ -60,7 +60,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
     private final String[] values;
 
     public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, String functionName) {
-        super((new FunctionByNameRegister(functionName, true, functionName)).registerFunction(nodeBuilder),
+        super((new FunctionByNameRegister(functionName, functionName, true)).registerFunction(nodeBuilder),
                 new FunctionExpression(functionName, 2),
                 parameters(jsonBExtractPath, nodeBuilder, context, values),
                 null,

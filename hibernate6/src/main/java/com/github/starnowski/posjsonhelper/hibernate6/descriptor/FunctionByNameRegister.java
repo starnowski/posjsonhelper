@@ -8,7 +8,7 @@ public class FunctionByNameRegister extends AbstractConditionalFunctionDescripto
     private final String hqlFunctionName;
     private final String sqlFunctionName;
 
-    public FunctionByNameRegister(String hqlFunctionName, boolean shouldTryToRegisterFunction, String sqlFunctionName) {
+    public FunctionByNameRegister(String hqlFunctionName, String sqlFunctionName, boolean shouldTryToRegisterFunction) {
         super(shouldTryToRegisterFunction);
         this.hqlFunctionName = hqlFunctionName;
         this.sqlFunctionName = sqlFunctionName;

@@ -19,7 +19,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
         extends SelfRenderingSqmFunction<String> implements Serializable {
 
     public AbstractJsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
-        super((new FunctionByNameRegister(functionName, true, functionName)).registerFunction(nodeBuilder),
+        super((new FunctionByNameRegister(functionName, functionName, true)).registerFunction(nodeBuilder),
                 new FunctionExpression(functionName, path.size() + 1),
                 parameters(referencedPathSource, nodeBuilder, path),
                 null,
