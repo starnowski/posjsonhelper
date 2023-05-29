@@ -26,19 +26,4 @@ public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implemen
                 nodeBuilder,
                 hibernateContext.getJsonFunctionJsonArrayOperator());
     }
-
-    @Override
-    public void appendHqlString(StringBuilder sb) {
-        sb.append(this.getFunctionName());
-        if (this.getArguments().isEmpty()) {
-            sb.append("[]");
-            return;
-        }
-        sb.append('[');
-        for (int i = 1; i < this.getArguments().size(); ++i) {
-            sb.append(", ");
-            this.getArguments().get(i).appendHqlString(sb);
-        }
-        sb.append(']');
-    }
 }
