@@ -10,14 +10,13 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.starnowski.posjsonhelper</groupId>
-    <artifactId>hibernate5</artifactId>
+    <artifactId>hibernate6</artifactId>
 
     <properties>
-        <org.hibernate.hibernate.core.version>5.6.3.Final</org.hibernate.hibernate.core.version>
-        <java.version>1.8</java.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <license.dir>${project.parent.basedir}</license.dir>
+        <org.hibernate.hibernate.core.version>6.1.5.Final</org.hibernate.hibernate.core.version>
+        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -40,42 +39,21 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-jpa</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.4.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.groovy</groupId>
+            <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-all</artifactId>
+            <version>4.0.12</version>
+            <type>pom</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.spockframework</groupId>
             <artifactId>spock-core</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.spockframework</groupId>
-            <artifactId>spock-spring</artifactId>
+            <version>2.4-M1-groovy-4.0</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -93,7 +71,7 @@
                         <configuration>
                             <toolchains>
                                 <jdk>
-                                    <version>8</version>
+                                    <version>11</version>
                                 </jdk>
                             </toolchains>
                         </configuration>
@@ -103,40 +81,17 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.gmavenplus</groupId>
                 <artifactId>gmavenplus-plugin</artifactId>
-                <version>1.5</version>
+                <version>3.0.0</version>
                 <executions>
                     <execution>
                         <goals>
                             <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
+                            <goal>compileTests</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -155,14 +110,14 @@
                     <plugin>
                         <groupId>org.pitest</groupId>
                         <artifactId>pitest-maven</artifactId>
-                        <version>1.9.9</version>
+                        <version>1.14.1</version>
                         <configuration>
                             <mutators>
                                 <mutator>STRONGER</mutator>
                             </mutators>
                             <excludedTestClasses>
-                                <param>com.github.starnowski.posjsonhelper.hibernate5.*ItTest</param>
-                                <param>com.github.starnowski.posjsonhelper.hibernate5.**.*ItTest</param>
+                                <param>com.github.starnowski.posjsonhelper.hibernate6.*ItTest</param>
+                                <param>com.github.starnowski.posjsonhelper.hibernate6.**.*ItTest</param>
                             </excludedTestClasses>
                             <mutationThreshold>95</mutationThreshold>
                         </configuration>

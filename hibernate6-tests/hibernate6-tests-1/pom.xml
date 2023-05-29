@@ -2,27 +2,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>parent</artifactId>
         <groupId>com.github.starnowski.posjsonhelper</groupId>
+        <artifactId>hibernate6-tests</artifactId>
         <version>0.2.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test-utils</artifactId>
+    <artifactId>hibernate6-tests-1</artifactId>
 
     <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <jakarta.persistence.jakarta.persistence-api.version>2.2.3</jakarta.persistence.jakarta.persistence-api.version>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>jakarta.persistence</groupId>
-            <artifactId>jakarta.persistence-api</artifactId>
-            <version>${jakarta.persistence.jakarta.persistence-api.version}</version>
-            <optional>true</optional>
+            <groupId>com.github.starnowski.posjsonhelper</groupId>
+            <artifactId>hibernate6-tests-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
@@ -39,7 +38,7 @@
                         <configuration>
                             <toolchains>
                                 <jdk>
-                                    <version>8</version>
+                                    <version>17</version>
                                 </jdk>
                             </toolchains>
                         </configuration>
@@ -49,7 +48,32 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
             </plugin>
+            <!--            Missing support for the toolchan-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.codehaus.gmavenplus</groupId>-->
+            <!--                <artifactId>gmavenplus-plugin</artifactId>-->
+            <!--                <version>2.1.0</version>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>execute</goal>-->
+            <!--                            <goal>addSources</goal>-->
+            <!--                            <goal>addTestSources</goal>-->
+            <!--                            <goal>generateStubs</goal>-->
+            <!--                            <goal>compile</goal>-->
+            <!--                            <goal>generateTestStubs</goal>-->
+            <!--                            <goal>compileTests</goal>-->
+            <!--                            <goal>removeStubs</goal>-->
+            <!--                            <goal>removeTestStubs</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--                <configuration>-->
+            <!--                    <targetBytecode>17</targetBytecode>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
