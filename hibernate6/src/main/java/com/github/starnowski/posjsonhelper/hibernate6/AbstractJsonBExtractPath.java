@@ -1,9 +1,8 @@
 package com.github.starnowski.posjsonhelper.hibernate6;
 
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister;
 import jakarta.persistence.criteria.Path;
-import org.hibernate.metamodel.mapping.ordering.ast.FunctionExpression;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
@@ -20,7 +19,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
 
     public AbstractJsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
-                new FunctionExpression(functionName, path.size() + 1),
+                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 parameters(referencedPathSource, nodeBuilder, path),
                 null,
                 null,
