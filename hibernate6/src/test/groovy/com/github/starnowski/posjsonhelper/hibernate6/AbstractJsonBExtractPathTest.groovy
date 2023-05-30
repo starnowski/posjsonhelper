@@ -9,7 +9,6 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry
 import org.hibernate.query.sqm.internal.SqmCriteriaNodeBuilder
 import org.hibernate.query.sqm.tree.SqmTypedNode
 import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath
-import org.hibernate.type.BasicTypeReference
 import org.hibernate.type.BasicTypeRegistry
 import org.hibernate.type.StandardBasicTypes
 import org.hibernate.type.spi.TypeConfiguration

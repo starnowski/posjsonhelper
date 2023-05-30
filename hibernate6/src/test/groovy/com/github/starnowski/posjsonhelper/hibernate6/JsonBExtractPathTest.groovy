@@ -2,7 +2,6 @@ package com.github.starnowski.posjsonhelper.hibernate6
 
 import jakarta.persistence.criteria.Path
 import org.hibernate.query.sqm.NodeBuilder
-import spock.lang.Specification
 
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME
 
