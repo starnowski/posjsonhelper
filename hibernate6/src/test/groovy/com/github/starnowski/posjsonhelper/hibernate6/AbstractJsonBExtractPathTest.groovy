@@ -56,6 +56,43 @@ abstract class AbstractJsonBExtractPathTest <T extends AbstractJsonBExtractPath>
             path << [["some", "property"], ["child1", "grandson1"]]
     }
 
+    @Unroll
+    def "should throw exception when path argument is empty or null #path"() {
+        given:
+        SqmCriteriaNodeBuilder nodeBuilder = Mock(SqmCriteriaNodeBuilder)
+        SqmBasicValuedSimplePath referencedPathSource = Mock(SqmBasicValuedSimplePath)
+
+        QueryEngine queryEngine = Mockito.mock(QueryEngine)
+        SqmFunctionRegistry sqmFunctionRegistry = Mock(SqmFunctionRegistry)
+        TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport ti = Mock(TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport)
+        Mockito.when(queryEngine.getSqmFunctionRegistry()).thenReturn(sqmFunctionRegistry)
+        TypeConfiguration typeConfiguration = Mock(TypeConfiguration)
+        BasicTypeRegistry basicTypeRegistry = Mock(BasicTypeRegistry)
+        org.hibernate.type.BasicType basicType = Mock(org.hibernate.type.BasicType)
+        List<? extends SqmTypedNode<?>> expectedArguments = new ArrayList<>()
+        expectedArguments.add(referencedPathSource)
+        for (String p : path) {
+            org.hibernate.query.sqm.tree.expression.SqmExpression argument = Mock(org.hibernate.query.sqm.tree.expression.SqmExpression)
+            expectedArguments.add(argument)
+            nodeBuilder.value(p) >> argument
+        }
+
+        when:
+            prepareTestObject(referencedPathSource, nodeBuilder, path)
+
+        then:
+            nodeBuilder.getQueryEngine() >> queryEngine
+            sqmFunctionRegistry.findFunctionDescriptor(expectedFunctionName()) >> ti
+            nodeBuilder.getTypeConfiguration() >> typeConfiguration
+            typeConfiguration.getBasicTypeRegistry() >> basicTypeRegistry
+            basicTypeRegistry.resolve(StandardBasicTypes.STRING) >> basicType
+            def ex = thrown(IllegalArgumentException)
+            ex.message == "Path argument can not be null or empty list"
+
+        where:
+            path << [null, []]
+    }
+
     protected abstract T prepareTestObject(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path)
 
     protected abstract String expectedFunctionName()
