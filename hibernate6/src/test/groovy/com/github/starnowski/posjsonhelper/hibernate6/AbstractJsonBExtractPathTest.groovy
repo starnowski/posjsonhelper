@@ -59,23 +59,23 @@ abstract class AbstractJsonBExtractPathTest <T extends AbstractJsonBExtractPath>
     @Unroll
     def "should throw exception when path argument is empty or null #path"() {
         given:
-        SqmCriteriaNodeBuilder nodeBuilder = Mock(SqmCriteriaNodeBuilder)
-        SqmBasicValuedSimplePath referencedPathSource = Mock(SqmBasicValuedSimplePath)
+            SqmCriteriaNodeBuilder nodeBuilder = Mock(SqmCriteriaNodeBuilder)
+            SqmBasicValuedSimplePath referencedPathSource = Mock(SqmBasicValuedSimplePath)
 
-        QueryEngine queryEngine = Mockito.mock(QueryEngine)
-        SqmFunctionRegistry sqmFunctionRegistry = Mock(SqmFunctionRegistry)
-        TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport ti = Mock(TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport)
-        Mockito.when(queryEngine.getSqmFunctionRegistry()).thenReturn(sqmFunctionRegistry)
-        TypeConfiguration typeConfiguration = Mock(TypeConfiguration)
-        BasicTypeRegistry basicTypeRegistry = Mock(BasicTypeRegistry)
-        org.hibernate.type.BasicType basicType = Mock(org.hibernate.type.BasicType)
-        List<? extends SqmTypedNode<?>> expectedArguments = new ArrayList<>()
-        expectedArguments.add(referencedPathSource)
-        for (String p : path) {
-            org.hibernate.query.sqm.tree.expression.SqmExpression argument = Mock(org.hibernate.query.sqm.tree.expression.SqmExpression)
-            expectedArguments.add(argument)
-            nodeBuilder.value(p) >> argument
-        }
+            QueryEngine queryEngine = Mockito.mock(QueryEngine)
+            SqmFunctionRegistry sqmFunctionRegistry = Mock(SqmFunctionRegistry)
+            TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport ti = Mock(TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport)
+            Mockito.when(queryEngine.getSqmFunctionRegistry()).thenReturn(sqmFunctionRegistry)
+            TypeConfiguration typeConfiguration = Mock(TypeConfiguration)
+            BasicTypeRegistry basicTypeRegistry = Mock(BasicTypeRegistry)
+            org.hibernate.type.BasicType basicType = Mock(org.hibernate.type.BasicType)
+            List<? extends SqmTypedNode<?>> expectedArguments = new ArrayList<>()
+            expectedArguments.add(referencedPathSource)
+            for (String p : path) {
+                org.hibernate.query.sqm.tree.expression.SqmExpression argument = Mock(org.hibernate.query.sqm.tree.expression.SqmExpression)
+                expectedArguments.add(argument)
+                nodeBuilder.value(p) >> argument
+            }
 
         when:
             prepareTestObject(referencedPathSource, nodeBuilder, path)
