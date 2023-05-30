@@ -69,13 +69,6 @@ abstract class AbstractJsonBExtractPathTest <T extends AbstractJsonBExtractPath>
             TypeConfiguration typeConfiguration = Mock(TypeConfiguration)
             BasicTypeRegistry basicTypeRegistry = Mock(BasicTypeRegistry)
             org.hibernate.type.BasicType basicType = Mock(org.hibernate.type.BasicType)
-            List<? extends SqmTypedNode<?>> expectedArguments = new ArrayList<>()
-            expectedArguments.add(referencedPathSource)
-            for (String p : path) {
-                org.hibernate.query.sqm.tree.expression.SqmExpression argument = Mock(org.hibernate.query.sqm.tree.expression.SqmExpression)
-                expectedArguments.add(argument)
-                nodeBuilder.value(p) >> argument
-            }
 
         when:
             prepareTestObject(referencedPathSource, nodeBuilder, path)
