@@ -12,10 +12,6 @@ public abstract class AbstractConditionalFunctionDescriptorRegister {
         this.shouldTryToRegisterFunction = shouldTryToRegisterFunction;
     }
 
-    public SqmFunctionDescriptor registerFunction(NodeBuilder nodeBuilder) {
-        return registerFunction(nodeBuilder.getQueryEngine().getSqmFunctionRegistry());
-    }
-
     public SqmFunctionDescriptor registerFunction(SqmFunctionRegistry sqmFunctionRegistry) {
         SqmFunctionDescriptor functionDescriptor = sqmFunctionRegistry.findFunctionDescriptor(getHqlFunctionName());
         return functionDescriptor == null && isShouldTryToRegisterFunction() ? register(sqmFunctionRegistry) : functionDescriptor;
