@@ -116,6 +116,24 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags] by using HQL query")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags")
+    public void shouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTagsWithHQLQuery(List<String> tags, Set<Long> nonIncludedIds) {
+
+        // when
+        List<Item> results = tested.findAllThatDoNotMatchByAllMatchingTagsWithHQLQuery(new HashSet<>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        Set<Long> expectedIds = ALL_ITEMS_IDS.stream().filter(id -> !nonIncludedIds.contains(id)).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
         return Stream.of(
                 Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L, 3L))),

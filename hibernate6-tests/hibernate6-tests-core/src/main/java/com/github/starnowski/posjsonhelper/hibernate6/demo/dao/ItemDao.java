@@ -113,4 +113,37 @@ public class ItemDao {
         query.setParameter("expr", expression);
         return query.getResultList();
     }
+
+    public List<Item> findAllThatDoNotMatchByAllMatchingTagsWithHQLQuery(Set<String> tags) {
+        //top_element_with_set_of_values
+        String statement = String.format("from Item as item_ where NOT ( %s( jsonb_extract_path( item_.jsonbContent , :param0 ) , %s(%s)) = TRUE ) OR jsonb_extract_path( item_.jsonbContent , :param0 ) IS NULL ", hibernateContext.getJsonbAllArrayStringsExistOperator(), hibernateContext.getJsonFunctionJsonArrayOperator(), generateParameters("param", 1, tags.size()));
+        TypedQuery<Item> query = entityManager.createQuery(statement, Item.class);
+//        query.setParameter("path", "string_value");
+//        query.setParameter("expr", expression);
+        query.setParameter("param0", "top_element_with_set_of_values");
+        List<String> parameters = tags.stream().toList();
+        for (int p = 1, i = 0; p < parameters.size() + 1; p++, i++) {
+            query.setParameter("param" + p, parameters.get(i));
+        }
+        return query.getResultList();
+    }
+
+    protected String generateParameters(String prefix, int index, int parametersNum)
+    {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        int to = index + parametersNum;
+        for (;index < to; index++) {
+            if (!first) {
+                sb.append(" , ");
+            }
+            sb.append(":");
+            sb.append(prefix);
+            sb.append(index);
+            first = false;
+        }
+        return sb.toString();
+    }
+
+//    from Item as item_ where jsonb_all_array_strings_exist( jsonb_extract_path( item_.jsonbContent , :param0 ) , json_function_json_array(:param1)) = TRUE
 }
