@@ -100,8 +100,4 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
 
 
     abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values);
-
-    protected HibernateContext getContext() {
-        return context;
-    }
 }

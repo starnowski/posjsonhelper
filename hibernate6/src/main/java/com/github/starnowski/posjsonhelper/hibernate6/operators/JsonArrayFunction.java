@@ -13,10 +13,6 @@ import java.util.List;
 public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implements Serializable {
 
     public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext) {
-        this(nodeBuilder, arguments, hibernateContext, true);
-    }
-
-    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext, boolean shouldTryToRegisterFunction) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 arguments,
