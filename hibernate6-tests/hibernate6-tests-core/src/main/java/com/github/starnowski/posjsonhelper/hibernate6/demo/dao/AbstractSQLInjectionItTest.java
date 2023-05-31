@@ -97,4 +97,29 @@ public abstract class AbstractSQLInjectionItTest {
 
         // https://portswigger.net/web-security/sql-injection
     }
+
+    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments() {
+        return Stream.of(
+                Arguments.of("prop.value"  ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
+        );
+    }
+
+    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAllArrayStringsExistPredicate with array elements #tags as passed arguments")
+    @ParameterizedTest
+    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments")
+    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments(String property, String value, String tags){
+        //GIVEN:
+        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
+
+        //WHEN:
+        var results = tested.findAllByAllMatchingTags(new HashSet<String>(Arrays.asList(tags)));
+
+        //THEN:
+        assertThat(results).isEmpty();
+        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
+        assertThat(currentValue).isEqualTo(value);
+        results.isEmpty();
+
+        // https://portswigger.net/web-security/sql-injection
+    }
 }
