@@ -11,6 +11,7 @@ import org.hibernate.query.sqm.function.FunctionRenderingSupport
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor
 import org.hibernate.query.sqm.function.SqmFunctionRegistry
 import org.hibernate.query.sqm.internal.SqmCriteriaNodeBuilder
+import org.hibernate.query.sqm.tree.SqmCopyContext
 import org.hibernate.query.sqm.tree.SqmTypedNode
 import org.hibernate.query.sqm.tree.domain.SqmBasicValuedSimplePath
 import org.hibernate.type.BasicTypeRegistry

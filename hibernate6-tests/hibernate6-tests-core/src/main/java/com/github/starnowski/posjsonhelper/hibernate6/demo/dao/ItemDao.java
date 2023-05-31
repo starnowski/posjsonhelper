@@ -8,6 +8,7 @@ import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArraySt
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -104,5 +105,12 @@ public class ItemDao {
         query.select(root);
         query.where(cb.like(new JsonBExtractPathText(root.get("jsonbContent"), singletonList("string_value"), (NodeBuilder) cb), expression));
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Item> findAllByStringValueAndLikeOperatorWithHQLQuery(String expression) {
+        TypedQuery<Item> query = entityManager.createQuery("from Item as item0_ where jsonb_extract_path_text( item0_.jsonbContent , :path ) like :expr", Item.class);
+        query.setParameter("path", "string_value");
+        query.setParameter("expr", expression);
+        return query.getResultList();
     }
 }
