@@ -1,8 +1,11 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.model;
 
+import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
 import java.util.List;
 
+@Embeddable
 public class Child implements Serializable {
 
     private List<String> pets;

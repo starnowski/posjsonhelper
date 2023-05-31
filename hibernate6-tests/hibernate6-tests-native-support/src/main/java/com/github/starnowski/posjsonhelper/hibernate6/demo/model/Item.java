@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 
 @Entity
@@ -13,8 +15,9 @@ public class Item {
     @Id
     private Long id;
 
+    @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "jsonb_content", columnDefinition = "jsonb")
-    private String jsonbContent;
+    private JsonbContent jsonbContent;
 
     public Long getId() {
         return id;
@@ -24,11 +27,11 @@ public class Item {
         this.id = id;
     }
 
-    public String getJsonbContent() {
+    public JsonbContent getJsonbContent() {
         return jsonbContent;
     }
 
-    public void setJsonbContent(String jsonbContent) {
+    public void setJsonbContent(JsonbContent jsonbContent) {
         this.jsonbContent = jsonbContent;
     }
 }
