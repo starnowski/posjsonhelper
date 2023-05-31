@@ -159,6 +159,23 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by any matching tags [#tags] with HQL query")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTagsWithHQL(List<String> tags, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByAnyMatchingTagsWithHQL(new HashSet<>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
         return Stream.of(
                 Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(Arrays.asList(11L))),
