@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
 
@@ -17,6 +18,7 @@ public class Item {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "jsonb_content", columnDefinition = "jsonb")
+//    @Type(value = MyJsonType.class)
     private JsonbContent jsonbContent;
 
     public Long getId() {

@@ -33,7 +33,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
             throw new IllegalArgumentException("Path argument can not be null or empty list");
         }
         List<SqmTypedNode<?>> result = new ArrayList<>();
-        result.add((SqmBasicValuedSimplePath) referencedPathSource);
+        result.add((SqmTypedNode) referencedPathSource);
         result.addAll(path.stream().map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
         return result;
     }
