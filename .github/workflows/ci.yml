@@ -70,7 +70,7 @@ jobs:
         run: ./mvnw -DskipTests --quiet clean install && ./mvnw test
 
       - name: Run mutation tests
-        run: ./mvnw -P pitest test org.pitest:pitest-maven:mutationCoverage
+        run: ./mvnw -pl :hibernate5,:core -P pitest test org.pitest:pitest-maven:mutationCoverage
 
       # Executing gmavenplus plugin
       # https://github.com/groovy/GMavenPlus/issues/43
