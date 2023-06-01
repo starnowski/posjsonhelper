@@ -6,6 +6,7 @@ import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
+import org.hibernate.type.StandardBasicTypes;
 
 import java.io.Serializable;
 import java.util.List;
