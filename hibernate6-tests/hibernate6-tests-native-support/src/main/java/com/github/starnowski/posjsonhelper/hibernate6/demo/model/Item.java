@@ -1,5 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.model;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,6 +18,7 @@ public class Item {
     private Long id;
 
     @JdbcTypeCode(SqlTypes.JSON)
+    @Type(JsonType.class)
     @Column(name = "jsonb_content", columnDefinition = "jsonb")
 //    @Type(value = MyJsonType.class)
     private JsonbContent jsonbContent;

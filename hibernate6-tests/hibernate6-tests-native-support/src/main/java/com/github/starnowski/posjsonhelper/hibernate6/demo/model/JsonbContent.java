@@ -7,7 +7,7 @@ import org.hibernate.type.SqlTypes;
 import java.io.Serializable;
 import java.util.List;
 //@Embeddable
-public class JsonbContent {
+public class JsonbContent implements Serializable{
 
 //    @Transient
 //    @JdbcTypeCode(SqlTypes.JSON)

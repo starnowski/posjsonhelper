@@ -10,7 +10,7 @@ import java.util.List;
 
 //@Embeddable
 //@Struct(name = "child")
-public class Child {
+public class Child implements Serializable{
 
 //    @Transient
     private List<String> pets;
