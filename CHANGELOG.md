@@ -19,19 +19,22 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [0.2.0] - 2023-06-03
 
--   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.PosjsonhelperFunctionContributor [24](https://github.com/starnowski/posjsonhelper/issues/24)
--   Added type com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher [24](https://github.com/starnowski/posjsonhelper/issues/24)
+### Added
+
+- Added support for hibernate 6 [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.PosjsonhelperFunctionContributor [24](https://github.com/starnowski/posjsonhelper/issues/24)
+  -   Added type com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher [24](https://github.com/starnowski/posjsonhelper/issues/24)
 
 ## [0.1.2] - 2023-05-12
 
