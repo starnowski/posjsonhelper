@@ -30,8 +30,15 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry;
  */
 public abstract class AbstractConditionalFunctionDescriptorRegister {
 
+    /**
+     * Flag determines if in the case when the function is already registered if it can be overridden.
+     */
     final boolean shouldOverrideFunctionIfAlreadyRegistered;
 
+    /**
+     *
+     * @param shouldOverrideFunctionIfAlreadyRegistered value of property {@link #shouldOverrideFunctionIfAlreadyRegistered}
+     */
     protected AbstractConditionalFunctionDescriptorRegister(boolean shouldOverrideFunctionIfAlreadyRegistered) {
         this.shouldOverrideFunctionIfAlreadyRegistered = shouldOverrideFunctionIfAlreadyRegistered;
     }
@@ -41,10 +48,23 @@ public abstract class AbstractConditionalFunctionDescriptorRegister {
         return functionDescriptor == null || isShouldOverrideFunctionIfAlreadyRegistered() ? register(sqmFunctionRegistry) : functionDescriptor;
     }
 
+    /**
+     * Method that register function with {@link SqmFunctionRegistry}
+     * @param registry object of type SqmFunctionRegistry that is going to be used for function registration
+     * @return function descriptor
+     */
     protected abstract SqmFunctionDescriptor register(SqmFunctionRegistry registry);
 
+    /**
+     * Name of HQL function, with which components would try to register function.
+     * @return name of HQL function, with which components would try to register function
+     */
     protected abstract String getHqlFunctionName();
 
+    /**
+     * Returns value of property {@link #shouldOverrideFunctionIfAlreadyRegistered}
+     * @return value of property {@link #shouldOverrideFunctionIfAlreadyRegistered}
+     */
     public boolean isShouldOverrideFunctionIfAlreadyRegistered() {
         return shouldOverrideFunctionIfAlreadyRegistered;
     }
