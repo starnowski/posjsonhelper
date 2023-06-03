@@ -27,6 +27,11 @@ https://www.markdownguide.org/basic-syntax/
 -   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
 -   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
 -   Added type com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate [24](https://github.com/starnowski/posjsonhelper/issues/24)
+-   Added type com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath [24](https://github.com/starnowski/posjsonhelper/issues/24)
+-   Added type com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath [24](https://github.com/starnowski/posjsonhelper/issues/24)
+-   Added type com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText [24](https://github.com/starnowski/posjsonhelper/issues/24)
+-   Added type com.github.starnowski.posjsonhelper.hibernate6.PosjsonhelperFunctionContributor [24](https://github.com/starnowski/posjsonhelper/issues/24)
+-   Added type com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher [24](https://github.com/starnowski/posjsonhelper/issues/24)
 
 ## [0.1.2] - 2023-05-12
 
