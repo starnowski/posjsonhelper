@@ -21,28 +21,31 @@
  */
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
-import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
+/**
+ * Abstract type, responsible for registration of custom functions.
+ *
+ */
 public abstract class AbstractConditionalFunctionDescriptorRegister {
 
-    final boolean shouldTryToRegisterFunction;
+    final boolean shouldOverrideFunctionIfAlreadyRegistered;
 
-    protected AbstractConditionalFunctionDescriptorRegister(boolean shouldTryToRegisterFunction) {
-        this.shouldTryToRegisterFunction = shouldTryToRegisterFunction;
+    protected AbstractConditionalFunctionDescriptorRegister(boolean shouldOverrideFunctionIfAlreadyRegistered) {
+        this.shouldOverrideFunctionIfAlreadyRegistered = shouldOverrideFunctionIfAlreadyRegistered;
     }
 
     public SqmFunctionDescriptor registerFunction(SqmFunctionRegistry sqmFunctionRegistry) {
         SqmFunctionDescriptor functionDescriptor = sqmFunctionRegistry.findFunctionDescriptor(getHqlFunctionName());
-        return functionDescriptor == null && isShouldTryToRegisterFunction() ? register(sqmFunctionRegistry) : functionDescriptor;
+        return functionDescriptor == null || isShouldOverrideFunctionIfAlreadyRegistered() ? register(sqmFunctionRegistry) : functionDescriptor;
     }
 
     protected abstract SqmFunctionDescriptor register(SqmFunctionRegistry registry);
 
     protected abstract String getHqlFunctionName();
 
-    public boolean isShouldTryToRegisterFunction() {
-        return shouldTryToRegisterFunction;
+    public boolean isShouldOverrideFunctionIfAlreadyRegistered() {
+        return shouldOverrideFunctionIfAlreadyRegistered;
     }
 }
