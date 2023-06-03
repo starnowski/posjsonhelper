@@ -49,4 +49,26 @@ class FunctionByNameRegisterTest extends Specification {
             "test1"     |   "somefunction"
             "hqlFun"    |   "jsonb_path_"
     }
+
+    @Unroll
+    def "should register function when override flag is true and even if function is registered"() {
+        given:
+            FunctionByNameRegister tested = new FunctionByNameRegister(hqlFunction, sqlFunction, true)
+            SqmFunctionRegistry sqmFunctionRegistry = Mock(SqmFunctionRegistry)
+            NamedFunctionDescriptorBuilder namedFunctionDescriptorBuilder = Mock(NamedFunctionDescriptorBuilder)
+            SqmFunctionDescriptor descriptor = Mock(SqmFunctionDescriptor)
+
+        when:
+            def result = tested.registerFunction(sqmFunctionRegistry)
+
+        then:
+            1 * sqmFunctionRegistry.findFunctionDescriptor(hqlFunction) >> descriptor
+            1 * sqmFunctionRegistry.namedDescriptorBuilder(hqlFunction, sqlFunction) >> namedFunctionDescriptorBuilder
+            1 * namedFunctionDescriptorBuilder.register() >> descriptor
+
+        where:
+            hqlFunction | sqlFunction
+            "test1"     |   "somefunction"
+            "hqlFun"    |   "jsonb_path_"
+    }
 }
