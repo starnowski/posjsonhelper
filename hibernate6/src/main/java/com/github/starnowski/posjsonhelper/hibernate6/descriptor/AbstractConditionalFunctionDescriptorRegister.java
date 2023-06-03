@@ -43,6 +43,15 @@ public abstract class AbstractConditionalFunctionDescriptorRegister {
         this.shouldOverrideFunctionIfAlreadyRegistered = shouldOverrideFunctionIfAlreadyRegistered;
     }
 
+    /**
+     * Method that register function with {@link SqmFunctionRegistry}.
+     * First, in the method, it is checked if the function is already registered.
+     * If the function is not register or the function actually already is but the {@link  #shouldOverrideFunctionIfAlreadyRegistered}
+     * has the value true then the method set or overrides the function
+     *
+     * @param sqmFunctionRegistry object of type SqmFunctionRegistry that is going to be used for function registration
+     * @return function descriptor
+     */
     public SqmFunctionDescriptor registerFunction(SqmFunctionRegistry sqmFunctionRegistry) {
         SqmFunctionDescriptor functionDescriptor = sqmFunctionRegistry.findFunctionDescriptor(getHqlFunctionName());
         return functionDescriptor == null || isShouldOverrideFunctionIfAlreadyRegistered() ? register(sqmFunctionRegistry) : functionDescriptor;
