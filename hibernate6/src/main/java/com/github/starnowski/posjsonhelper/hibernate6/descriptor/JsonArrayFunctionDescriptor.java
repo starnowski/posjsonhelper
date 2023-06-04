@@ -30,6 +30,22 @@ import org.hibernate.sql.ast.tree.SqlAstNode;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Function descriptor for ARRAY ({@link https://www.postgresql.org/docs/12/functions-array.html} postgres operator.
+ * Generally it renders passed arguments into array instance.
+ * For example:
+ * For two arguments, the component is going to render as below:
+ * SQL
+ * <pre>{@code
+ *  array[?,?]
+ * }</pre>
+ *
+ * In case of five arguments, the component is going to render as below:
+ * SQL
+ * <pre>{@code
+ *  array[?,?,?,?,?]
+ * }</pre>
+ */
 public class JsonArrayFunctionDescriptor extends AbstractSqmSelfRenderingFunctionDescriptor {
     public JsonArrayFunctionDescriptor() {
         super("array", null, null, null);
