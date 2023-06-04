@@ -1,23 +1,23 @@
 /**
- * Posjsonhelper library is an open-source project that adds support of
- * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- * <p>
- * Copyright (C) 2023  Szymon Tarnowski
- * <p>
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- * <p>
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- * <p>
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- * USA
+ *     Posjsonhelper library is an open-source project that adds support of
+ *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ *
+ *     Copyright (C) 2023  Szymon Tarnowski
+ *
+ *     This library is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU Lesser General Public
+ *     License as published by the Free Software Foundation; either
+ *     version 2.1 of the License, or (at your option) any later version.
+ *
+ *     This library is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *     Lesser General Public License for more details.
+ *
+ *     You should have received a copy of the GNU Lesser General Public
+ *     License along with this library; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ *     USA
  */
 package com.github.starnowski.posjsonhelper.hibernate6.predicates;
 
@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * The component renders arguments in the below form. Based on string arguments, JsonPath, and main function.
+ * The component renders arguments in the below form for SQM. Based on string arguments, JsonPath, and main function.
  * Let's assume that for the below example, we have two arguments, JsonPath
  *
  * <pre>{@code
- * {{main_func}}( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2)) = TRUE
+ * {{main_func}}( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2))
  * }</pre>
  * <p>
  * where:
@@ -50,7 +50,6 @@ import java.util.stream.Stream;
  * jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) - json path part, with this example path has only one element normally this could part could contain more elements "param"
  * {{json_function_json_array}} - hibernate operator that wraps the "array" operator in postgres. Values comes from  {@link HibernateContext#getJsonFunctionJsonArrayOperator()}
  * (:param1, :param2) - rendered string arguments
- * TRUE - expected predicate value, by default it is "TRUE"
  */
 public abstract class AbstractJsonbArrayStringsExistPredicate<T extends AbstractJsonbArrayStringsExistPredicate> extends SelfRenderingSqmFunction<Boolean> {
 
@@ -58,6 +57,14 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
     private final JsonBExtractPath jsonBExtractPath;
     private final String[] values;
 
+    /**
+     *
+     * @param context object of type {@link HibernateContext}
+     * @param nodeBuilder node builder {@link NodeBuilder}
+     * @param jsonBExtractPath json path for json property {@link JsonBExtractPath}
+     * @param values array of string values passed to as argument for function
+     * @param functionName function name
+     */
     public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
