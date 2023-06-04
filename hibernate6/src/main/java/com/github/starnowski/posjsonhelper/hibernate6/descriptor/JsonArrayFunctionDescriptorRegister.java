@@ -25,6 +25,12 @@ import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
+/**
+ * Type extends {@link  AbstractConditionalFunctionDescriptorRegister} type.
+ * Responsible for register of hql function that is going to be rendered to the postgres ARRAY.
+ * It uses component of type {@link JsonArrayFunctionDescriptor} for rendering.
+ * As key the component use {@link HibernateContext#getJsonFunctionJsonArrayOperator()}
+ */
 public class JsonArrayFunctionDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
 
     private final HibernateContext hibernateContext;

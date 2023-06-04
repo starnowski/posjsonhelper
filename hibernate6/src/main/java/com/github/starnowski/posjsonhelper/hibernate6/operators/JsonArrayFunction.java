@@ -32,6 +32,11 @@ import org.hibernate.type.StandardBasicTypes;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Component that generates SQM nodes for array operation.
+ * It uses value returned by {@link HibernateContext#getJsonFunctionJsonArrayOperator()} method as function name.
+ * @see com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor
+ */
 public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implements Serializable {
 
     public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext) {
