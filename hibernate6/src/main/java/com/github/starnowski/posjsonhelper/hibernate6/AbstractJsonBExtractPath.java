@@ -35,9 +35,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *
+ * The component renders arguments in the below form. Based on string arguments and main function.
+ *
+ * Examples:
+ *
+ * Only one argument
+ *
+ * {@code {{main_func}}( generatedAlias0.jsonbContent , :param0 )}
+ *
+ * Two arguments
+ *
+ * {@code {{main_func}}( generatedAlias0.jsonbContent , :param0, :param1 )}
+ */
 public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPath>
         extends SelfRenderingSqmFunction<String> implements Serializable {
 
+    /**
+     *
+     * @param referencedPathSource path for property that represent JSON or String type. Property has to implement {@link SqmTypedNode}
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param path list of values that represent JSON path. The order of elements is important!
+     * @param functionName name of the main function
+     */
     public AbstractJsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
