@@ -24,11 +24,28 @@ package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
+/**
+ * Type extends {@link AbstractConditionalFunctionDescriptorRegister} type.
+ * It registers function with key {@link #hqlFunctionName}
+ * and link it with SQL function with name {@link #sqlFunctionName}.
+ */
 public class FunctionByNameRegister extends AbstractConditionalFunctionDescriptorRegister {
 
+    /**
+     * Key on which the hql function is going to be registered
+     */
     private final String hqlFunctionName;
+    /**
+     * Name of sql function
+     */
     private final String sqlFunctionName;
 
+    /**
+     *
+     * @param hqlFunctionName value of {@link #hqlFunctionName}
+     * @param sqlFunctionName value of {@link #sqlFunctionName}
+     * @param shouldOverrideFunctionIfAlreadyRegistered value of {{@link #shouldOverrideFunctionIfAlreadyRegistered}}
+     */
     public FunctionByNameRegister(String hqlFunctionName, String sqlFunctionName, boolean shouldOverrideFunctionIfAlreadyRegistered) {
         super(shouldOverrideFunctionIfAlreadyRegistered);
         this.hqlFunctionName = hqlFunctionName;
