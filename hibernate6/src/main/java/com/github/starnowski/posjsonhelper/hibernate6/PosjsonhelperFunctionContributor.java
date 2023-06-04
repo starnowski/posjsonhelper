@@ -24,6 +24,10 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.boot.model.FunctionContributor;
 
+/**
+ * Implementation of {@link FunctionContributor}.
+ * It uses component of type {@link SqmFunctionRegistryEnricher} to register the Posjsonhelper library functions.
+ */
 public class PosjsonhelperFunctionContributor implements FunctionContributor {
 
     private final SqmFunctionRegistryEnricher sqmFunctionRegistryEnricher;
