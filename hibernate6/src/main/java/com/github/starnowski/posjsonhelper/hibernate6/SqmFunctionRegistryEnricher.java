@@ -28,6 +28,7 @@ import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSuppli
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister;
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister;
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister;
+import org.hibernate.dialect.PostgreSQL81Dialect;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 import java.util.List;
@@ -35,6 +36,9 @@ import java.util.List;
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME;
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME;
 
+/**
+ * The component that enriches the {@link SqmFunctionRegistry} object with Hibernate and SQL definitions used by the library.
+ */
 public class SqmFunctionRegistryEnricher {
 
     /**
