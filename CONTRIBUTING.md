@@ -7,7 +7,9 @@
 
 ## Setup project locally
 To build project you need to install maven (or at least setup user repository directory and required environment variables).
-There is jdk required to install with version 8.
+To fully build project locally it is required to have installed jdk versions 8, 11, and 17.
+That is because module for hibernate 5 requires jdk 8 but module for hibernate 6 support requires version jdk 11.
+The jdk 17 is required for testing modules that tests hibernate 6 support module.
 
 ```
 
