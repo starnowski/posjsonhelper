@@ -253,6 +253,7 @@ The dialect classes use HibernateContextPropertiesSupplier component that genera
 The "jsonb_extract_path" is postgresql function that returns jsonb value pointed to by path elements passed as "text[]" (equivalent to #> operator).
 It is useful because a lot of functions use the "jsonb" type for execution.
 Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
+**Hibernate 5 example**:
 Below there is an example of a method that returns a list of items object for which json content property "top_element_with_set_of_values" contains an exact set of values.
 The example use [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate).
 
@@ -296,6 +297,27 @@ select
 ```
 
 For more details please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
+
+**Hibernate 6 example**:
+
+```java
+
+import org.hibernate.query.sqm.NodeBuilder;
+....
+    @Autowired
+    private HibernateContext hibernateContext;
+    @Autowired
+    private EntityManager entityManager;
+
+    public List<Item> findAllByAllMatchingTags(Set<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
 
 #### JsonBExtractPathText - jsonb_extract_path_text
 
