@@ -327,7 +327,7 @@ For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/
 
 The "jsonb_extract_path_text" is postgresql function that returns JSON value as text pointed to by path elements passed as "text[]" (equivalent to #>> operator).
 Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
-Below is an example of a method that looks for items containing specific string values matched by the "LIKE" operator.
+Below there is an example for Hibernate 5 of a method that looks for items containing specific string values matched by the "LIKE" operator.
 
 ```java
     public List<Item> findAllByStringValueAndLikeOperator(String expression) {
@@ -431,6 +431,25 @@ select
             jsonb_extract_path(item0_.jsonb_content,?) is null 
             or jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=false
 ```
+
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+    public List<Item> findAllThatDoNotMatchByAllMatchingTags(Set<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
+        Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")));
+        query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/src/main/java/com/github/starnowski/posjsonhelper/hibernate6/demo/dao/ItemDao.java) used in tests.
 
 #### JsonbAnyArrayStringsExistPredicate
 
