@@ -10,10 +10,10 @@ To build project you need to install maven (or at least setup user repository di
 To fully build project locally it is required to have installed jdk versions 8, 11, and 17.
 That is because module for hibernate 5 requires jdk 8 but module for hibernate 6 support requires version jdk 11.
 The jdk 17 is required for modules that tests hibernate 6 support module.
+Project use [Maven toolchains plugin](https://maven.apache.org/guides/mini/guide-using-toolchains.html) for building project.
+It is required in configuration file for toolchains plugin to setup paths for jdks 8, 11 and 17.
 
 ```
-
-**Important**, please bear in mind that your "JAVA_HOME" environment property should point to JDK with version 8!
 
 ### Build project
 Execute maven wrapper script
