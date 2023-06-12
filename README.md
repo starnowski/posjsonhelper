@@ -381,6 +381,8 @@ Below there is the same example as above but for Hibernate 6.
 
 ```
 
+For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/src/main/java/com/github/starnowski/posjsonhelper/hibernate6/demo/dao/ItemDao.java) used in tests.
+
 #### JsonbAllArrayStringsExistPredicate
 
 The JsonbAllArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
