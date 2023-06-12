@@ -8,6 +8,7 @@
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
 * [How to attach postgresql_dialect](#how-to-attach-postgresql-dialect)
+* [How to attach FunctionContributor](#how-to-attach-functioncontributor)
 * [Apply DDL changes](#apply-ddl-changes)
     * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
     * [Core context](#core-context)
@@ -94,6 +95,12 @@ public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
 }
 
 ```
+
+### How to attach FunctionContributor
+
+**Important! This section is only valid for Hibernate 6.**
+To use the posjsonhelper library in the project that uses Hibernate 6, there must be a specified org.hibernate.boot.model.FunctionContributor implementation.
+Library has implementation of this interface, that is com.github.starnowski.posjsonhelper.hibernate6.PosjsonhelperFunctionContributor.
 
 ### Apply DDL changes
 
