@@ -54,6 +54,7 @@ If someone would like to build the project locally from the source please see th
 
 ### How to attach postgresql dialect
 
+**Important! This section is only valid for Hibernate 5.**
 To be able to use the posjsonhelper library in the project there has to be specified correct hibernate dialect.
 Library implements few wrappers that extends already existed hibernate dialects for postgresql:
 - com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL10DialectWrapper
