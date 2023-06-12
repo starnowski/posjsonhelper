@@ -8,6 +8,7 @@
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
 * [How to attach postgresql_dialect](#how-to-attach-postgresql-dialect)
+* [How to attach FunctionContributor](#how-to-attach-functioncontributor)
 * [Apply DDL changes](#apply-ddl-changes)
     * [Apply DDL changes programmatically](#apply-ddl-changes-programmatically)
     * [Core context](#core-context)
@@ -24,18 +25,28 @@
 # Introduction
 Posjsonhelper library is an open-source project that adds support of Hibernate query for [postgresql json functions](https://www.postgresql.org/docs/10/functions-json.html).
 The library is written in a java programming language.
-The project for this moment supports only Hibernate with version 5.
-The required version of java is at least version 8.
+The project for this moment supports Hibernate with version 5 and 6.
+The required version of java is at least version 8 for hibernate 5 support and version 11 for hibernate 6.
 
 ### Setting maven dependency
 The project is available in the central maven repository.
 You can use it just by adding it as a dependency in the project descriptor file (pom.xml).
  
+**For Hibernate 5:**
 ```xml
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>hibernate5</artifactId>
-            <version>0.1.2</version>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+```
+
+**For Hibernate 6:**
+```xml
+        <dependency>
+            <groupId>com.github.starnowski.posjsonhelper</groupId>
+            <artifactId>hibernate6</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
 ```
 
@@ -44,12 +55,13 @@ If someone would like to build the project locally from the source please see th
 
 ### How to attach postgresql dialect
 
+**Important! This section is only valid for Hibernate 5.**
 To be able to use the posjsonhelper library in the project there has to be specified correct hibernate dialect.
 Library implements few wrappers that extends already existed hibernate dialects for postgresql:
 - com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL10DialectWrapper
 - com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL95DialectWrapper
 
-Dialect has to be set in hibernate configuation file for example:
+Dialect has to be set in hibernate configuration file for example:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -84,6 +96,42 @@ public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
 
 ```
 
+### How to attach FunctionContributor
+
+**Important! This section is only valid for Hibernate 6.**
+To use the posjsonhelper library in the project that uses Hibernate 6, there must be a specified org.hibernate.boot.model.FunctionContributor implementation.
+Library has implementation of this interface, that is com.github.starnowski.posjsonhelper.hibernate6.PosjsonhelperFunctionContributor.
+
+To use this implementation it is required to create file with name "org.hibernate.boot.model.FunctionContributor" under "resources/META-INF/services" directory.
+
+The alternative solution is to use com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher component during application start-up.
+Like in the below example with the usage of the Spring framework.
+
+```java
+import com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher;
+import jakarta.persistence.EntityManager;
+import org.hibernate.query.sqm.NodeBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+
+@Configuration
+public class FunctionDescriptorConfiguration implements
+        ApplicationListener<ContextRefreshedEvent> {
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        NodeBuilder nodeBuilder = (NodeBuilder) entityManager.getCriteriaBuilder();
+        SqmFunctionRegistryEnricher sqmFunctionRegistryEnricher = new SqmFunctionRegistryEnricher();
+        sqmFunctionRegistryEnricher.enrich(nodeBuilder.getQueryEngine().getSqmFunctionRegistry());
+    }
+}
+```
+
 ### Apply DDL changes
 
 To use the posjsonhelper library it is required to create a few SQL functions that execute JSON operators.
@@ -104,7 +152,7 @@ Generated DDL statement can be executed during integration tests or used by tool
 **Important!**
 If there would be requirement to use similar function but with different names then this has to be specified in application [properties](#properties).
 It is required because types extends hibernate dialect type, mentioned in the ["how to attach postgresql dialect"](#how-to-attach-postgresql dialect) section may not have access to application context (IoC).
-However in case if such properties should be passed in different way then the PostgreSQLDialectEnricher type has also method to pass context objects (please check [Core context](#core-context) and [Hibernate Context](#hibernate-context))
+However, in case if such properties should be passed in different way then the PostgreSQLDialectEnricher type has also method to pass context objects (please check [Core context](#core-context) and [Hibernate Context](#hibernate-context))
 
 #### Core context
 
@@ -205,6 +253,7 @@ The dialect classes use HibernateContextPropertiesSupplier component that genera
 The "jsonb_extract_path" is postgresql function that returns jsonb value pointed to by path elements passed as "text[]" (equivalent to #> operator).
 It is useful because a lot of functions use the "jsonb" type for execution.
 Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
+**Hibernate 5 example**:
 Below there is an example of a method that returns a list of items object for which json content property "top_element_with_set_of_values" contains an exact set of values.
 The example use [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate).
 
@@ -249,11 +298,36 @@ select
 
 For more details please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+
+import org.hibernate.query.sqm.NodeBuilder;
+....
+    @Autowired
+    private HibernateContext hibernateContext;
+    @Autowired
+    private EntityManager entityManager;
+
+    public List<Item> findAllByAllMatchingTags(Set<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/src/main/java/com/github/starnowski/posjsonhelper/hibernate6/demo/dao/ItemDao.java) used in tests.
+
 #### JsonBExtractPathText - jsonb_extract_path_text
 
 The "jsonb_extract_path_text" is postgresql function that returns JSON value as text pointed to by path elements passed as "text[]" (equivalent to #>> operator).
 Please check [postgresql documentation](https://www.postgresql.org/docs/10/functions-json.html) for more information.
-Below is an example of a method that looks for items containing specific string values matched by the "LIKE" operator.
+Below there is an example for Hibernate 5 of a method that looks for items containing specific string values matched by the "LIKE" operator.
 
 ```java
     public List<Item> findAllByStringValueAndLikeOperator(String expression) {
@@ -290,13 +364,32 @@ select
 
 For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+    ....
+    public List<Item> findAllByStringValueAndLikeOperator(String expression) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(cb.like(new JsonBExtractPathText(root.get("jsonbContent"), singletonList("string_value"), (NodeBuilder) cb), expression));
+        return entityManager.createQuery(query).getResultList();
+        }
+
+```
+
+For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/src/main/java/com/github/starnowski/posjsonhelper/hibernate6/demo/dao/ItemDao.java) used in tests.
+
 #### JsonbAllArrayStringsExistPredicate
 
 The JsonbAllArrayStringsExistPredicate type represents predicate that checks if passed string arrays exist in json array property.
 First example for this predicate was introduce in ["JsonBExtractPath - jsonb_extract_path"](#jsonbextractpath---jsonb_extract_path) section.
 These predicates assume that the SQL function with default name jsonb_all_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
 The below example with a combination with the operator NOT presents items that do not have all searched strings.
-
+**Example valid for Hibernate 5 only!**
 
 ```java
     public List<Item> findAllThatDoNotMatchByAllMatchingTags(Set<String> tags) {
@@ -339,11 +432,31 @@ select
             or jsonb_all_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=false
 ```
 
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+    public List<Item> findAllThatDoNotMatchByAllMatchingTags(Set<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
+        Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")));
+        query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/src/main/java/com/github/starnowski/posjsonhelper/hibernate6/demo/dao/ItemDao.java) used in tests.
+
 #### JsonbAnyArrayStringsExistPredicate
 
 The JsonbAnyArrayStringsExistPredicate type represents a predicate that checks if passed string arrays exist in json array property.
 These predicates assume that the SQL function with default name jsonb_any_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
 Below there is an example of a method that looks for all items that property that holds array contains at least one string passed from the array passed as method argument.
+**Example valid for Hibernate 5 only!**
 
 ```java
     public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
@@ -377,6 +490,24 @@ select
         where
             jsonb_any_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=true
 ```
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+
+public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+        }
+
+```
+
+For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
 ### Properties
 
