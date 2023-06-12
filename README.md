@@ -321,6 +321,8 @@ import org.hibernate.query.sqm.NodeBuilder;
     }
 ```
 
+For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/src/main/java/com/github/starnowski/posjsonhelper/hibernate6/demo/dao/ItemDao.java) used in tests.
+
 #### JsonBExtractPathText - jsonb_extract_path_text
 
 The "jsonb_extract_path_text" is postgresql function that returns JSON value as text pointed to by path elements passed as "text[]" (equivalent to #>> operator).
@@ -361,6 +363,23 @@ select
 ```
 
 For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
+
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+    ....
+    public List<Item> findAllByStringValueAndLikeOperator(String expression) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(cb.like(new JsonBExtractPathText(root.get("jsonbContent"), singletonList("string_value"), (NodeBuilder) cb), expression));
+        return entityManager.createQuery(query).getResultList();
+        }
+
+```
 
 #### JsonbAllArrayStringsExistPredicate
 
