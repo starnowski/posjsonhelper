@@ -300,6 +300,8 @@ For more details please check the [DAO](/hibernate5/src/test/java/com/github/sta
 
 **Hibernate 6 example**:
 
+Below there is the same example as above but for Hibernate 6.
+
 ```java
 
 import org.hibernate.query.sqm.NodeBuilder;
