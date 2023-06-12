@@ -104,7 +104,33 @@ Library has implementation of this interface, that is com.github.starnowski.posj
 
 To use this implementation it is required to create file with name "org.hibernate.boot.model.FunctionContributor" under "resources/META-INF/services" directory.
 
+The alternative solution is to use com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher component during application start-up.
+Like in the below example with the usage of the Spring framework.
 
+```java
+import com.github.starnowski.posjsonhelper.hibernate6.SqmFunctionRegistryEnricher;
+import jakarta.persistence.EntityManager;
+import org.hibernate.query.sqm.NodeBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+
+@Configuration
+public class FunctionDescriptorConfiguration implements
+        ApplicationListener<ContextRefreshedEvent> {
+
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        NodeBuilder nodeBuilder = (NodeBuilder) entityManager.getCriteriaBuilder();
+        SqmFunctionRegistryEnricher sqmFunctionRegistryEnricher = new SqmFunctionRegistryEnricher();
+        sqmFunctionRegistryEnricher.enrich(nodeBuilder.getQueryEngine().getSqmFunctionRegistry());
+    }
+}
+```
 
 ### Apply DDL changes
 
