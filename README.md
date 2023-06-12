@@ -102,6 +102,10 @@ public class PostgreSQLDialectWithDifferentSchema extends PostgreSQL95Dialect {
 To use the posjsonhelper library in the project that uses Hibernate 6, there must be a specified org.hibernate.boot.model.FunctionContributor implementation.
 Library has implementation of this interface, that is com.github.starnowski.posjsonhelper.hibernate6.PosjsonhelperFunctionContributor.
 
+To use this implementation it is required to create file with name "org.hibernate.boot.model.FunctionContributor" under "resources/META-INF/services" directory.
+
+
+
 ### Apply DDL changes
 
 To use the posjsonhelper library it is required to create a few SQL functions that execute JSON operators.
