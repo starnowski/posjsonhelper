@@ -24,8 +24,8 @@
 # Introduction
 Posjsonhelper library is an open-source project that adds support of Hibernate query for [postgresql json functions](https://www.postgresql.org/docs/10/functions-json.html).
 The library is written in a java programming language.
-The project for this moment supports only Hibernate with version 5.
-The required version of java is at least version 8.
+The project for this moment supports Hibernate with version 5 and 6.
+The required version of java is at least version 8 for hibernate 5 support and version 11 for hibernate 6.
 
 ### Setting maven dependency
 The project is available in the central maven repository.
@@ -35,7 +35,7 @@ You can use it just by adding it as a dependency in the project descriptor file 
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>hibernate5</artifactId>
-            <version>0.1.2</version>
+            <version>0.2.0-SNAPSHOT</version>
         </dependency>
 ```
 
