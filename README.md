@@ -389,7 +389,7 @@ The JsonbAllArrayStringsExistPredicate type represents predicate that checks if 
 First example for this predicate was introduce in ["JsonBExtractPath - jsonb_extract_path"](#jsonbextractpath---jsonb_extract_path) section.
 These predicates assume that the SQL function with default name jsonb_all_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
 The below example with a combination with the operator NOT presents items that do not have all searched strings.
-
+**Example valid for Hibernate 5 only!**
 
 ```java
     public List<Item> findAllThatDoNotMatchByAllMatchingTags(Set<String> tags) {
@@ -456,6 +456,7 @@ For more details please check the [DAO](/hibernate6-tests/hibernate6-tests-core/
 The JsonbAnyArrayStringsExistPredicate type represents a predicate that checks if passed string arrays exist in json array property.
 These predicates assume that the SQL function with default name jsonb_any_array_strings_exist, mentioned in the section ["Apply DDL changes"](#apply-ddl-changes) exists.
 Below there is an example of a method that looks for all items that property that holds array contains at least one string passed from the array passed as method argument.
+**Example valid for Hibernate 5 only!**
 
 ```java
     public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
@@ -489,6 +490,24 @@ select
         where
             jsonb_any_array_strings_exist(jsonb_extract_path(item0_.jsonb_content,?), array[?,?])=true
 ```
+**Hibernate 6 example**:
+
+Below there is the same example as above but for Hibernate 6.
+
+```java
+
+public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+        }
+
+```
+
+For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
 
 ### Properties
 
