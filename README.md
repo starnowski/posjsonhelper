@@ -61,7 +61,7 @@ Library implements few wrappers that extends already existed hibernate dialects 
 - com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL10DialectWrapper
 - com.github.starnowski.posjsonhelper.hibernate5.dialects.PostgreSQL95DialectWrapper
 
-Dialect has to be set in hibernate configuation file for example:
+Dialect has to be set in hibernate configuration file for example:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -152,7 +152,7 @@ Generated DDL statement can be executed during integration tests or used by tool
 **Important!**
 If there would be requirement to use similar function but with different names then this has to be specified in application [properties](#properties).
 It is required because types extends hibernate dialect type, mentioned in the ["how to attach postgresql dialect"](#how-to-attach-postgresql dialect) section may not have access to application context (IoC).
-However in case if such properties should be passed in different way then the PostgreSQLDialectEnricher type has also method to pass context objects (please check [Core context](#core-context) and [Hibernate Context](#hibernate-context))
+However, in case if such properties should be passed in different way then the PostgreSQLDialectEnricher type has also method to pass context objects (please check [Core context](#core-context) and [Hibernate Context](#hibernate-context))
 
 #### Core context
 
