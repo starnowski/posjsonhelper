@@ -31,10 +31,20 @@ The required version of java is at least version 8 for hibernate 5 support and v
 The project is available in the central maven repository.
 You can use it just by adding it as a dependency in the project descriptor file (pom.xml).
  
+**For Hibernate 5:**
 ```xml
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>hibernate5</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
+```
+
+**For Hibernate 6:**
+```xml
+        <dependency>
+            <groupId>com.github.starnowski.posjsonhelper</groupId>
+            <artifactId>hibernate6</artifactId>
             <version>0.2.0-SNAPSHOT</version>
         </dependency>
 ```
