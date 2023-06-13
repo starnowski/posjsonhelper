@@ -31,7 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Function descriptor for ARRAY ({@link https://www.postgresql.org/docs/12/functions-array.html} postgres operator.
+ * Function descriptor for <a href="https://www.postgresql.org/docs/12/functions-array.html">ARRAY</a> postgres operator.
  * Generally it renders passed arguments into array instance.
  * For example:
  * For two arguments, the component is going to render as below:
