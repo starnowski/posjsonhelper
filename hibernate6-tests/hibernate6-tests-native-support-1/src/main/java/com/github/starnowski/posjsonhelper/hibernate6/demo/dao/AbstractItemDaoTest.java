@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -36,7 +37,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
         executionPhase = AFTER_TEST_METHOD)
 public abstract class AbstractItemDaoTest {
 
-    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L));
+    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L));
 
     private static Stream<Arguments> provideShouldReturnSingleCorrectIdExpectedIdWhenSearchingByAllMatchingTags() {
         return Stream.of(
@@ -116,6 +117,25 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
+    @Disabled
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id except #expectedIds when searching item that do not match by all matching tags [#tags] by using HQL query")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags")
+    public void shouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTagsWithHQLQuery(List<String> tags, Set<Long> nonIncludedIds) {
+
+        // when
+        List<Item> results = tested.findAllThatDoNotMatchByAllMatchingTagsWithHQLQuery(new HashSet<>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        Set<Long> expectedIds = ALL_ITEMS_IDS.stream().filter(id -> !nonIncludedIds.contains(id)).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
         return Stream.of(
                 Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L, 3L))),
@@ -134,6 +154,24 @@ public abstract class AbstractItemDaoTest {
 
         // when
         List<Item> results = tested.findAllByAnyMatchingTags(new HashSet<>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    @Disabled
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by any matching tags [#tags] with HQL query")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTagsWithHQL(List<String> tags, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByAnyMatchingTagsWithHQL(new HashSet<>(tags));
 
         // then
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
@@ -216,6 +254,24 @@ public abstract class AbstractItemDaoTest {
 
         // when
         List<Item> results = tested.findAllByStringValueAndLikeOperator(expression);
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    @Disabled
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by LIKE operator with #expresion and with usage of HQL query")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpressionAndHQLQuery(String expression, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByStringValueAndLikeOperatorWithHQLQuery(expression);
 
         // then
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
