@@ -16,6 +16,7 @@
         <module>hibernate6-tests-1</module>
         <module>hibernate6-tests-spi</module>
         <module>hibernate6-tests-native-support</module>
+        <module>hibernate6-tests-native-support-1</module>
     </modules>
 
     <properties>
