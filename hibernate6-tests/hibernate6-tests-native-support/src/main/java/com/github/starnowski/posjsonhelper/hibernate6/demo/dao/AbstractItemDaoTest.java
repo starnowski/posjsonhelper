@@ -117,7 +117,7 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    @Disabled
+//    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -161,7 +161,7 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    @Disabled
+//    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -261,7 +261,7 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    @Disabled
+//    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
