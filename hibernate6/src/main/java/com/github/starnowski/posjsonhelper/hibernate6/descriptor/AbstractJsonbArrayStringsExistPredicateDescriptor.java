@@ -5,15 +5,16 @@ import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.AbstractSqmSelfRenderingFunctionDescriptor;
+import org.hibernate.query.sqm.function.NamedSqmFunctionDescriptor;
 import org.hibernate.query.sqm.produce.function.ArgumentsValidator;
 import org.hibernate.query.sqm.produce.function.FunctionArgumentTypeResolver;
 import org.hibernate.query.sqm.produce.function.FunctionReturnTypeResolver;
 
-public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extends AbstractJsonbArrayStringsExistPredicate> extends AbstractSqmSelfRenderingFunctionDescriptor {
+public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extends AbstractJsonbArrayStringsExistPredicate> extends NamedSqmFunctionDescriptor {
 
     protected final HibernateContext hibernateContext;
     public AbstractJsonbArrayStringsExistPredicateDescriptor(String name, HibernateContext hibernateContext) {
-        super(name, null, null, null);
+        super(name, false, null, null);
         this.hibernateContext = hibernateContext;
     }
 

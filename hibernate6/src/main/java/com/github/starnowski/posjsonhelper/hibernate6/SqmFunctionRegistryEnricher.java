@@ -25,9 +25,7 @@ import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.CoreContextPropertiesSupplier;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSupplier;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.*;
 import org.hibernate.dialect.PostgreSQL81Dialect;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
@@ -70,7 +68,7 @@ public class SqmFunctionRegistryEnricher {
             (context, hibernateContext) ->
                     new FunctionByNameRegister(JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, true),
             (context, hibernateContext) ->
-                    new FunctionByNameRegister(hibernateContext.getJsonbAllArrayStringsExistOperator(), context.getJsonbAllArrayStringsExistFunctionReference(), true),
+                    new AbstractJsonbArrayStringsExistPredicateDescriptorRegister(true, new JsonbAllArrayStringsExistPredicateDescriptor(context, hibernateContext)),
             (context, hibernateContext) ->
                     new FunctionByNameRegister(hibernateContext.getJsonbAnyArrayStringsExistOperator(), context.getJsonbAnyArrayStringsExistFunctionReference(), true),
             (context, hibernateContext) ->
