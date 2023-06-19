@@ -8,13 +8,13 @@ import com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbAr
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate;
 import org.hibernate.query.sqm.NodeBuilder;
 
-public class JsonbAllArrayStringsExistPredicateDescriptor extends AbstractJsonbArrayStringsExistPredicateDescriptor {
+public class JsonbAllArrayStringsExistPredicateDescriptor extends AbstractJsonbArrayStringsExistPredicateDescriptor<JsonbAllArrayStringsExistPredicate> {
     public JsonbAllArrayStringsExistPredicateDescriptor(Context context, HibernateContext hibernateContext) {
         super(context.getJsonbAllArrayStringsExistFunctionReference(), hibernateContext);
     }
 
     @Override
-    protected AbstractJsonbArrayStringsExistPredicate generateJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction arrayFunction) {
+    protected JsonbAllArrayStringsExistPredicate generateJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction arrayFunction) {
         return new JsonbAllArrayStringsExistPredicate(context, nodeBuilder, jsonBExtractPath, arrayFunction);
     }
 
