@@ -66,7 +66,7 @@ public class SqmFunctionRegistryEnricher {
             (context, hibernateContext) ->
                     new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathDescriptor(), true),
             (context, hibernateContext) ->
-                    new FunctionByNameRegister(JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, true),
+                    new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathTextDescriptor(), true),
             (context, hibernateContext) ->
                     new AbstractJsonbArrayStringsExistPredicateDescriptorRegister(true, new JsonbAllArrayStringsExistPredicateDescriptor(context, hibernateContext)),
             (context, hibernateContext) ->
