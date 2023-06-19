@@ -64,7 +64,7 @@ public class SqmFunctionRegistryEnricher {
 
     private final List<FunctionDescriptorRegisterSupplier> functionDescriptorRegisterSuppliers = List.of(
             (context, hibernateContext) ->
-                    new FunctionByNameRegister(JSONB_EXTRACT_PATH_FUNCTION_NAME, JSONB_EXTRACT_PATH_FUNCTION_NAME, true),
+                    new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathDescriptor(), true),
             (context, hibernateContext) ->
                     new FunctionByNameRegister(JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, true),
             (context, hibernateContext) ->
