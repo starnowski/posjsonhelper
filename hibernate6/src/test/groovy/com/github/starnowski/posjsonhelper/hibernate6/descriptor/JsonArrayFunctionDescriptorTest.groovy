@@ -14,7 +14,7 @@ class JsonArrayFunctionDescriptorTest extends Specification {
             SqlAstTranslator<?> translator = Mock(SqlAstTranslator)
             List<SqlAstNode> sqlAstArguments = [Mock(SqlAstNode), Mock(SqlAstNode)]
 
-            JsonArrayFunctionDescriptor jsonArrayFunctionDescriptor = new JsonArrayFunctionDescriptor(hibernateContext)
+            JsonArrayFunctionDescriptor jsonArrayFunctionDescriptor = new JsonArrayFunctionDescriptor(null)
 
         when:
             jsonArrayFunctionDescriptor.render(sqlAppender, sqlAstArguments, translator)
