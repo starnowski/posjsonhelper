@@ -84,7 +84,7 @@ public class JsonArrayFunctionDescriptor extends AbstractSqmSelfRenderingFunctio
     protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine, TypeConfiguration typeConfiguration) {
         List<SqmExpression<String>> args = new ArrayList<>();
         for (int i = 0; i < arguments.size(); i++) {
-            args.add((SqmExpression<String>) arguments.get(0));
+            args.add((SqmExpression<String>) arguments.get(i));
         }
         return (SelfRenderingSqmFunction<T>) new JsonArrayFunction(queryEngine.getCriteriaBuilder(), args, hibernateContext);
     }
