@@ -1,8 +1,14 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
+import com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
+/**
+ * Type extends {@link  AbstractConditionalFunctionDescriptorRegister} type.
+ * Responsible for register of hql function for any child type of {@link  AbstractJsonBExtractPath}.
+ * It uses component of type {@link AbstractJsonBExtractPathDescriptor} for rendering.
+ */
 public class AbstractJsonBExtractPathDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
 
     private final AbstractJsonBExtractPathDescriptor abstractJsonBExtractPathDescriptor;

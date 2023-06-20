@@ -1,6 +1,5 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
-import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
@@ -12,7 +11,7 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry;
  */
 public class AbstractJsonbArrayStringsExistPredicateDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
 
-    private AbstractJsonbArrayStringsExistPredicateDescriptor abstractJsonbArrayStringsExistPredicateDescriptor;
+    private final AbstractJsonbArrayStringsExistPredicateDescriptor abstractJsonbArrayStringsExistPredicateDescriptor;
 
     public AbstractJsonbArrayStringsExistPredicateDescriptorRegister(boolean shouldOverrideFunctionIfAlreadyRegistered, AbstractJsonbArrayStringsExistPredicateDescriptor abstractJsonbArrayStringsExistPredicateDescriptor) {
         super(shouldOverrideFunctionIfAlreadyRegistered);

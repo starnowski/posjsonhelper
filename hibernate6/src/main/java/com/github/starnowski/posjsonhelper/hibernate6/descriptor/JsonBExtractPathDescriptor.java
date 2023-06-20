@@ -9,6 +9,9 @@ import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME;
 
+/**
+ * Function descriptor for child type of {@link JsonBExtractPath}
+ */
 public class JsonBExtractPathDescriptor extends AbstractJsonBExtractPathDescriptor<JsonBExtractPath> {
     public JsonBExtractPathDescriptor() {
         super(JSONB_EXTRACT_PATH_FUNCTION_NAME);

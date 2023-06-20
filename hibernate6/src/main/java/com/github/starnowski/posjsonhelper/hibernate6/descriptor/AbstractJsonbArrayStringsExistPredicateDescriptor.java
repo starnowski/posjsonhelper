@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Function descriptor for child type of {@link AbstractJsonbArrayStringsExistPredicate}
+ *
  * @param <T> child type for {@link AbstractJsonbArrayStringsExistPredicate}
  */
 public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extends AbstractJsonbArrayStringsExistPredicate> extends NamedSqmFunctionDescriptor {
@@ -31,6 +32,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extend
 
     /**
      * Name of function for which descriptor should be register
+     *
      * @return name of function for which descriptor should be register
      */
     abstract public String getSqmFunction();

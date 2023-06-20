@@ -13,6 +13,11 @@ import org.hibernate.type.spi.TypeConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Function descriptor for child type of {@link AbstractJsonBExtractPath}
+ *
+ * @param <T> child type for {@link AbstractJsonBExtractPath}
+ */
 public abstract class AbstractJsonBExtractPathDescriptor<T extends AbstractJsonBExtractPath> extends NamedSqmFunctionDescriptor {
 
     public AbstractJsonBExtractPathDescriptor(String functionName) {

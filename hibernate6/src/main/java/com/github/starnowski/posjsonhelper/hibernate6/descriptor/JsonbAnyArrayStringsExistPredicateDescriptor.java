@@ -7,6 +7,9 @@ import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunctio
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate;
 import org.hibernate.query.sqm.NodeBuilder;
 
+/**
+ * Function descriptor for child type of {@link JsonbAnyArrayStringsExistPredicate}
+ */
 public class JsonbAnyArrayStringsExistPredicateDescriptor extends AbstractJsonbArrayStringsExistPredicateDescriptor<JsonbAnyArrayStringsExistPredicate> {
     public JsonbAnyArrayStringsExistPredicateDescriptor(Context context, HibernateContext hibernateContext) {
         super(context.getJsonbAnyArrayStringsExistFunctionReference(), hibernateContext);
