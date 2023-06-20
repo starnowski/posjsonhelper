@@ -32,6 +32,9 @@ https://www.markdownguide.org/basic-syntax/
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathTextDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAllArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAnyArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added constructor com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate#AbstractJsonbArrayStringsExistPredicate(com.github.starnowski.posjsonhelper.core.HibernateContext, org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath, com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction, java.lang.String) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added constructor com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate#JsonbAllArrayStringsExistPredicate(com.github.starnowski.posjsonhelper.core.HibernateContext, org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath, com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added constructor com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate#JsonbAnyArrayStringsExistPredicate(com.github.starnowski.posjsonhelper.core.HibernateContext, org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath, com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction) [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
 ### Changed
 
