@@ -55,20 +55,23 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
 
     private final HibernateContext context;
     private final JsonBExtractPath jsonBExtractPath;
-    private final String[] values;
+    private final JsonArrayFunction jsonArrayFunction;
 
     /**
-     *
-     * @param context object of type {@link HibernateContext}
-     * @param nodeBuilder node builder {@link NodeBuilder}
+     * @param context          object of type {@link HibernateContext}
+     * @param nodeBuilder      node builder {@link NodeBuilder}
      * @param jsonBExtractPath json path for json property {@link JsonBExtractPath}
-     * @param values array of string values passed to as argument for function
-     * @param functionName function name
+     * @param values           array of string values passed to as argument for function
+     * @param functionName     function name
      */
     public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, String functionName) {
+        this(context, nodeBuilder, jsonBExtractPath, mapArrayValues(nodeBuilder, context, values), functionName);
+    }
+
+    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction arrayFunction, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
-                parameters(jsonBExtractPath, nodeBuilder, context, values),
+                parameters(jsonBExtractPath, arrayFunction),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.BOOLEAN)),
@@ -76,22 +79,24 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
                 functionName);
         this.jsonBExtractPath = jsonBExtractPath;
         this.context = context;
-        this.values = values;
+        this.jsonArrayFunction = arrayFunction;
     }
 
-    private static List<? extends SqmExpression<String>> parameters(JsonBExtractPath jsonBExtractPath, NodeBuilder nodeBuilder, HibernateContext context, String... values) {
+    private static List<? extends SqmExpression<String>> parameters(JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction) {
+        List<SqmExpression<String>> result = new ArrayList<>();
+        result.add(jsonBExtractPath);
+        result.add(jsonArrayFunction);
+        return result;
+    }
+
+    private static JsonArrayFunction mapArrayValues(NodeBuilder nodeBuilder, HibernateContext context, String... values) {
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Values can not be null or empty list");
         }
-        List<SqmExpression<String>> result = new ArrayList<>();
-        result.add(jsonBExtractPath);
-
-        //array
         List<SqmExpression<String>> arrayArguments = new ArrayList<>();
         arrayArguments.addAll(Stream.of(values).map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
         JsonArrayFunction jsonArrayFunction = new JsonArrayFunction(nodeBuilder, arrayArguments, context);
-        result.add(jsonArrayFunction);
-        return result;
+        return jsonArrayFunction;
     }
 
     public T copy(SqmCopyContext context) {
@@ -99,12 +104,12 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
         if (existing != null) {
             return existing;
         } else {
-            T predicate = (T) context.registerCopy(this, generateCopy(this.context, nodeBuilder(), jsonBExtractPath, values));
+            T predicate = (T) context.registerCopy(this, generateCopy(this.context, nodeBuilder(), jsonBExtractPath, jsonArrayFunction));
             this.copyTo(predicate, context);
             return predicate;
         }
     }
 
 
-    abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values);
+    abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction);
 }

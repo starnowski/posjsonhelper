@@ -10,12 +10,41 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.2.1](#021---2023-06-20)
 * [0.2.0](#020---2023-06-13)
 * [0.1.2](#012---2023-05-12)
 * [0.1.1](#011---2023-05-11)
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.2.1] - 2023-06-20
+
+### Added
+
+- Fixed support for hql query in Hibernate 6 [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(jakarta.persistence.criteria.Path, java.util.List<? extends SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder, java.lang.String) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(jakarta.persistence.criteria.Path, java.util.List<? extends SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, java.util.List<? extends SqmTypedNode<?>>) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonBExtractPathDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonBExtractPathDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathTextDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAllArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAnyArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate#AbstractJsonbArrayStringsExistPredicate(com.github.starnowski.posjsonhelper.core.HibernateContext, org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath, com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction, java.lang.String) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate#JsonbAllArrayStringsExistPredicate(com.github.starnowski.posjsonhelper.core.HibernateContext, org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath, com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate#JsonbAnyArrayStringsExistPredicate(com.github.starnowski.posjsonhelper.core.HibernateContext, org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath, com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+
+### Changed
+
+- Changed default constructor com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor#JsonArrayFunctionDescriptor() to com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor#JsonArrayFunctionDescriptor(com.github.starnowski.posjsonhelper.core.HibernateContext) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+
+### Removed
+
+- Removed type com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
 ## [0.2.0] - 2023-06-13
 

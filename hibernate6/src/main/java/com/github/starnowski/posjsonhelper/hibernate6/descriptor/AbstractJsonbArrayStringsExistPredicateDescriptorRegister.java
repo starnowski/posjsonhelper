@@ -21,33 +21,31 @@
  */
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
-import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.hibernate6.predicates.AbstractJsonbArrayStringsExistPredicate;
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 /**
  * Type extends {@link  AbstractConditionalFunctionDescriptorRegister} type.
- * Responsible for register of hql function that is going to be rendered to the postgres ARRAY.
- * It uses component of type {@link JsonArrayFunctionDescriptor} for rendering.
- * As key the component use {@link HibernateContext#getJsonFunctionJsonArrayOperator()}
+ * Responsible for register of hql function for any child type of {@link  AbstractJsonbArrayStringsExistPredicate}.
+ * It uses component of type {@link AbstractJsonbArrayStringsExistPredicateDescriptor} for rendering.
  */
-public class JsonArrayFunctionDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
+public class AbstractJsonbArrayStringsExistPredicateDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
 
-    private final HibernateContext hibernateContext;
+    private final AbstractJsonbArrayStringsExistPredicateDescriptor abstractJsonbArrayStringsExistPredicateDescriptor;
 
-    public JsonArrayFunctionDescriptorRegister(HibernateContext hibernateContext, boolean shouldTryToRegisterFunction) {
-        super(shouldTryToRegisterFunction);
-        this.hibernateContext = hibernateContext;
+    public AbstractJsonbArrayStringsExistPredicateDescriptorRegister(boolean shouldOverrideFunctionIfAlreadyRegistered, AbstractJsonbArrayStringsExistPredicateDescriptor abstractJsonbArrayStringsExistPredicateDescriptor) {
+        super(shouldOverrideFunctionIfAlreadyRegistered);
+        this.abstractJsonbArrayStringsExistPredicateDescriptor = abstractJsonbArrayStringsExistPredicateDescriptor;
     }
 
     @Override
     protected SqmFunctionDescriptor register(SqmFunctionRegistry registry) {
-        return registry.register(getHqlFunctionName(),
-                new JsonArrayFunctionDescriptor(hibernateContext));
+        return registry.register(getHqlFunctionName(), abstractJsonbArrayStringsExistPredicateDescriptor);
     }
 
     @Override
     protected String getHqlFunctionName() {
-        return hibernateContext.getJsonFunctionJsonArrayOperator();
+        return abstractJsonbArrayStringsExistPredicateDescriptor.getSqmFunction();
     }
 }

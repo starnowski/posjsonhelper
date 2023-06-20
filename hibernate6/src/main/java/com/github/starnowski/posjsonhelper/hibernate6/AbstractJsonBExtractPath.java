@@ -60,9 +60,13 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
      * @param functionName name of the main function
      */
     public AbstractJsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
+        this(referencedPathSource, mapPathParameters(nodeBuilder, path), nodeBuilder, functionName);
+    }
+
+    public AbstractJsonBExtractPath(Path referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
-                parameters(referencedPathSource, nodeBuilder, path),
+                contactParameters(referencedPathSource, (List<? extends SqmTypedNode<?>>) path),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
@@ -70,13 +74,22 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
                 functionName);
     }
 
-    private static List<? extends SqmTypedNode<?>> parameters(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
+    private static List<? extends SqmTypedNode<?>> mapPathParameters(NodeBuilder nodeBuilder, List<String> path) {
+        if (path == null || path.isEmpty()) {
+            throw new IllegalArgumentException("Path argument can not be null or empty list");
+        }
+        List<SqmTypedNode<?>> result = new ArrayList<>();
+        result.addAll(path.stream().map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
+        return result;
+    }
+
+    private static List<? extends SqmTypedNode<?>> contactParameters(Path referencedPathSource, List<? extends SqmTypedNode<?>> path) {
         if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Path argument can not be null or empty list");
         }
         List<SqmTypedNode<?>> result = new ArrayList<>();
         result.add((SqmTypedNode) referencedPathSource);
-        result.addAll(path.stream().map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
+        result.addAll(path);
         return result;
     }
 }
