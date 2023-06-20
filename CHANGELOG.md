@@ -24,7 +24,16 @@ https://www.markdownguide.org/basic-syntax/
 - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(jakarta.persistence.criteria.Path, java.util.List<? extends SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder, java.lang.String) [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(jakarta.persistence.criteria.Path, java.util.List<? extends SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder) [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, java.util.List<? extends SqmTypedNode<?>>) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonBExtractPathDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonBExtractPathDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
+
+
+### Removed
+
+- Removed type com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
 ## [0.2.0] - 2023-06-13
 
