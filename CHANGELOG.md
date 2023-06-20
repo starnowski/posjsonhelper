@@ -28,6 +28,10 @@ https://www.markdownguide.org/basic-syntax/
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonBExtractPathDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathTextDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAllArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAnyArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
 ### Changed
 
