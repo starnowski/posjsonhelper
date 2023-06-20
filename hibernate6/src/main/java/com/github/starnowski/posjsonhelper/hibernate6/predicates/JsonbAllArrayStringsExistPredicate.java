@@ -23,6 +23,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.predicates;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
 import org.hibernate.query.sqm.NodeBuilder;
 
 /**
@@ -34,8 +35,12 @@ public class JsonbAllArrayStringsExistPredicate extends AbstractJsonbArrayString
         super(context, nodeBuilder, jsonBExtractPath, values, context.getJsonbAllArrayStringsExistOperator());
     }
 
+    public JsonbAllArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction) {
+        super(context, nodeBuilder, jsonBExtractPath, jsonArrayFunction, context.getJsonbAllArrayStringsExistOperator());
+    }
+
     @Override
-    protected JsonbAllArrayStringsExistPredicate generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
-        return new JsonbAllArrayStringsExistPredicate(context, nodeBuilder, jsonBExtractPath, values);
+    protected JsonbAllArrayStringsExistPredicate generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction) {
+        return new JsonbAllArrayStringsExistPredicate(context, nodeBuilder, jsonBExtractPath, jsonArrayFunction);
     }
 }

@@ -25,16 +25,10 @@ import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.CoreContextPropertiesSupplier;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSupplier;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionByNameRegister;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegister;
-import org.hibernate.dialect.PostgreSQL81Dialect;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.*;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 import java.util.List;
-
-import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME;
-import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME;
 
 /**
  * The component that enriches the {@link SqmFunctionRegistry} object with Hibernate and SQL definitions used by the library.
@@ -49,6 +43,18 @@ public class SqmFunctionRegistryEnricher {
      * Supplier for {@link HibernateContext} object based on system properties
      */
     private final HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier;
+    private final List<FunctionDescriptorRegisterSupplier> functionDescriptorRegisterSuppliers = List.of(
+            (context, hibernateContext) ->
+                    new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathDescriptor(), true),
+            (context, hibernateContext) ->
+                    new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathTextDescriptor(), true),
+            (context, hibernateContext) ->
+                    new AbstractJsonbArrayStringsExistPredicateDescriptorRegister(true, new JsonbAllArrayStringsExistPredicateDescriptor(context, hibernateContext)),
+            (context, hibernateContext) ->
+                    new AbstractJsonbArrayStringsExistPredicateDescriptorRegister(true, new JsonbAnyArrayStringsExistPredicateDescriptor(context, hibernateContext)),
+            (context, hibernateContext) ->
+                    new JsonArrayFunctionDescriptorRegister(hibernateContext, true)
+    );
 
     public SqmFunctionRegistryEnricher() {
         this(new CoreContextPropertiesSupplier(), new HibernateContextPropertiesSupplier());
@@ -59,24 +65,6 @@ public class SqmFunctionRegistryEnricher {
         this.hibernateContextPropertiesSupplier = hibernateContextPropertiesSupplier;
     }
 
-    interface FunctionDescriptorRegisterSupplier {
-
-        AbstractConditionalFunctionDescriptorRegister get(Context context, HibernateContext hibernateContext);
-    }
-
-    private final List<FunctionDescriptorRegisterSupplier> functionDescriptorRegisterSuppliers = List.of(
-            (context, hibernateContext) ->
-                    new FunctionByNameRegister(JSONB_EXTRACT_PATH_FUNCTION_NAME, JSONB_EXTRACT_PATH_FUNCTION_NAME, true),
-            (context, hibernateContext) ->
-                    new FunctionByNameRegister(JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME, true),
-            (context, hibernateContext) ->
-                    new FunctionByNameRegister(hibernateContext.getJsonbAllArrayStringsExistOperator(), context.getJsonbAllArrayStringsExistFunctionReference(), true),
-            (context, hibernateContext) ->
-                    new FunctionByNameRegister(hibernateContext.getJsonbAnyArrayStringsExistOperator(), context.getJsonbAnyArrayStringsExistFunctionReference(), true),
-            (context, hibernateContext) ->
-                    new JsonArrayFunctionDescriptorRegister(hibernateContext, true)
-    );
-
     public void enrich(SqmFunctionRegistry sqmFunctionRegistry) {
         Context context = coreContextPropertiesSupplier.get();
         HibernateContext hibernateContext = hibernateContextPropertiesSupplier.get();
@@ -86,5 +74,10 @@ public class SqmFunctionRegistryEnricher {
     public void enrich(SqmFunctionRegistry sqmFunctionRegistry, Context context, HibernateContext hibernateContext) {
         functionDescriptorRegisterSuppliers.stream().map(supplier -> supplier.get(context, hibernateContext)).forEach(functionDescriptorRegister ->
                 functionDescriptorRegister.registerFunction(sqmFunctionRegistry));
+    }
+
+    interface FunctionDescriptorRegisterSupplier {
+
+        AbstractConditionalFunctionDescriptorRegister get(Context context, HibernateContext hibernateContext);
     }
 }

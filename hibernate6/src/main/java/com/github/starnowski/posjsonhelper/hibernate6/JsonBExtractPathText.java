@@ -23,9 +23,11 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.tree.SqmTypedNode;
 
 import java.util.List;
 
+import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME;
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME;
 
 /**
@@ -37,4 +39,7 @@ public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractP
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
     }
 
+    public JsonBExtractPathText(Path referencedPathSource, NodeBuilder nodeBuilder, List<? extends SqmTypedNode<?>> path) {
+        super(referencedPathSource, path, nodeBuilder, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
+    }
 }
