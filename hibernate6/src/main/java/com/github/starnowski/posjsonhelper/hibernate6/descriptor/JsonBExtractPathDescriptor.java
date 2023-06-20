@@ -19,8 +19,9 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.hibernate6;
+package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
+import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
@@ -30,15 +31,15 @@ import java.util.List;
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_PATH_FUNCTION_NAME;
 
 /**
- * Type that extends {@link AbstractJsonBExtractPath}.
- * Implemented of HQL function defined by constant {@link com.github.starnowski.posjsonhelper.core.Constants#JSONB_EXTRACT_PATH_FUNCTION_NAME}
+ * Function descriptor for child type of {@link JsonBExtractPath}
  */
-public class JsonBExtractPath extends AbstractJsonBExtractPath<JsonBExtractPath> {
-    public JsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
-        super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_FUNCTION_NAME);
+public class JsonBExtractPathDescriptor extends AbstractJsonBExtractPathDescriptor<JsonBExtractPath> {
+    public JsonBExtractPathDescriptor() {
+        super(JSONB_EXTRACT_PATH_FUNCTION_NAME);
     }
 
-    public JsonBExtractPath(Path referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder) {
-        super(referencedPathSource, path, nodeBuilder, JSONB_EXTRACT_PATH_FUNCTION_NAME);
+    @Override
+    protected JsonBExtractPath generateAbstractJsonBExtractPathImpl(Path referencedPathSource, List<SqmTypedNode<?>> pathArguments, NodeBuilder nodeBuilder) {
+        return new JsonBExtractPath(referencedPathSource, pathArguments, nodeBuilder);
     }
 }
