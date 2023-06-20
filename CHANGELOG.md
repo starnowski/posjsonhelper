@@ -29,7 +29,9 @@ https://www.markdownguide.org/basic-syntax/
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptor [58](https://github.com/starnowski/posjsonhelper/issues/58)
 - Added type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptorRegister [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
+### Changed
 
+- Changed default constructor com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor#JsonArrayFunctionDescriptor() to com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor#JsonArrayFunctionDescriptor(com.github.starnowski.posjsonhelper.core.HibernateContext) [58](https://github.com/starnowski/posjsonhelper/issues/58)
 
 ### Removed
 
