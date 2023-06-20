@@ -17,6 +17,15 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+## [0.2.1] - 2023-06-20
+
+### Added
+
+- Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(jakarta.persistence.criteria.Path, java.util.List<? extends SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder, java.lang.String) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(jakarta.persistence.criteria.Path, java.util.List<? extends SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+- Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, java.util.List<? extends SqmTypedNode<?>>) [58](https://github.com/starnowski/posjsonhelper/issues/58)
+
+
 ## [0.2.0] - 2023-06-13
 
 ### Added
