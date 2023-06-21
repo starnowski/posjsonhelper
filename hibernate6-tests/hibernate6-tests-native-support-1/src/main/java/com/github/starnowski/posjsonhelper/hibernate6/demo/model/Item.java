@@ -4,17 +4,23 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
+
+import java.io.Serializable;
 
 
 @Entity
 @Table(name = "item")
-public class Item {
+public class Item implements Serializable {
 
     @Id
     private Long id;
 
-    @Column(name = "jsonb_content", columnDefinition = "jsonb")
-    private String jsonbContent;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "jsonb_content")
+    private JsonbContent jsonbContent;
 
     public Long getId() {
         return id;
@@ -24,11 +30,11 @@ public class Item {
         this.id = id;
     }
 
-    public String getJsonbContent() {
+    public JsonbContent getJsonbContent() {
         return jsonbContent;
     }
 
-    public void setJsonbContent(String jsonbContent) {
+    public void setJsonbContent(JsonbContent jsonbContent) {
         this.jsonbContent = jsonbContent;
     }
 }

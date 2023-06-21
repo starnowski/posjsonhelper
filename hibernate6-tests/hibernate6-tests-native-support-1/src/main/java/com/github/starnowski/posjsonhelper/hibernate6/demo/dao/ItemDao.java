@@ -8,6 +8,7 @@ import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArraySt
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -31,35 +32,6 @@ public class ItemDao {
     private HibernateContext hibernateContext;
     @Autowired
     private EntityManager entityManager;
-
-    public List<Item> findAllByAllMatchingTags(Set<String> tags) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Item> query = cb.createQuery(Item.class);
-        Root<Item> root = query.from(Item.class);
-        query.select(root);
-        query.where(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
-        return entityManager.createQuery(query).getResultList();
-    }
-
-    public List<Item> findAllThatDoNotMatchByAllMatchingTags(Set<String> tags) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Item> query = cb.createQuery(Item.class);
-        Root<Item> root = query.from(Item.class);
-        query.select(root);
-        Predicate notAllMatchingTags = cb.not(new JsonbAllArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
-        Predicate withoutSetOfValuesProperty = cb.isNull(new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")));
-        query.where(cb.or(withoutSetOfValuesProperty, notAllMatchingTags));
-        return entityManager.createQuery(query).getResultList();
-    }
-
-    public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Item> query = cb.createQuery(Item.class);
-        Root<Item> root = query.from(Item.class);
-        query.select(root);
-        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, singletonList("top_element_with_set_of_values")), tags.toArray(new String[0])));
-        return entityManager.createQuery(query).getResultList();
-    }
 
     public List<Item> findAllByNumericValue(BigDecimal bigDecimal, NumericComparator numericComparator) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
@@ -104,5 +76,29 @@ public class ItemDao {
         query.select(root);
         query.where(cb.like(new JsonBExtractPathText(root.get("jsonbContent"), singletonList("string_value"), (NodeBuilder) cb), expression));
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Item> findAllByStringValueAndLikeOperatorWithHQLQuery(String expression) {
+        TypedQuery<Item> query = entityManager.createQuery("from Item as item_ where item_.jsonbContent.string_value like :expr", Item.class);
+//        query.setParameter("path", "string_value");
+        query.setParameter("expr", expression);
+        return query.getResultList();
+    }
+
+    protected String generateParameters(String prefix, int index, int parametersNum)
+    {
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        int to = index + parametersNum;
+        for (;index < to; index++) {
+            if (!first) {
+                sb.append(" , ");
+            }
+            sb.append(":");
+            sb.append(prefix);
+            sb.append(index);
+            first = false;
+        }
+        return sb.toString();
     }
 }
