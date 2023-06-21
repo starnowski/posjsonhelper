@@ -20,7 +20,6 @@ public class Item implements Serializable {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "jsonb_content")
-//    @Type(value = MyJsonType.class)
     private JsonbContent jsonbContent;
 
     public Long getId() {

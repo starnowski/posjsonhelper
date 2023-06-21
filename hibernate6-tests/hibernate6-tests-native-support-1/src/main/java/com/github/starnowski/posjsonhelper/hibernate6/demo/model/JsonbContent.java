@@ -9,45 +9,13 @@ import java.io.Serializable;
 import java.util.List;
 
 @Embeddable
-@Struct(name = "my_json_content")
 public class JsonbContent implements Serializable{
 
-//    @Transient
-//    @JdbcTypeCode(SqlTypes.JSON)
-//    @Column(name = "top_element_with_set_of_values")
-//    private List<String> top_element_with_set_of_values;
-//    private String[] top_element_with_set_of_values;
-//    private String top_element_with_set_of_values;
     private Integer integer_value;
     private Double double_value;
     @Enumerated(EnumType.STRING)
     private UserTypeEnum enum_value;
     private String string_value;
-//    private Child child;
-
-//    public String getTop_element_with_set_of_values() {
-//        return top_element_with_set_of_values;
-//    }
-//
-//    public JsonbContent setTop_element_with_set_of_values(String top_element_with_set_of_values) {
-//        this.top_element_with_set_of_values = top_element_with_set_of_values;
-//        return this;
-//    }
-
-//    public JsonbContent setTop_element_with_set_of_values(String[] top_element_with_set_of_values) {
-//        this.top_element_with_set_of_values = top_element_with_set_of_values;
-//        return this;
-//    }
-
-//    public List<String> getTop_element_with_set_of_values() {
-//        return top_element_with_set_of_values;
-//    }
-//
-//    public JsonbContent setTop_element_with_set_of_values(List<String> top_element_with_set_of_values) {
-//        this.top_element_with_set_of_values = top_element_with_set_of_values;
-//        return this;
-//    }
-
     public Integer getInteger_value() {
         return integer_value;
     }
@@ -83,13 +51,4 @@ public class JsonbContent implements Serializable{
         this.string_value = string_value;
         return this;
     }
-
-//    public Child getChild() {
-//        return child;
-//    }
-//
-//    public JsonbContent setChild(Child child) {
-//        this.child = child;
-//        return this;
-//    }
 }
