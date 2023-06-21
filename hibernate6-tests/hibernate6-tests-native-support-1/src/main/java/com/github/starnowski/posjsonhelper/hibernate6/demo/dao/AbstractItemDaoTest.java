@@ -39,41 +39,9 @@ public abstract class AbstractItemDaoTest {
 
     private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L));
 
-    private static Stream<Arguments> provideShouldReturnSingleCorrectIdExpectedIdWhenSearchingByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), 1L),
-                Arguments.of(List.of("TAG11"), 1L),
-                Arguments.of(List.of("TAG12"), 1L)
-        );
-    }
-
 
     @Autowired
     private ItemDao tested;
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
-        );
-    }
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
-        );
-    }
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L, 3L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(Arrays.asList(1L, 3L, 5L)))
-        );
-    }
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
         return Stream.of(
