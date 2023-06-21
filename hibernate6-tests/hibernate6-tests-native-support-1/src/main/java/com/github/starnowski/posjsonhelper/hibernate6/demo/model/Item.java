@@ -8,16 +8,18 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 import org.hibernate.type.SqlTypes;
 
+import java.io.Serializable;
+
 
 @Entity
 @Table(name = "item")
-public class Item {
+public class Item implements Serializable {
 
     @Id
     private Long id;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "jsonb_content", columnDefinition = "jsonb")
+    @Column(name = "jsonb_content")
 //    @Type(value = MyJsonType.class)
     private JsonbContent jsonbContent;
 
