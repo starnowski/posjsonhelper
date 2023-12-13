@@ -14,6 +14,7 @@
         <module>hibernate5</module>
         <module>hibernate6</module>
         <module>hibernate6-tests</module>
+        <module>json-core</module>
     </modules>
 
     <properties>
