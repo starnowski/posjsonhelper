@@ -34,11 +34,11 @@ public class SQLDefinitionFactoryFacade {
     private final List<ISQLDefinitionContextFactory> factories;
 
     public SQLDefinitionFactoryFacade() {
-        this(Arrays.asList(new JsonbAllArrayStringsExistFunctionContextFactory(), new JsonbAnyArrayStringsExistFunctionContextFactory()));
+        this(new SQLDefinitionContextFactoryClasspathSupplier());
     }
 
-    SQLDefinitionFactoryFacade(List<ISQLDefinitionContextFactory> factories) {
-        this.factories = factories;
+    SQLDefinitionFactoryFacade(SQLDefinitionContextFactoryClasspathSupplier sqlDefinitionContextFactoryClasspathSupplier) {
+        this.factories = sqlDefinitionContextFactoryClasspathSupplier.get();
     }
 
     public List<ISQLDefinition> build(Context context) {
