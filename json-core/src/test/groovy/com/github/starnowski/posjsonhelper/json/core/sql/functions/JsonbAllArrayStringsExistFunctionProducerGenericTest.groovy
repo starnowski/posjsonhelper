@@ -1,5 +1,7 @@
-package com.github.starnowski.posjsonhelper.core.sql.functions
+package com.github.starnowski.posjsonhelper.json.core.sql.functions
 
+
+import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters
 import spock.lang.Unroll
 
 class JsonbAllArrayStringsExistFunctionProducerGenericTest extends AbstractDefaultFunctionDefinitionFactoryGenericTest<JsonbAllArrayStringsExistFunctionProducer, DefaultFunctionFactoryParameters> {

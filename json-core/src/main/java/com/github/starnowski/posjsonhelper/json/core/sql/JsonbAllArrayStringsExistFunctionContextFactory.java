@@ -19,26 +19,28 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.core.sql;
+package com.github.starnowski.posjsonhelper.json.core.sql;
 
 import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
+import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionContextFactory;
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
-import com.github.starnowski.posjsonhelper.core.sql.functions.JsonbAnyArrayStringsExistFunctionProducer;
+import com.github.starnowski.posjsonhelper.json.core.sql.functions.JsonbAllArrayStringsExistFunctionProducer;
 
-public class JsonbAnyArrayStringsExistFunctionContextFactory implements ISQLDefinitionContextFactory {
+public class JsonbAllArrayStringsExistFunctionContextFactory implements ISQLDefinitionContextFactory {
 
-    private final JsonbAnyArrayStringsExistFunctionProducer factory;
+    private final JsonbAllArrayStringsExistFunctionProducer factory;
 
-    public JsonbAnyArrayStringsExistFunctionContextFactory() {
-        this(new JsonbAnyArrayStringsExistFunctionProducer());
+    public JsonbAllArrayStringsExistFunctionContextFactory() {
+        this(new JsonbAllArrayStringsExistFunctionProducer());
     }
 
-    JsonbAnyArrayStringsExistFunctionContextFactory(JsonbAnyArrayStringsExistFunctionProducer factory) {
+    JsonbAllArrayStringsExistFunctionContextFactory(JsonbAllArrayStringsExistFunctionProducer factory) {
         this.factory = factory;
     }
 
     @Override
     public ISQLDefinition build(Context context) {
-        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAnyArrayStringsExistFunctionReference(), context.getSchema()));
+        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAllArrayStringsExistFunctionReference(), context.getSchema()));
     }
 }

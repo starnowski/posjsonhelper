@@ -19,26 +19,31 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.core.sql;
+package com.github.starnowski.posjsonhelper.json.core.sql.functions;
 
-import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFunctionDefinitionFactory;
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
-import com.github.starnowski.posjsonhelper.core.sql.functions.JsonbAllArrayStringsExistFunctionProducer;
+import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument;
 
-public class JsonbAllArrayStringsExistFunctionContextFactory implements ISQLDefinitionContextFactory {
+import java.util.Arrays;
+import java.util.List;
 
-    private final JsonbAllArrayStringsExistFunctionProducer factory;
+import static com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionArgument.ofType;
 
-    public JsonbAllArrayStringsExistFunctionContextFactory() {
-        this(new JsonbAllArrayStringsExistFunctionProducer());
-    }
+public class JsonbAnyArrayStringsExistFunctionProducer extends AbstractDefaultFunctionDefinitionFactory {
 
-    JsonbAllArrayStringsExistFunctionContextFactory(JsonbAllArrayStringsExistFunctionProducer factory) {
-        this.factory = factory;
+    @Override
+    protected List<IFunctionArgument> prepareFunctionArguments(DefaultFunctionFactoryParameters parameters) {
+        return Arrays.asList(ofType("jsonb"), ofType("text[]"));
     }
 
     @Override
-    public ISQLDefinition build(Context context) {
-        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAllArrayStringsExistFunctionReference(), context.getSchema()));
+    protected String buildBody(DefaultFunctionFactoryParameters parameters) {
+        return "SELECT $1 ?| $2;";
+    }
+
+    @Override
+    protected String prepareReturnType(DefaultFunctionFactoryParameters parameters) {
+        return "boolean";
     }
 }

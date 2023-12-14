@@ -1,13 +1,15 @@
-package com.github.starnowski.posjsonhelper.core.sql.functions
+package com.github.starnowski.posjsonhelper.json.core.sql.functions
 
-import com.github.starnowski.posjsonhelper.core.TestApplication
+import com.github.starnowski.posjsonhelper.json.core.TestApplication
+import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFunctionDefinitionFactory
+import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionFactoryParameters
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.jdbc.core.JdbcTemplate
 import spock.lang.Specification
 import spock.lang.Unroll
 
-import static com.github.starnowski.posjsonhelper.core.TestCoreUtils.isFunctionExists
+import static com.github.starnowski.posjsonhelper.test.utils.TestUtils.isFunctionExists
 import static org.junit.Assert.assertEquals
 
 @SpringBootTest(classes = [TestApplication.class])

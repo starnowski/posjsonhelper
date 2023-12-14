@@ -1,5 +1,7 @@
-package com.github.starnowski.posjsonhelper.core.sql.functions
+package com.github.starnowski.posjsonhelper.json.core.sql.functions
 
+import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFunctionDefinitionFactory
+import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionFactoryParameters
 import spock.lang.Specification
 import spock.lang.Unroll
 

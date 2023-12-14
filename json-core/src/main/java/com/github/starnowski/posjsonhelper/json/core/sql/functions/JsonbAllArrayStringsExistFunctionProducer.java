@@ -19,14 +19,18 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.core.sql.functions;
+package com.github.starnowski.posjsonhelper.json.core.sql.functions;
+
+import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFunctionDefinitionFactory;
+import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
+import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionArgument.ofType;
 
-public class JsonbAnyArrayStringsExistFunctionProducer extends AbstractDefaultFunctionDefinitionFactory{
+public class JsonbAllArrayStringsExistFunctionProducer extends AbstractDefaultFunctionDefinitionFactory {
 
     @Override
     protected List<IFunctionArgument> prepareFunctionArguments(DefaultFunctionFactoryParameters parameters) {
@@ -35,7 +39,7 @@ public class JsonbAnyArrayStringsExistFunctionProducer extends AbstractDefaultFu
 
     @Override
     protected String buildBody(DefaultFunctionFactoryParameters parameters) {
-        return "SELECT $1 ?| $2;";
+        return "SELECT $1 ?& $2;";
     }
 
     @Override

@@ -1,8 +1,9 @@
-package com.github.starnowski.posjsonhelper.core.sql
+package com.github.starnowski.posjsonhelper.json.core.sql
 
 import com.github.starnowski.posjsonhelper.core.Context
+import com.github.starnowski.posjsonhelper.core.sql.DefaultSQLDefinition
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters
-import com.github.starnowski.posjsonhelper.core.sql.functions.JsonbAllArrayStringsExistFunctionProducer
+import com.github.starnowski.posjsonhelper.json.core.sql.functions.JsonbAllArrayStringsExistFunctionProducer
 import spock.lang.Unroll
 
 class JsonbAllArrayStringsExistFunctionContextFactoryTest extends AbstractSQLDefinitionContextFactoryTest<JsonbAllArrayStringsExistFunctionContextFactory> {
