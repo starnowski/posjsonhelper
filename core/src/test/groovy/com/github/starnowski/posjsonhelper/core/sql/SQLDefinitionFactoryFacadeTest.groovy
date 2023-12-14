@@ -48,7 +48,7 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
             def results = tested.getFactoriesCopy()
 
         then:
-            results.stream().map({it -> it.getClass()}).collect(Collectors.toList()) == []
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toList()) == [TestClasspathSQLDefinitionContextFactory.class]
     }
 
     private static ISQLDefinitionContextFactory mockSQLDefinitionContextFactoryWithCreationScript(String creationScript)

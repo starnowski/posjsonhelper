@@ -1,5 +1,8 @@
-package com.github.starnowski.posjsonhelper.core
+package com.github.starnowski.posjsonhelper.json.core
 
+import com.github.starnowski.posjsonhelper.core.Context
+import com.github.starnowski.posjsonhelper.core.DatabaseOperationExecutor
+import com.github.starnowski.posjsonhelper.core.DatabaseOperationType
 import com.github.starnowski.posjsonhelper.core.operations.exceptions.AbstractDatabaseOperationsException
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition
 import com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionFactoryFacade
@@ -25,54 +28,54 @@ class DatabaseOperationExecutorItTest extends Specification {
     def "test 1: check statements should failed"()
     {
         when:
-            tested.execute(dataSource, definitions, DatabaseOperationType.VALIDATE)
+        tested.execute(dataSource, definitions, DatabaseOperationType.VALIDATE)
 
         then:
-            thrown(AbstractDatabaseOperationsException)
+        thrown(AbstractDatabaseOperationsException)
     }
 
     def "test 2: execution of creation scripts should be successful"()
     {
         when:
-            tested.execute(dataSource, definitions, DatabaseOperationType.CREATE)
+        tested.execute(dataSource, definitions, DatabaseOperationType.CREATE)
 
         then:
-            noExceptionThrown()
+        noExceptionThrown()
     }
 
     def "test 3: check statements should pass"()
     {
         when:
-            tested.execute(dataSource, definitions, DatabaseOperationType.VALIDATE)
+        tested.execute(dataSource, definitions, DatabaseOperationType.VALIDATE)
 
         then:
-            noExceptionThrown()
+        noExceptionThrown()
     }
 
     def "test 4: logging should pass"()
     {
         when:
-            tested.execute(dataSource, definitions, DatabaseOperationType.LOG_ALL)
+        tested.execute(dataSource, definitions, DatabaseOperationType.LOG_ALL)
 
         then:
-            noExceptionThrown()
+        noExceptionThrown()
     }
 
     def "test 5: drop scripts should pass"()
     {
         when:
-            tested.execute(dataSource, definitions, DatabaseOperationType.DROP)
+        tested.execute(dataSource, definitions, DatabaseOperationType.DROP)
 
         then:
-            noExceptionThrown()
+        noExceptionThrown()
     }
 
     def "test 6: check statements should failed"()
     {
         when:
-            tested.execute(dataSource, definitions, DatabaseOperationType.VALIDATE)
+        tested.execute(dataSource, definitions, DatabaseOperationType.VALIDATE)
 
         then:
-            thrown(AbstractDatabaseOperationsException)
+        thrown(AbstractDatabaseOperationsException)
     }
 }

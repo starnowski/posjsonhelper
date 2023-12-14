@@ -14,6 +14,6 @@ class SQLDefinitionContextFactoryClasspathSupplierTest extends Specification {
             def results = tested.get()
 
         then:
-            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([JsonbAllArrayStringsExistFunctionContextFactory.class, JsonbAnyArrayStringsExistFunctionContextFactory.class])
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([TestClasspathSQLDefinitionContextFactory.class])
     }
 }
