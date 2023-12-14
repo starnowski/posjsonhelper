@@ -1,6 +1,6 @@
 package com.github.starnowski.posjsonhelper.json.core.sql.functions
 
-import com.github.starnowski.posjsonhelper.core.TestApplication
+import com.github.starnowski.posjsonhelper.json.core.TestApplication
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,9 +14,11 @@ import spock.lang.Unroll
 
 import java.util.stream.Collectors
 
-import static com.github.starnowski.posjsonhelper.core.TestApplication.CLEAR_DATABASE_SCRIPT_PATH
-import static com.github.starnowski.posjsonhelper.core.TestApplication.ITEMS_SCRIPT_PATH
-import static com.github.starnowski.posjsonhelper.core.TestCoreUtils.*
+import static com.github.starnowski.posjsonhelper.json.core.TestApplication.CLEAR_DATABASE_SCRIPT_PATH
+import static com.github.starnowski.posjsonhelper.json.core.TestApplication.ITEMS_SCRIPT_PATH
+import static com.github.starnowski.posjsonhelper.test.utils.TestUtils.functionReference
+import static com.github.starnowski.posjsonhelper.test.utils.TestUtils.isFunctionExists
+import static com.github.starnowski.posjsonhelper.test.utils.TestUtils.selectAndReturnSetOfLongObjects
 import static org.junit.Assert.assertEquals
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD
