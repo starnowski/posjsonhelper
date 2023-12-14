@@ -140,4 +140,36 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>pitest</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>eu.stamp-project</groupId>
+                        <artifactId>pitest-maven</artifactId>
+                        <version>1.9.9</version>
+                        <configuration>
+                            <mutators>
+                                <mutator>STRONGER</mutator>
+                            </mutators>
+                            <excludedTestClasses>
+                                <param>com.github.starnowski.posjsonhelper.json.core.*ItTest</param>
+                                <param>com.github.starnowski.posjsonhelper.json.core.**.*ItTest</param>
+                            </excludedTestClasses>
+                            <targetClasses>
+                                <param>com.github.starnowski.posjsonhelper.json.core.**</param>
+                                <param>com.github.starnowski.posjsonhelper.core.sql.functions.**</param>
+                            </targetClasses>
+                            <mutationThreshold>95</mutationThreshold>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 </project>

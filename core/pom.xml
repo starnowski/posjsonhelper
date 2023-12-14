@@ -190,6 +190,7 @@
                             </excludedTestClasses>
                             <excludedClasses>
                                 <param>com.github.starnowski.posjsonhelper.core.SystemPropertyReader</param>
+                                <param>com.github.starnowski.posjsonhelper.core.sql.functions.**</param>
                             </excludedClasses>
                             <mutationThreshold>95</mutationThreshold>
                         </configuration>
