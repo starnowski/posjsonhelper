@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.core.sql
 
 import com.github.starnowski.posjsonhelper.core.Context
+import com.github.starnowski.posjsonhelper.core.SystemPropertyReader
 import org.mockito.Mockito
 import org.mockito.internal.verification.Times
 import spock.lang.Specification
@@ -18,9 +19,10 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
     def "should return expected definitions with creation scripts (#creationScripts)"(){
         given:
             def context = Mock(Context)
+            def systemPropertyReader = Mock(SystemPropertyReader)
             def factoriesSupplier = Mock(SQLDefinitionContextFactoryClasspathSupplier)
             factoriesSupplier.get() >> factories
-            def tested = new SQLDefinitionFactoryFacade(factoriesSupplier)
+            def tested = new SQLDefinitionFactoryFacade(factoriesSupplier, systemPropertyReader)
 
         when:
             def results = tested.build(context)
@@ -48,7 +50,7 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
             def results = tested.getFactoriesCopy()
 
         then:
-            results.stream().map({it -> it.getClass()}).collect(Collectors.toList()) == [TestClasspathSQLDefinitionContextFactory.class]
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([TestClasspathSQLDefinitionContextFactory1.class, TestClasspathSQLDefinitionContextFactory2.class])
     }
 
     private static ISQLDefinitionContextFactory mockSQLDefinitionContextFactoryWithCreationScript(String creationScript)

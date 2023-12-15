@@ -77,4 +77,8 @@ public class Constants {
      * System property that is being used to set the name of HQL function that wraps the array operator in Postgresql.
      */
     public static final String JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.json_function_json_array";
+    /**
+     * System property that is being used to set the name of HQL function that wraps the array operator in Postgresql.
+     */
+//    public static final String JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.json_function_json_array";
 }
