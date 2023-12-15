@@ -34,10 +34,10 @@ public class SQLDefinitionFactoryFacade {
     private final List<ISQLDefinitionContextFactory> factories;
 
     public SQLDefinitionFactoryFacade() {
-        this(new SQLDefinitionContextFactoryClasspathSupplier(), new SystemPropertyReader());
+        this(new SQLDefinitionContextFactoryClasspathSupplier());
     }
 
-    SQLDefinitionFactoryFacade(SQLDefinitionContextFactoryClasspathSupplier sqlDefinitionContextFactoryClasspathSupplier, SystemPropertyReader systemPropertyReader) {
+    SQLDefinitionFactoryFacade(SQLDefinitionContextFactoryClasspathSupplier sqlDefinitionContextFactoryClasspathSupplier) {
         //TODO Constructor with SystemPropertyResolver
         this.factories = sqlDefinitionContextFactoryClasspathSupplier.get();
     }

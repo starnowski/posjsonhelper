@@ -19,10 +19,9 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
     def "should return expected definitions with creation scripts (#creationScripts)"(){
         given:
             def context = Mock(Context)
-            def systemPropertyReader = Mock(SystemPropertyReader)
             def factoriesSupplier = Mock(SQLDefinitionContextFactoryClasspathSupplier)
             factoriesSupplier.get() >> factories
-            def tested = new SQLDefinitionFactoryFacade(factoriesSupplier, systemPropertyReader)
+            def tested = new SQLDefinitionFactoryFacade(factoriesSupplier)
 
         when:
             def results = tested.build(context)

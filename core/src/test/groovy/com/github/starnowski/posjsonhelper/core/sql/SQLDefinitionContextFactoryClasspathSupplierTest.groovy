@@ -16,4 +16,7 @@ class SQLDefinitionContextFactoryClasspathSupplierTest extends Specification {
         then:
             results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([TestClasspathSQLDefinitionContextFactory1.class, TestClasspathSQLDefinitionContextFactory2.class])
     }
+
+
+    //def factoriesSupplier = Mock(SQLDefinitionContextFactoryClasspathSupplier)
 }
