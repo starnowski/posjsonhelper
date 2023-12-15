@@ -78,7 +78,9 @@ public class Constants {
      */
     public static final String JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.json_function_json_array";
     /**
-     * System property that is being used to set the name of HQL function that wraps the array operator in Postgresql.
+     * System property that stores list of {@link com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionContextFactory} types that should be loaded.
+     * Instead of loading types that can be find on the classpath.
+     * Types on the list are separated by comma character ".".
      */
-//    public static final String JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.json_function_json_array";
+    public static final String SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.sqldefinitioncontextfactory.types";
 }
