@@ -8,17 +8,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class SQLDefinitionContextFactoryClasspathSupplier {
+public class SQLDefinitionContextFactorySupplier {
 
     private final Supplier<Reflections> reflectionsSupplier;
     private final SystemPropertyReader systemPropertyReader;
 
-    public SQLDefinitionContextFactoryClasspathSupplier()
+    public SQLDefinitionContextFactorySupplier()
     {
         this(() -> new Reflections("com.github.starnowski.posjsonhelper"), new SystemPropertyReader());
     }
 
-    public SQLDefinitionContextFactoryClasspathSupplier(Supplier<Reflections> reflectionsSupplier, SystemPropertyReader systemPropertyReader) {
+    public SQLDefinitionContextFactorySupplier(Supplier<Reflections> reflectionsSupplier, SystemPropertyReader systemPropertyReader) {
         this.reflectionsSupplier = reflectionsSupplier;
         this.systemPropertyReader = systemPropertyReader;
     }

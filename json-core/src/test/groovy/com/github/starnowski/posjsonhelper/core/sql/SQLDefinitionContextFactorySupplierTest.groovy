@@ -6,11 +6,11 @@ import spock.lang.Specification
 
 import java.util.stream.Collectors
 
-class SQLDefinitionContextFactoryClasspathSupplierTest extends Specification {
+class SQLDefinitionContextFactorySupplierTest extends Specification {
 
     def "should return expected list of factories" (){
         given:
-            def tested = new SQLDefinitionContextFactoryClasspathSupplier()
+            def tested = new SQLDefinitionContextFactorySupplier()
 
         when:
             def results = tested.get()

@@ -1,7 +1,6 @@
 package com.github.starnowski.posjsonhelper.core.sql
 
 import com.github.starnowski.posjsonhelper.core.Context
-import com.github.starnowski.posjsonhelper.core.SystemPropertyReader
 import org.mockito.Mockito
 import org.mockito.internal.verification.Times
 import spock.lang.Specification
@@ -19,7 +18,7 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
     def "should return expected definitions with creation scripts (#creationScripts)"(){
         given:
             def context = Mock(Context)
-            def factoriesSupplier = Mock(SQLDefinitionContextFactoryClasspathSupplier)
+            def factoriesSupplier = Mock(SQLDefinitionContextFactorySupplier)
             factoriesSupplier.get() >> factories
             def tested = new SQLDefinitionFactoryFacade(factoriesSupplier)
 

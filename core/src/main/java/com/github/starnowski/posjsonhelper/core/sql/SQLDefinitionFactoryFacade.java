@@ -22,7 +22,6 @@
 package com.github.starnowski.posjsonhelper.core.sql;
 
 import com.github.starnowski.posjsonhelper.core.Context;
-import com.github.starnowski.posjsonhelper.core.SystemPropertyReader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,12 +33,11 @@ public class SQLDefinitionFactoryFacade {
     private final List<ISQLDefinitionContextFactory> factories;
 
     public SQLDefinitionFactoryFacade() {
-        this(new SQLDefinitionContextFactoryClasspathSupplier());
+        this(new SQLDefinitionContextFactorySupplier());
     }
 
-    SQLDefinitionFactoryFacade(SQLDefinitionContextFactoryClasspathSupplier sqlDefinitionContextFactoryClasspathSupplier) {
-        //TODO Constructor with SystemPropertyResolver
-        this.factories = sqlDefinitionContextFactoryClasspathSupplier.get();
+    SQLDefinitionFactoryFacade(SQLDefinitionContextFactorySupplier sqlDefinitionContextFactorySupplier) {
+        this.factories = sqlDefinitionContextFactorySupplier.get();
     }
 
     public List<ISQLDefinition> build(Context context) {
