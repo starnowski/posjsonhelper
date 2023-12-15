@@ -58,10 +58,7 @@ public class CoreContextPropertiesSupplier {
         if (jsonbAnyArrayStringsExistFunctionReference != null) {
             builder = builder.withJsonbAnyArrayStringsExistFunctionReference(jsonbAnyArrayStringsExistFunctionReference);
         }
-        String schema = systemPropertyReader.read(SCHEMA_PROPERTY);
-        if (schema != null) {
-            builder = builder.withSchema(schema);
-        }
+        builder = builder.withSchema(systemPropertyReader.read(SCHEMA_PROPERTY));
         return builder.build();
     }
 
