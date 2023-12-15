@@ -19,32 +19,28 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.core.sql;
+package com.github.starnowski.posjsonhelper.json.core.sql;
 
 import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinition;
+import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionContextFactory;
+import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
+import com.github.starnowski.posjsonhelper.json.core.sql.functions.JsonbAnyArrayStringsExistFunctionProducer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+public class JsonbAnyArrayStringsExistFunctionContextFactory implements ISQLDefinitionContextFactory {
 
-public class SQLDefinitionFactoryFacade {
+    private final JsonbAnyArrayStringsExistFunctionProducer factory;
 
-    private final List<ISQLDefinitionContextFactory> factories;
-
-    public SQLDefinitionFactoryFacade() {
-        this(new SQLDefinitionContextFactorySupplier());
+    public JsonbAnyArrayStringsExistFunctionContextFactory() {
+        this(new JsonbAnyArrayStringsExistFunctionProducer());
     }
 
-    SQLDefinitionFactoryFacade(SQLDefinitionContextFactorySupplier sqlDefinitionContextFactorySupplier) {
-        this.factories = sqlDefinitionContextFactorySupplier.get();
+    JsonbAnyArrayStringsExistFunctionContextFactory(JsonbAnyArrayStringsExistFunctionProducer factory) {
+        this.factory = factory;
     }
 
-    public List<ISQLDefinition> build(Context context) {
-        return factories.stream().map(factory -> factory.build(context)).filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
-    List<ISQLDefinitionContextFactory> getFactoriesCopy() {
-        return new ArrayList<>(factories);
+    @Override
+    public ISQLDefinition build(Context context) {
+        return factory.produce(new DefaultFunctionFactoryParameters(context.getJsonbAnyArrayStringsExistFunctionReference(), context.getSchema()));
     }
 }

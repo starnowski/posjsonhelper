@@ -19,32 +19,31 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.core.sql;
+package com.github.starnowski.posjsonhelper.json.core.sql.functions;
 
-import com.github.starnowski.posjsonhelper.core.Context;
+import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFunctionDefinitionFactory;
+import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
+import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
-public class SQLDefinitionFactoryFacade {
+import static com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionArgument.ofType;
 
-    private final List<ISQLDefinitionContextFactory> factories;
+public class JsonbAllArrayStringsExistFunctionProducer extends AbstractDefaultFunctionDefinitionFactory {
 
-    public SQLDefinitionFactoryFacade() {
-        this(new SQLDefinitionContextFactorySupplier());
+    @Override
+    protected List<IFunctionArgument> prepareFunctionArguments(DefaultFunctionFactoryParameters parameters) {
+        return Arrays.asList(ofType("jsonb"), ofType("text[]"));
     }
 
-    SQLDefinitionFactoryFacade(SQLDefinitionContextFactorySupplier sqlDefinitionContextFactorySupplier) {
-        this.factories = sqlDefinitionContextFactorySupplier.get();
+    @Override
+    protected String buildBody(DefaultFunctionFactoryParameters parameters) {
+        return "SELECT $1 ?& $2;";
     }
 
-    public List<ISQLDefinition> build(Context context) {
-        return factories.stream().map(factory -> factory.build(context)).filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
-    List<ISQLDefinitionContextFactory> getFactoriesCopy() {
-        return new ArrayList<>(factories);
+    @Override
+    protected String prepareReturnType(DefaultFunctionFactoryParameters parameters) {
+        return "boolean";
     }
 }

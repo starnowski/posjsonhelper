@@ -18,7 +18,9 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
     def "should return expected definitions with creation scripts (#creationScripts)"(){
         given:
             def context = Mock(Context)
-            def tested = new SQLDefinitionFactoryFacade(factories)
+            def factoriesSupplier = Mock(SQLDefinitionContextFactorySupplier)
+            factoriesSupplier.get() >> factories
+            def tested = new SQLDefinitionFactoryFacade(factoriesSupplier)
 
         when:
             def results = tested.build(context)
@@ -38,7 +40,7 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
             [mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("ScriptX"), mockSQLDefinitionContextFactoryThatReturnsNullDefinition(), mockSQLDefinitionContextFactoryWithCreationScript("Script11")]  |   ["ScriptX", "Script11"]
     }
 
-    def "should have expected list of factories" (){
+    def "should have return empty list of factories by default because core module does not contains factories implementaiotn" (){
         given:
             def tested = new SQLDefinitionFactoryFacade()
 
@@ -46,7 +48,7 @@ class SQLDefinitionFactoryFacadeTest extends Specification {
             def results = tested.getFactoriesCopy()
 
         then:
-            results.stream().map({it -> it.getClass()}).collect(Collectors.toList()) == [JsonbAllArrayStringsExistFunctionContextFactory.class, JsonbAnyArrayStringsExistFunctionContextFactory.class]
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([TestClasspathSQLDefinitionContextFactory1.class, TestClasspathSQLDefinitionContextFactory2.class])
     }
 
     private static ISQLDefinitionContextFactory mockSQLDefinitionContextFactoryWithCreationScript(String creationScript)
