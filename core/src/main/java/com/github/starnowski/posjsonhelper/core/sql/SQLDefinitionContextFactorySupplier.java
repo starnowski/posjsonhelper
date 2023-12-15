@@ -12,13 +12,25 @@ import java.util.stream.Collectors;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY;
 
+/**
+ * Loads instances of type {{@link  ISQLDefinitionContextFactory}}.
+ * By default, component scans package "com.github.starnowski.posjsonhelper" to search correct types.
+ * If there is specified system property "com.github.starnowski.posjsonhelper.core.hibernate.functions.sqldefinitioncontextfactory.types"
+ * then the component tries to load classes specified by this property.
+ * @see #PACKAGE_TO_SCAN
+ * @see com.github.starnowski.posjsonhelper.core.Constants#SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY
+ */
 public class SQLDefinitionContextFactorySupplier {
 
+    /**
+     * Package that is supposes to scan to search subtypes of  {{@link  ISQLDefinitionContextFactory}}
+     */
+    public static final String PACKAGE_TO_SCAN = "com.github.starnowski.posjsonhelper";
     private final Supplier<Reflections> reflectionsSupplier;
     private final SystemPropertyReader systemPropertyReader;
 
     public SQLDefinitionContextFactorySupplier() {
-        this(() -> new Reflections("com.github.starnowski.posjsonhelper"), new SystemPropertyReader());
+        this(() -> new Reflections(PACKAGE_TO_SCAN), new SystemPropertyReader());
     }
 
     public SQLDefinitionContextFactorySupplier(Supplier<Reflections> reflectionsSupplier, SystemPropertyReader systemPropertyReader) {
