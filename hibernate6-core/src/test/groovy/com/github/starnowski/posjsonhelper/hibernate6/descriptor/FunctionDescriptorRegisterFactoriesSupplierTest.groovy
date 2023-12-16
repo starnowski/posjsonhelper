@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor
 
 import com.github.starnowski.posjsonhelper.core.SystemPropertyReader
+import com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionContextFactorySupplier
 import com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory1
 import com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory2
 import spock.lang.Specification
@@ -11,7 +12,6 @@ import java.util.stream.Collectors
 import static com.github.starnowski.posjsonhelper.hibernate6.Constants.FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_PROPERTY
 
 class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
-
 
     def "should return expected list of factories" (){
         given:
