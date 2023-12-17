@@ -4,7 +4,6 @@ import com.github.starnowski.posjsonhelper.core.Context
 import com.github.starnowski.posjsonhelper.core.CoreContextPropertiesSupplier
 import com.github.starnowski.posjsonhelper.core.HibernateContext
 import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSupplier
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegister
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactory
@@ -12,12 +11,10 @@ import org.hibernate.query.sqm.function.AbstractSqmFunctionDescriptor
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor
 import org.hibernate.query.sqm.function.SqmFunctionRegistry
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import java.util.function.Function
-import java.util.stream.Collectors
 
-class SqmFunctionRegistryEnricherXTest extends Specification {
+class SqmFunctionRegistryEnricherTest extends Specification {
 
 //    @Unroll
     def "should enrich sqmFunctionRegistry with expected functions types #expectedFunctionTypes"() {
@@ -34,7 +31,7 @@ class SqmFunctionRegistryEnricherXTest extends Specification {
             hibernateContextPropertiesSupplier.get() >> hibernateContext
             functionDescriptorRegisterFactoriesSupplier.get() >> [functionDescriptorRegisterFactory]
             functionDescriptorRegisterFactory.get(context, hibernateContext) >> functionDescriptorRegister
-            def tested = new SqmFunctionRegistryEnricherX(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier, functionDescriptorRegisterFactoriesSupplier)
+            def tested = new SqmFunctionRegistryEnricher(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier, functionDescriptorRegisterFactoriesSupplier)
 
         when:
             tested.enrich(sqmFunctionRegistry)

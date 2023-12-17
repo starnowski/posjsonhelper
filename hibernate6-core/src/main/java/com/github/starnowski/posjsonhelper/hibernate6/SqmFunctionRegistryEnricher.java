@@ -25,7 +25,6 @@ import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.CoreContextPropertiesSupplier;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSupplier;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister;
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier;
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactory;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
@@ -35,7 +34,7 @@ import java.util.List;
 /**
  * The component that enriches the {@link SqmFunctionRegistry} object with Hibernate and SQL definitions used by the library.
  */
-public class SqmFunctionRegistryEnricherX {
+public class SqmFunctionRegistryEnricher {
 
     /**
      * Supplier for {@link Context} object based on system properties
@@ -47,11 +46,11 @@ public class SqmFunctionRegistryEnricherX {
     private final HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier;
     private final List<FunctionDescriptorRegisterFactory> functionDescriptorRegisterFactories;
 
-    public SqmFunctionRegistryEnricherX() {
+    public SqmFunctionRegistryEnricher() {
         this(new CoreContextPropertiesSupplier(), new HibernateContextPropertiesSupplier(), new FunctionDescriptorRegisterFactoriesSupplier());
     }
 
-    SqmFunctionRegistryEnricherX(CoreContextPropertiesSupplier coreContextPropertiesSupplier, HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier, FunctionDescriptorRegisterFactoriesSupplier functionDescriptorRegisterFactoriesSupplier) {
+    SqmFunctionRegistryEnricher(CoreContextPropertiesSupplier coreContextPropertiesSupplier, HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier, FunctionDescriptorRegisterFactoriesSupplier functionDescriptorRegisterFactoriesSupplier) {
         this.coreContextPropertiesSupplier = coreContextPropertiesSupplier;
         this.hibernateContextPropertiesSupplier = hibernateContextPropertiesSupplier;
         this.functionDescriptorRegisterFactories = functionDescriptorRegisterFactoriesSupplier.get();
