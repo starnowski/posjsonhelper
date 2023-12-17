@@ -5,5 +5,5 @@ import com.github.starnowski.posjsonhelper.core.HibernateContext;
 
 public interface FunctionDescriptorRegisterFactory {
 
-    AbstractConditionalFunctionDescriptorRegister get(Context context, HibernateContext hibernateContext);
+    FunctionDescriptorRegister get(Context context, HibernateContext hibernateContext);
 }

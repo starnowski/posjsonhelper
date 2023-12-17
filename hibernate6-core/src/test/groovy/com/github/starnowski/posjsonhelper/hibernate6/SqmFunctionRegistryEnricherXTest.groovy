@@ -4,7 +4,9 @@ import com.github.starnowski.posjsonhelper.core.Context
 import com.github.starnowski.posjsonhelper.core.CoreContextPropertiesSupplier
 import com.github.starnowski.posjsonhelper.core.HibernateContext
 import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSupplier
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister
 import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactory
 import org.hibernate.query.sqm.function.AbstractSqmFunctionDescriptor
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor
 import org.hibernate.query.sqm.function.SqmFunctionRegistry
@@ -21,10 +23,15 @@ class SqmFunctionRegistryEnricherXTest extends Specification {
         given:
             def coreContextPropertiesSupplier = Mock(CoreContextPropertiesSupplier)
             def hibernateContextPropertiesSupplier = Mock(HibernateContextPropertiesSupplier)
+            def functionDescriptorRegisterFactoriesSupplier = Mock(FunctionDescriptorRegisterFactoriesSupplier)
+            def functionDescriptorRegisterFactory = Mock(FunctionDescriptorRegisterFactory)
+            def functionDescriptorRegister = Mock(AbstractConditionalFunctionDescriptorRegister)
             def sqmFunctionRegistry = new SqmFunctionRegistry()
             coreContextPropertiesSupplier.get() >> context
             hibernateContextPropertiesSupplier.get() >> hibernateContext
-            def tested = new SqmFunctionRegistryEnricherX(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier, new FunctionDescriptorRegisterFactoriesSupplier())
+            functionDescriptorRegisterFactoriesSupplier.get() >> [functionDescriptorRegisterFactory]
+            functionDescriptorRegisterFactory.get(context, hibernateContext) >> functionDescriptorRegister
+            def tested = new SqmFunctionRegistryEnricherX(coreContextPropertiesSupplier, hibernateContextPropertiesSupplier, functionDescriptorRegisterFactoriesSupplier)
 
         when:
             tested.enrich(sqmFunctionRegistry)

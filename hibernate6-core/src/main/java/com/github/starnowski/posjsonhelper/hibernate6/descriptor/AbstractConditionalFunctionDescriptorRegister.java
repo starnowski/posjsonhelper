@@ -26,9 +26,10 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 /**
  * Abstract type, responsible for registration of custom functions.
+ * Implementation of interface {@link FunctionDescriptorRegister}
  *
  */
-public abstract class AbstractConditionalFunctionDescriptorRegister {
+public abstract class AbstractConditionalFunctionDescriptorRegister implements FunctionDescriptorRegister{
 
     /**
      * Flag determines if in the case when the function is already registered if it can be overridden.
