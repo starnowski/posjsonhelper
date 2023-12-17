@@ -25,7 +25,8 @@ import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.CoreContextPropertiesSupplier;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.core.HibernateContextPropertiesSupplier;
-import com.github.starnowski.posjsonhelper.hibernate6.descriptor.*;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier;
+import com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactory;
 import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 import java.util.List;
@@ -43,26 +44,16 @@ public class SqmFunctionRegistryEnricher {
      * Supplier for {@link HibernateContext} object based on system properties
      */
     private final HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier;
-    private final List<FunctionDescriptorRegisterSupplier> functionDescriptorRegisterSuppliers = List.of(
-            (context, hibernateContext) ->
-                    new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathDescriptor(), true),
-            (context, hibernateContext) ->
-                    new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathTextDescriptor(), true),
-            (context, hibernateContext) ->
-                    new AbstractJsonbArrayStringsExistPredicateDescriptorRegister(true, new JsonbAllArrayStringsExistPredicateDescriptor(context, hibernateContext)),
-            (context, hibernateContext) ->
-                    new AbstractJsonbArrayStringsExistPredicateDescriptorRegister(true, new JsonbAnyArrayStringsExistPredicateDescriptor(context, hibernateContext)),
-            (context, hibernateContext) ->
-                    new JsonArrayFunctionDescriptorRegister(hibernateContext, true)
-    );
+    private final List<FunctionDescriptorRegisterFactory> functionDescriptorRegisterFactories;
 
     public SqmFunctionRegistryEnricher() {
-        this(new CoreContextPropertiesSupplier(), new HibernateContextPropertiesSupplier());
+        this(new CoreContextPropertiesSupplier(), new HibernateContextPropertiesSupplier(), new FunctionDescriptorRegisterFactoriesSupplier());
     }
 
-    SqmFunctionRegistryEnricher(CoreContextPropertiesSupplier coreContextPropertiesSupplier, HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier) {
+    SqmFunctionRegistryEnricher(CoreContextPropertiesSupplier coreContextPropertiesSupplier, HibernateContextPropertiesSupplier hibernateContextPropertiesSupplier, FunctionDescriptorRegisterFactoriesSupplier functionDescriptorRegisterFactoriesSupplier) {
         this.coreContextPropertiesSupplier = coreContextPropertiesSupplier;
         this.hibernateContextPropertiesSupplier = hibernateContextPropertiesSupplier;
+        this.functionDescriptorRegisterFactories = functionDescriptorRegisterFactoriesSupplier.get();
     }
 
     public void enrich(SqmFunctionRegistry sqmFunctionRegistry) {
@@ -72,12 +63,7 @@ public class SqmFunctionRegistryEnricher {
     }
 
     public void enrich(SqmFunctionRegistry sqmFunctionRegistry, Context context, HibernateContext hibernateContext) {
-        functionDescriptorRegisterSuppliers.stream().map(supplier -> supplier.get(context, hibernateContext)).forEach(functionDescriptorRegister ->
+        functionDescriptorRegisterFactories.stream().map(supplier -> supplier.get(context, hibernateContext)).forEach(functionDescriptorRegister ->
                 functionDescriptorRegister.registerFunction(sqmFunctionRegistry));
-    }
-
-    interface FunctionDescriptorRegisterSupplier {
-
-        AbstractConditionalFunctionDescriptorRegister get(Context context, HibernateContext hibernateContext);
     }
 }
