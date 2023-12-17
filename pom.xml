@@ -17,6 +17,7 @@
         <module>json-core</module>
         <module>hibernate6-core</module>
         <module>text</module>
+        <module>text/hibernate6-text</module>
     </modules>
 
     <properties>
