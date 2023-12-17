@@ -15,7 +15,7 @@ import static com.github.starnowski.posjsonhelper.hibernate6.Constants.FUNCTIOND
 
 /**
  * Loads instances of type {{@link  FunctionDescriptorRegisterFactory}}.
- * By default, component scans package "com.github.starnowski.posjsonhelper.hibernate6" to search correct types.
+ * By default, component scans package "com.github.starnowski.posjsonhelper" to search correct types.
  * If there is specified system property "com.github.starnowski.posjsonhelper.hibernate6.functiondescriptorregisterfactory.types"
  * then the component tries to load classes specified by this property.
  * @see #PACKAGE_TO_SCAN
@@ -26,7 +26,7 @@ public class FunctionDescriptorRegisterFactoriesSupplier {
     /**
      * Package that is supposes to scan to search subtypes of  {{@link  FunctionDescriptorRegisterFactory}}
      */
-    public static final String PACKAGE_TO_SCAN = "com.github.starnowski.posjsonhelper.hibernate6";
+    public static final String PACKAGE_TO_SCAN = "com.github.starnowski.posjsonhelper";
     private final Supplier<Reflections> reflectionsSupplier;
     private final SystemPropertyReader systemPropertyReader;
 
