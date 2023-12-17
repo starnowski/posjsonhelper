@@ -40,16 +40,6 @@
 
         <!--        tests   -->
         <dependency>
-            <groupId>com.github.starnowski.posjsonhelper</groupId>
-            <artifactId>test-utils</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.apache.groovy</groupId>
             <artifactId>groovy-all</artifactId>
             <version>4.0.12</version>
