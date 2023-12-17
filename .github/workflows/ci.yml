@@ -81,7 +81,7 @@ jobs:
           java-version: '11'
 
       - name: Run tests for hibernate6
-        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6 -P jdk11 test
+        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-core,:hibernate6 -P jdk11 test
 
   publish:
     runs-on: ubuntu-latest
