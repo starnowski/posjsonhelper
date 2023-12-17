@@ -37,7 +37,7 @@ class JsonbAllArrayStringsExistPredicateDescriptorRegisterFactoryTest extends Sp
 
         where:
             hibernateContext || expectedFunction
-            HibernateContext.builder().build()  ||  "json_function_json_array"
-            HibernateContext.builder().withJsonFunctionJsonArrayOperator("json_function_xxxx").build()  ||  "json_function_xxxx"
+            HibernateContext.builder().build()  ||  "jsonb_all_array_strings_exist"
+            HibernateContext.builder().withJsonbAllArrayStringsExistOperator("json_111_function").build()  ||  "json_111_function"
     }
 }
