@@ -1,4 +1,4 @@
-package com.github.starnowski.posjsonhelper.hibernate6.model;
+package com.github.starnowski.posjsonhelper.text.hibernate6.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
