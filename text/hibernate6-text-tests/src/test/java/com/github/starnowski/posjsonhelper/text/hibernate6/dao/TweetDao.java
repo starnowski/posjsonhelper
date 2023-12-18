@@ -1,9 +1,9 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
+import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 public class TweetDao {

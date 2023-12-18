@@ -11,6 +11,10 @@
 
     <groupId>com.github.starnowski.posjsonhelper.text</groupId>
     <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hibernate6-text-tests</module>
+    </modules>
 
     <properties>
         <org.hibernate.hibernate.core.version>6.1.5.Final</org.hibernate.hibernate.core.version>
