@@ -36,7 +36,7 @@ public class Constants {
 
     /**
      * Name of the Postgres function 'plainto_tsquery' plainto_tsquery transforms unformatted text querytext to tsquery.
-     * The text is parsed and normalized much as for to_tsvector, then the & (AND) Boolean operator is inserted between surviving words.
+     * The text is parsed and normalized much as for to_tsvector, then the &amp; (AND) Boolean operator is inserted between surviving words.
      * The to_tsquery offers access to more features than plainto_tsquery, but is less forgiving about its input.
      * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
      */
