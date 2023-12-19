@@ -9,7 +9,6 @@ import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 import org.hibernate.type.spi.TypeConfiguration;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractFunctionWithConfigurationAndTextQueryFunctionDescriptor<T extends AbstractFunctionWithConfigurationAndTextQueryFunction> extends NamedSqmFunctionDescriptor {
