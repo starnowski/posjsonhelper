@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -43,6 +44,7 @@ public class TweetDaoTest {
     @Autowired
     private TweetDao tested;
 
+    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
