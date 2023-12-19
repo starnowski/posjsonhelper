@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.github.starnowski.posjsonhelper</groupId>
+        <artifactId>parent</artifactId>
+        <version>0.3.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.github.starnowski.posjsonhelper.text</groupId>
+    <artifactId>parent</artifactId>
+    <packaging>pom</packaging>
+    <modules>
+        <module>hibernate6-text-tests</module>
+    </modules>
+
+    <properties>
+        <org.hibernate.hibernate.core.version>6.1.5.Final</org.hibernate.hibernate.core.version>
+        <java.version>11</java.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+        <license.dir>${project.parent.basedir}</license.dir>
+    </properties>
+
+</project>

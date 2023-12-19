@@ -1,23 +1,23 @@
 /**
- *     Posjsonhelper library is an open-source project that adds support of
- *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
- *     Copyright (C) 2023  Szymon Tarnowski
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 package com.github.starnowski.posjsonhelper.core;
 
@@ -43,11 +43,18 @@ public class HibernateContext {
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR} constant.
      */
     private final String jsonFunctionJsonArrayOperator;
+    /**
+     * Name of HQL function that wraps Postgres text "@@" operator.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR} constant.
+     */
+    private final String textFunctionOperator;
 
-    public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator) {
+    public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator,
+                            String textFunctionOperator) {
         this.jsonbAllArrayStringsExistOperator = jsonbAllArrayStringsExistOperator;
         this.jsonbAnyArrayStringsExistOperator = jsonbAnyArrayStringsExistOperator;
         this.jsonFunctionJsonArrayOperator = jsonFunctionJsonArrayOperator;
+        this.textFunctionOperator = textFunctionOperator;
     }
 
     public static ContextBuilder builder() {
@@ -55,7 +62,17 @@ public class HibernateContext {
     }
 
     /**
+     * Returns value of property {@link #textFunctionOperator}
+     *
+     * @return value of property {@link #textFunctionOperator}
+     */
+    public String getTextFunctionOperator() {
+        return textFunctionOperator;
+    }
+
+    /**
      * Returns value of property {@link #jsonbAllArrayStringsExistOperator}
+     *
      * @return value of property {@link #jsonbAllArrayStringsExistOperator}
      */
     public String getJsonbAllArrayStringsExistOperator() {
@@ -64,6 +81,7 @@ public class HibernateContext {
 
     /**
      * Returns value of property {@link #jsonbAnyArrayStringsExistOperator}
+     *
      * @return value of property {@link #jsonbAnyArrayStringsExistOperator}
      */
     public String getJsonbAnyArrayStringsExistOperator() {
@@ -72,6 +90,7 @@ public class HibernateContext {
 
     /**
      * Returns value of property {@link #jsonFunctionJsonArrayOperator}
+     *
      * @return value of property {@link #jsonFunctionJsonArrayOperator}
      */
     public String getJsonFunctionJsonArrayOperator() {
@@ -83,6 +102,12 @@ public class HibernateContext {
         private String jsonbAllArrayStringsExistOperator = DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR;
         private String jsonbAnyArrayStringsExistOperator = DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR;
         private String jsonFunctionJsonArrayOperator = DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR;
+        private String textFunctionOperator = DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR;
+
+        public ContextBuilder withTextFunctionOperator(String textFunctionOperator) {
+            this.textFunctionOperator = textFunctionOperator;
+            return this;
+        }
 
         public ContextBuilder withJsonbAllArrayStringsExistOperator(String jsonbAllArrayStringsExistOperator) {
             this.jsonbAllArrayStringsExistOperator = jsonbAllArrayStringsExistOperator;
@@ -100,13 +125,14 @@ public class HibernateContext {
         }
 
         public HibernateContext build() {
-            return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, jsonFunctionJsonArrayOperator);
+            return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, jsonFunctionJsonArrayOperator, textFunctionOperator);
         }
 
         public ContextBuilder withHibernateContext(HibernateContext hibernateContext) {
             return withJsonbAllArrayStringsExistOperator(hibernateContext.getJsonbAllArrayStringsExistOperator())
                     .withJsonbAnyArrayStringsExistOperator(hibernateContext.getJsonbAnyArrayStringsExistOperator())
-                    .withJsonFunctionJsonArrayOperator(hibernateContext.getJsonFunctionJsonArrayOperator());
+                    .withJsonFunctionJsonArrayOperator(hibernateContext.getJsonFunctionJsonArrayOperator())
+                    .withTextFunctionOperator(hibernateContext.getTextFunctionOperator());
         }
     }
 }

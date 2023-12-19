@@ -33,6 +33,19 @@ public class Constants {
      * Please check <a href="https://www.postgresql.org/docs/9.4/functions-json.html">Postgres doc</a>
      */
     public static final String JSONB_EXTRACT_PATH_FUNCTION_NAME = "jsonb_extract_path";
+
+    /**
+     * Name of the Postgres function 'plainto_tsquery' plainto_tsquery transforms unformatted text querytext to tsquery.
+     * The text is parsed and normalized much as for to_tsvector, then the &amp; (AND) Boolean operator is inserted between surviving words.
+     * The to_tsquery offers access to more features than plainto_tsquery, but is less forgiving about its input.
+     * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
+     */
+    public static final String PLAINTO_TSQUERY_FUNCTION_NAME = "plainto_tsquery";
+    /**
+     * Name of the Postgres function 'to_tsvector' that is converting a document to the tsvector data type.
+     * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
+     */
+    public static final String TO_TSVECTOR_FUNCTION_NAME = "to_tsvector";
     /**
      * Default value for property {@link Context#jsonbAllArrayStringsExistFunctionReference}
      */
@@ -65,6 +78,10 @@ public class Constants {
      * 	The default name for the HQL function that wraps Postgres "ARRAY" operator.
      */
     public static final String DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR = "json_function_json_array";
+    /**
+     * 	The default name for the HQL function that wraps Postgres text "@@" operator.
+     */
+    public static final String DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR = "json_function_json_array";
     /**
      * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
      */
