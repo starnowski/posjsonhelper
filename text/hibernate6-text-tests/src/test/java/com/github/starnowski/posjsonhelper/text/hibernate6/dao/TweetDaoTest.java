@@ -44,7 +44,7 @@ public class TweetDaoTest {
     @Autowired
     private TweetDao tested;
 
-    @Disabled
+//    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
