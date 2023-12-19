@@ -1,7 +1,6 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -11,9 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.CLEAR_DATABASE_SCRIPT_PATH;
@@ -34,21 +31,24 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
         executionPhase = AFTER_TEST_METHOD)
 public class TweetDaoTest {
 
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
-        return Stream.of(
-                Arguments.of("cats", asList(1L, 3L)),
-                Arguments.of("rats", asList(2L, 3L))
-        );
-    }
-
     @Autowired
     private TweetDao tested;
 
-//    @Disabled
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
+        return Stream.of(
+                Arguments.of("cats", asList(1L, 3L)),
+                Arguments.of("rats", asList(2L, 3L)),
+                Arguments.of("rats cats", asList(3L)),
+                Arguments.of("cats rats", asList(3L)),
+                Arguments.of("cats rats cats", asList(3L))
+        );
+    }
+
+    //    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return single correct id #expectedId when searching by all matching tags [#tags]")
+    @DisplayName("should return all ids {0} when searching by query '{1}'")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration")
     public void shouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
