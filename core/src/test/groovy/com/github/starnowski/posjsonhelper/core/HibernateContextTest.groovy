@@ -33,7 +33,8 @@ class HibernateContextTest extends Specification {
             def result1 = builder
                     .withJsonbAnyArrayStringsExistOperator(randomObject1.getJsonbAnyArrayStringsExistOperator())
                     .withJsonFunctionJsonArrayOperator(randomObject1.getJsonFunctionJsonArrayOperator())
-                    .withJsonbAllArrayStringsExistOperator(randomObject1.getJsonbAllArrayStringsExistOperator()).build()
+                    .withJsonbAllArrayStringsExistOperator(randomObject1.getJsonbAllArrayStringsExistOperator())
+                    .withTextFunctionOperator(randomObject1.getTextFunctionOperator()).build()
 
 
 
