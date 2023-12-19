@@ -42,6 +42,11 @@ public class Constants {
      */
     public static final String PLAINTO_TSQUERY_FUNCTION_NAME = "plainto_tsquery";
     /**
+     * Name of the Postgres function 'to_tsvector' that is converting a document to the tsvector data type.
+     * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
+     */
+    public static final String TO_TSVECTOR_FUNCTION_NAME = "to_tsvector";
+    /**
      * Default value for property {@link Context#jsonbAllArrayStringsExistFunctionReference}
      */
     public static final String DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_all_array_strings_exist";
