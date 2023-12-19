@@ -36,8 +36,8 @@ public class TweetDaoTest {
 
     private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
         return Stream.of(
-                Arguments.of("cat", asList(1, 3)),
-                Arguments.of("rat", asList(2, 3))
+                Arguments.of("cats", asList(1L, 3L)),
+                Arguments.of("rats", asList(2L, 3L))
         );
     }
 
