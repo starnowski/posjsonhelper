@@ -14,6 +14,8 @@ public class TextOperatorFunction extends SelfRenderingSqmFunction<String> imple
     public TextOperatorFunction(NodeBuilder nodeBuilder, List<? extends SqmTypedNode<?>> arguments, HibernateContext hibernateContext) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getTextFunctionOperator()),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getTextFunctionOperator()),
+                //TODO Check if only two arguments are being passed!
+                //TODO First should be TSVector type
                 arguments,
                 null,
                 null,
