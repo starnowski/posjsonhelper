@@ -36,7 +36,8 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
         }
         List<SqmTypedNode<?>> result = new ArrayList<>();
         if (configuration != null) {
-            result.add(nodeBuilder.value(configuration));
+            //TODO Literal
+            result.add(nodeBuilder.literal(configuration));
         }
         result.add((SqmTypedNode<?>) referencedPathSource);
         return result;
