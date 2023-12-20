@@ -30,10 +30,7 @@ public class TweetDao {
         CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
-        List<SqmExpression<String>> arguments = new ArrayList<>();
-        arguments.add(new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb));
-        arguments.add(new PlainToTSQueryFunction((NodeBuilder) cb, null, phrase));
-        query.where(new TextOperatorFunction((NodeBuilder) cb, arguments, hibernateContext));
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, null, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 }
