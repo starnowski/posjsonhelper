@@ -47,7 +47,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}'")
+    @DisplayName("should return all ids {0} when searching by query '{1}' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration")
     public void shouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
@@ -76,7 +76,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration")
+    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
     public void shouldFindCorrectTweetsBySinglePlainQueryInDescription(String phrase, List<Long> expectedIds) {
@@ -91,7 +91,8 @@ public class TweetDaoTest {
 
     private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
         return Stream.of(
-                Arguments.of("Rats cats", asList(3L)),
+                Arguments.of("Rats and cats", asList(3L)),
+                Arguments.of("Rats cats", new ArrayList<>()),
                 Arguments.of("cats Rats", new ArrayList<>())
         );
     }
@@ -99,7 +100,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}'")
+    @DisplayName("should return all ids {0} when searching by query '{1}' for phraseto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration")
     public void shouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {

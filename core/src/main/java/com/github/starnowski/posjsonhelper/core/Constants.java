@@ -42,6 +42,14 @@ public class Constants {
      */
     public static final String PLAINTO_TSQUERY_FUNCTION_NAME = "plainto_tsquery";
     /**
+     * Name of the Postgres function 'phraseto_tsquery' phraseto_tsquery behaves much like plainto_tsquery, except that it
+     * inserts the &lt;-&gt; (FOLLOWED BY) operator between surviving words instead of the &amp; (AND) operator.
+     * Also, stop words are not simply discarded, but are accounted for by inserting &lt;N&gt; operators rather than &lt;-&gt; operators.
+     * This function is useful when searching for exact lexeme sequences, since the FOLLOWED BY operators check lexeme order not just the presence of all the lexemes.
+     * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
+     */
+    public static final String PHRASETO_TSQUERY_FUNCTION_NAME = "phraseto_tsquery";
+    /**
      * Name of the Postgres function 'to_tsvector' that is converting a document to the tsvector data type.
      * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
      */
