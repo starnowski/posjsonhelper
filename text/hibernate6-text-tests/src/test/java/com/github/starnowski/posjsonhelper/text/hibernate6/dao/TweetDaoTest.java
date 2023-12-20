@@ -112,4 +112,29 @@ public class TweetDaoTest {
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
     }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescription() {
+        return Stream.of(
+                Arguments.of("rat and cats", asList(3L)),
+                Arguments.of("rat and cat", asList(3L)),
+                Arguments.of("rat cat", new ArrayList<>()),
+                Arguments.of("cat Rats", new ArrayList<>())
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for phraseto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescription")
+    public void shouldFindCorrectTweetsBySinglePhraseInDescription(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePhraseInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
 }

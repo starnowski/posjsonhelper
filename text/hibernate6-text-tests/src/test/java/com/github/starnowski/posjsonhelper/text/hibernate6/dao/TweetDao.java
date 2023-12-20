@@ -11,11 +11,9 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.query.sqm.NodeBuilder;
-import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -40,7 +38,7 @@ public class TweetDao {
         CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
-        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb) ,new PlainToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -50,6 +48,15 @@ public class TweetDao {
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
         query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, null, phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Tweet> findBySinglePhraseInDescriptionForConfiguration(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 }
