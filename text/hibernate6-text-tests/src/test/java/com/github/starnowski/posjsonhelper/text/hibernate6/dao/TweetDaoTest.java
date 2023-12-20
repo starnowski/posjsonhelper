@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -33,7 +34,7 @@ public class TweetDaoTest {
     @Autowired
     private TweetDao tested;
 
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration() {
         return Stream.of(
                 Arguments.of("cats", asList(1L, 3L)),
                 Arguments.of("rats", asList(2L, 3L)),
@@ -48,18 +49,18 @@ public class TweetDaoTest {
             executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should return all ids {0} when searching by query '{1}'")
     @ParameterizedTest
-    @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration")
-    public void shouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
+    @MethodSource("provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
 
         // when
-        List<Tweet> results = tested.findBySinglePhraseInDescriptionForDefaultConfiguration(phrase);
+        List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForDefaultConfiguration(phrase);
 
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescription() {
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescription() {
         return Stream.of(
                 Arguments.of("cats", asList(1L, 3L)),
                 Arguments.of("cat", asList(1L, 3L)),
@@ -77,11 +78,34 @@ public class TweetDaoTest {
             executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration")
     @ParameterizedTest
-    @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescription")
-    public void shouldFindCorrectTweetsBySinglePhraseInDescription(String phrase, List<Long> expectedIds) {
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    public void shouldFindCorrectTweetsBySinglePlainQueryInDescription(String phrase, List<Long> expectedIds) {
 
         // when
-        List<Tweet> results = tested.findBySinglePhraseInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
+        List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
+        return Stream.of(
+                Arguments.of("Rats cats", asList(3L)),
+                Arguments.of("cats Rats", new ArrayList<>())
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids {0} when searching by query '{1}'")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePhraseInDescriptionForDefaultConfiguration(phrase);
 
         // then
         assertThat(results).hasSize(expectedIds.size());
