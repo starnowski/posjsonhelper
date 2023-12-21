@@ -10,11 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.CLEAR_DATABASE_SCRIPT_PATH;
-import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.TWEETS_SCRIPT_PATH;
+import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.*;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +34,7 @@ public class TweetDaoTest {
     @Autowired
     private TweetDao tested;
 
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration() {
         return Stream.of(
                 Arguments.of("cats", asList(1L, 3L)),
                 Arguments.of("rats", asList(2L, 3L)),
@@ -44,17 +44,94 @@ public class TweetDaoTest {
         );
     }
 
-    //    @Disabled
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}'")
+    @DisplayName("should return all ids {0} when searching by query '{1}' for plainto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForDefaultConfiguration(phrase);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescription() {
+        return Stream.of(
+                Arguments.of("cats", asList(1L, 3L)),
+                Arguments.of("cat", asList(1L, 3L)),
+                Arguments.of("rats", asList(2L, 3L)),
+                Arguments.of("rat", asList(2L, 3L)),
+                Arguments.of("rats cats", asList(3L)),
+                Arguments.of("cats rats", asList(3L)),
+                Arguments.of("rat cat", asList(3L)),
+                Arguments.of("cat rat", asList(3L))
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for plainto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    public void shouldFindCorrectTweetsBySinglePlainQueryInDescription(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
+        return Stream.of(
+                Arguments.of("Rats and cats", asList(3L)),
+                Arguments.of("Rats cats", new ArrayList<>()),
+                Arguments.of("cats Rats", new ArrayList<>())
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids {0} when searching by query '{1}' for phraseto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration")
     public void shouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
 
         // when
         List<Tweet> results = tested.findBySinglePhraseInDescriptionForDefaultConfiguration(phrase);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescription() {
+        return Stream.of(
+                Arguments.of("rat and cats", asList(3L)),
+                Arguments.of("rat and cat", asList(3L)),
+                Arguments.of("rat cat", new ArrayList<>()),
+                Arguments.of("cat Rats", new ArrayList<>())
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for phraseto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescription")
+    public void shouldFindCorrectTweetsBySinglePhraseInDescription(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePhraseInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
 
         // then
         assertThat(results).hasSize(expectedIds.size());

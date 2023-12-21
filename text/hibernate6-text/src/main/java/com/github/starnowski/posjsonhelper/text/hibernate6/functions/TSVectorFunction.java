@@ -9,20 +9,37 @@ import org.hibernate.query.sqm.tree.SqmTypedNode;
 import org.hibernate.type.StandardBasicTypes;
 
 import java.io.Serializable;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.TO_TSVECTOR_FUNCTION_NAME;
 
 public class TSVectorFunction extends SelfRenderingSqmFunction<String> implements Serializable {
     public TSVectorFunction(Path referencedPathSource, NodeBuilder nodeBuilder) {
+        this(referencedPathSource, null, nodeBuilder);
+    }
+
+    public TSVectorFunction(Path referencedPathSource, String configuration, NodeBuilder nodeBuilder) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
-                //TODO Add configuration
-                Arrays.asList((SqmTypedNode<?>) referencedPathSource),
+                contactParameters(referencedPathSource, configuration, nodeBuilder),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
                 nodeBuilder,
                 TO_TSVECTOR_FUNCTION_NAME);
+    }
+
+    private static List<? extends SqmTypedNode<?>> contactParameters(Path referencedPathSource, String configuration, NodeBuilder nodeBuilder) {
+        if (referencedPathSource == null) {
+            throw new IllegalArgumentException("ReferencedPathSource argument can not be null");
+        }
+        List<SqmTypedNode<?>> result = new ArrayList<>();
+        if (configuration != null) {
+            //TODO Literal
+            result.add(nodeBuilder.literal(configuration));
+        }
+        result.add((SqmTypedNode<?>) referencedPathSource);
+        return result;
     }
 }

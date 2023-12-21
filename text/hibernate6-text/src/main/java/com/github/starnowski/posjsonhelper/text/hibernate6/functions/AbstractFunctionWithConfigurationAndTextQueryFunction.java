@@ -39,7 +39,8 @@ public abstract class AbstractFunctionWithConfigurationAndTextQueryFunction exte
             if (configuration.trim().isEmpty()) {
                 throw new IllegalArgumentException("Configuration argument can not be empty string");
             }
-            result.add(nodeBuilder.value(configuration));
+            //TODO Literal
+            result.add(nodeBuilder.literal(configuration));
         }
         result.add(nodeBuilder.value(query));
         return result;

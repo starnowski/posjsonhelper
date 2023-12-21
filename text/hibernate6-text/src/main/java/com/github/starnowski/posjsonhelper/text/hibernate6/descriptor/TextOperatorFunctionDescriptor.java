@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.descriptor;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
 import org.hibernate.query.ReturnableType;
 import org.hibernate.query.spi.QueryEngine;
@@ -42,6 +43,6 @@ public class TextOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunc
         for (int i = 0; i < arguments.size(); i++) {
             args.add((SqmExpression<String>) arguments.get(i));
         }
-        return (SelfRenderingSqmFunction<T>) new TextOperatorFunction(queryEngine.getCriteriaBuilder(), args, hibernateContext);
+        return (SelfRenderingSqmFunction<T>) new TextOperatorFunction(queryEngine.getCriteriaBuilder(), (TSVectorFunction) args.get(0), args.get(1), hibernateContext);
     }
 }
