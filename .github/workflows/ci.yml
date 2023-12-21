@@ -58,13 +58,7 @@ jobs:
         run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
 
       - name: Create database owner
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database-owner.sql' -U postgres -h 127.0.0.1
-
-      - name: Create database
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database.sql' -U postgres -h 127.0.0.1
-
-      - name: Create core module db and non public schema
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database-core-database-and-data.sql' -U postgres -h 127.0.0.1
+        run: ./scripts/prepareDatabase.sh
 
       - name: Run tests
         run: ./mvnw -DskipTests --quiet clean install && ./mvnw test
