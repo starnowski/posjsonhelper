@@ -41,7 +41,7 @@ export PGPASSWORD=postgres_posmulten
 waitUntilDockerContainerIsReady
 
 exportScriptDirEnvironment
-"${DIRNAME}/prepareDatabase.sh" --postgres_host "${DOCKER_DB_IP}" --postgres_port "${DOCKER_DB_IP}"
+"${DIRNAME}/prepareDatabase.sh" --postgres_host "${DOCKER_DB_IP}" --postgres_port "${DATABASE_PORT}"
 
 
 #Run test
