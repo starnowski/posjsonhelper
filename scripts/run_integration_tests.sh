@@ -36,7 +36,7 @@ export DATABASE_PORT=15432
 startPostgresDockerContainer
 
 export DOCKER_DB_IP="127.0.0.1"
-export PGPASSWORD=postgres_posmulten
+export PGPASSWORD=postgres
 
 waitUntilDockerContainerIsReady
 

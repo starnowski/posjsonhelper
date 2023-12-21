@@ -31,5 +31,5 @@ function exportScriptDirEnvironment {
 }
 
 function startPostgresDockerContainer {
-    sudo docker run --rm --name test-postgres -e POSTGRES_PASSWORD=postgres_posmulten -p 127.0.0.1:$DATABASE_PORT:5432/tcp -d postgres:$POSTGRES_DOCKER_VERSION
+    sudo docker run --rm --name test-postgres -e POSTGRES_PASSWORD=postgres -p 127.0.0.1:$DATABASE_PORT:5432/tcp -d postgres:$POSTGRES_DOCKER_VERSION
 }
