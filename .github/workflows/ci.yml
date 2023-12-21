@@ -57,7 +57,7 @@ jobs:
       - name: Install library for postgres
         run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
 
-      - name: Create database owner
+      - name: Create database
         run: ./scripts/prepareDatabase.sh
 
       - name: Run tests
