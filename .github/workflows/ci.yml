@@ -58,7 +58,7 @@ jobs:
         run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
 
       - name: Run tests with postgres 10
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw -DskipTests --quiet clean install && ./mvnw test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw -DskipTests --quiet clean install && ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
 #  integraion_tests:
 ##    needs: [compilation_and_unit_tests]

@@ -20,7 +20,7 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TE
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED
 
 @ActiveProfiles("different-schema")
-@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT, properties = ["spring.datasource.url= jdbc:postgresql://localhost:5432/posjsonhelper_db?currentSchema=non_public_schema", "spring.jpa.properties.hibernate.dialect=com.github.starnowski.posjsonhelper.hibernate5.demo.PostgreSQLDialectWithDifferentSchema"])
+@SpringBootTest(webEnvironment=SpringBootTest.WebEnvironment.RANDOM_PORT, properties = ["spring.datasource.url= jdbc:postgresql://localhost:\${posjsonhelper.test.database.port:5432}/posjsonhelper_db?currentSchema=non_public_schema", "spring.jpa.properties.hibernate.dialect=com.github.starnowski.posjsonhelper.hibernate5.demo.PostgreSQLDialectWithDifferentSchema"])
 @SqlGroup([
         @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
                 config = @SqlConfig(transactionMode = ISOLATED),
