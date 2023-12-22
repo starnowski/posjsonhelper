@@ -4,14 +4,13 @@ import com.github.starnowski.posjsonhelper.core.SystemPropertyReader;
 import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionContextFactory;
 import org.reflections.Reflections;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.github.starnowski.posjsonhelper.hibernate6.Constants.FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_EXCLUDED_PROPERTY;
 import static com.github.starnowski.posjsonhelper.hibernate6.Constants.FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_PROPERTY;
+import static java.util.Arrays.asList;
 
 /**
  * Loads instances of type {{@link  FunctionDescriptorRegisterFactory}}.
@@ -40,10 +39,12 @@ public class FunctionDescriptorRegisterFactoriesSupplier {
     }
 
     public List<FunctionDescriptorRegisterFactory> get() {
+        String excludedTypesProperty = systemPropertyReader.read(FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_EXCLUDED_PROPERTY);
+        Set<String> excludedTypes = excludedTypesProperty == null ? new HashSet<>() : new HashSet<>(asList(excludedTypesProperty.split(",")));
         String factoriesPropertyValue = systemPropertyReader.read(FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_PROPERTY);
         Set<Class<? extends FunctionDescriptorRegisterFactory>> types = null;
         if (factoriesPropertyValue != null) {
-            types = Arrays.stream(factoriesPropertyValue.split(",")).map(value -> {
+            types = Arrays.stream(factoriesPropertyValue.split(",")).filter(v -> !excludedTypes.contains(v)).map(value -> {
                 try {
                     return (Class<? extends FunctionDescriptorRegisterFactory>) Class.forName(value);
                 } catch (ClassNotFoundException e) {
