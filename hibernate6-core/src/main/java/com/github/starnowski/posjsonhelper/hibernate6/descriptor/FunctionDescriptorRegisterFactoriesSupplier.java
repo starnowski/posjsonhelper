@@ -1,7 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
 import com.github.starnowski.posjsonhelper.core.SystemPropertyReader;
-import com.github.starnowski.posjsonhelper.core.sql.ISQLDefinitionContextFactory;
 import org.reflections.Reflections;
 
 import java.util.*;
@@ -17,6 +16,7 @@ import static java.util.Arrays.asList;
  * By default, component scans package "com.github.starnowski.posjsonhelper" to search correct types.
  * If there is specified system property "com.github.starnowski.posjsonhelper.hibernate6.functiondescriptorregisterfactory.types"
  * then the component tries to load classes specified by this property.
+ *
  * @see #PACKAGE_TO_SCAN
  * @see com.github.starnowski.posjsonhelper.hibernate6.Constants#FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_PROPERTY
  */
@@ -57,6 +57,9 @@ public class FunctionDescriptorRegisterFactoriesSupplier {
         List<FunctionDescriptorRegisterFactory> results = new ArrayList<>();
         for (Class<? extends FunctionDescriptorRegisterFactory> type : types) {
             try {
+                if (excludedTypes.contains(type.getName())) {
+                    continue;
+                }
                 results.add(type.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create instance of class with default constructor", e);
