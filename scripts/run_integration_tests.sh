@@ -43,6 +43,9 @@ waitUntilDockerContainerIsReady
 exportScriptDirEnvironment
 "${DIRNAME}/prepareDatabase.sh" --postgres_host "${DOCKER_DB_IP}" --postgres_port "${DATABASE_PORT}"
 
+#TODO Copy dictionary
+
+
 
 #Run test
 pushd "$SCRIPT_DIR/.."
