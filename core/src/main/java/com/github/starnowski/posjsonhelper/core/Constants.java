@@ -91,6 +91,10 @@ public class Constants {
      */
     public static final String DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR = "json_function_json_array";
     /**
+     * 	The default name for the HQL function that wraps Postgres cast "::" operator.
+     */
+    public static final String DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR = "json_function_json_array";
+    /**
      * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
      */
     public static final String JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.jsonb_all_array_strings_exist";

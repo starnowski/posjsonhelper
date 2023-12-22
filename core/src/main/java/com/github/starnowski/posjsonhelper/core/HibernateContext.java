@@ -48,17 +48,27 @@ public class HibernateContext {
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR} constant.
      */
     private final String textFunctionOperator;
+    /**
+     * Name of HQL function that wraps Postgres text "::" operator.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR} constant.
+     */
+    private final String castFunctionOperator;
 
     public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator,
-                            String textFunctionOperator) {
+                            String textFunctionOperator, String castFunctionOperator) {
         this.jsonbAllArrayStringsExistOperator = jsonbAllArrayStringsExistOperator;
         this.jsonbAnyArrayStringsExistOperator = jsonbAnyArrayStringsExistOperator;
         this.jsonFunctionJsonArrayOperator = jsonFunctionJsonArrayOperator;
         this.textFunctionOperator = textFunctionOperator;
+        this.castFunctionOperator = castFunctionOperator;
     }
 
     public static ContextBuilder builder() {
         return new ContextBuilder();
+    }
+
+    public String getCastFunctionOperator() {
+        return castFunctionOperator;
     }
 
     /**
@@ -103,6 +113,12 @@ public class HibernateContext {
         private String jsonbAnyArrayStringsExistOperator = DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR;
         private String jsonFunctionJsonArrayOperator = DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR;
         private String textFunctionOperator = DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR;
+        private String castFunctionOperator = DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR;
+
+        public ContextBuilder withCastFunctionOperator(String castFunctionOperator) {
+            this.castFunctionOperator = castFunctionOperator;
+            return this;
+        }
 
         public ContextBuilder withTextFunctionOperator(String textFunctionOperator) {
             this.textFunctionOperator = textFunctionOperator;
@@ -125,14 +141,16 @@ public class HibernateContext {
         }
 
         public HibernateContext build() {
-            return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, jsonFunctionJsonArrayOperator, textFunctionOperator);
+            return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, this.jsonFunctionJsonArrayOperator,
+                    this.textFunctionOperator, this.castFunctionOperator);
         }
 
         public ContextBuilder withHibernateContext(HibernateContext hibernateContext) {
             return withJsonbAllArrayStringsExistOperator(hibernateContext.getJsonbAllArrayStringsExistOperator())
                     .withJsonbAnyArrayStringsExistOperator(hibernateContext.getJsonbAnyArrayStringsExistOperator())
                     .withJsonFunctionJsonArrayOperator(hibernateContext.getJsonFunctionJsonArrayOperator())
-                    .withTextFunctionOperator(hibernateContext.getTextFunctionOperator());
+                    .withTextFunctionOperator(hibernateContext.getTextFunctionOperator())
+                    .withCastFunctionOperator(hibernateContext.getCastFunctionOperator());
         }
     }
 }
