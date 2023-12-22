@@ -3,6 +3,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.descriptor
 import com.github.starnowski.posjsonhelper.core.SystemPropertyReader
 import com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory1
 import com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory2
+import org.reflections.Reflections
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -25,7 +26,7 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
     }
 
     @Unroll
-    def "should return expected list of factories #expectedTypes based on classpath when some types should be excluded based on property type #excludedTypes" (){
+    def "should return expected list of factories #expectedTypes based on system property when some types should be excluded based on property type #excludedTypes" (){
         given:
             def systemPropertyReader = Mock(SystemPropertyReader)
             def tested = new FunctionDescriptorRegisterFactoriesSupplier(null, systemPropertyReader)
@@ -45,6 +46,31 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
             "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory1" | "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory1"        ||  new HashSet([])
             "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory2,com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegisterFactory" | "com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegisterFactory"        ||  new HashSet([TestFunctionDescriptorRegisterFactory2.class])
             "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory2,com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegisterFactory" | "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory2"        ||  new HashSet([CastOperatorFunctionDescriptorRegisterFactory.class])
+    }
+
+    @Unroll
+    def "should return expected list of factories #expectedTypes based on classpath when some types should be excluded based on property type #excludedTypes" (){
+        given:
+            def systemPropertyReader = Mock(SystemPropertyReader)
+            def reflections = Mock(Reflections)
+            def tested = new FunctionDescriptorRegisterFactoriesSupplier({ () -> reflections }, systemPropertyReader)
+
+        when:
+            def results = tested.get()
+
+        then:
+            1 * systemPropertyReader.read(FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_EXCLUDED_PROPERTY) >> excludedTypes
+            1 * systemPropertyReader.read(FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_PROPERTY) >> null
+            reflections.getSubTypesOf(FunctionDescriptorRegisterFactory.class) >> value
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == expectedTypes
+
+        where:
+            value   | excludedTypes || expectedTypes
+            new HashSet([TestFunctionDescriptorRegisterFactory1,TestFunctionDescriptorRegisterFactory2]) |   "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory1"      ||  new HashSet([TestFunctionDescriptorRegisterFactory2.class])
+            new HashSet([TestFunctionDescriptorRegisterFactory2,TestFunctionDescriptorRegisterFactory1]) | ""      ||  new HashSet([TestFunctionDescriptorRegisterFactory1.class, TestFunctionDescriptorRegisterFactory2.class])
+            new HashSet([TestFunctionDescriptorRegisterFactory1]) | "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory1"        ||  new HashSet([])
+            new HashSet([TestFunctionDescriptorRegisterFactory2,CastOperatorFunctionDescriptorRegisterFactory]) | "com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegisterFactory"        ||  new HashSet([TestFunctionDescriptorRegisterFactory2.class])
+            new HashSet([TestFunctionDescriptorRegisterFactory2,CastOperatorFunctionDescriptorRegisterFactory]) | "com.github.starnowski.posjsonhelper.hibernate6.TestFunctionDescriptorRegisterFactory2"        ||  new HashSet([CastOperatorFunctionDescriptorRegisterFactory.class])
     }
 
     @Unroll
