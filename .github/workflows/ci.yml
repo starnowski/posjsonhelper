@@ -132,14 +132,14 @@ jobs:
       - name: Compile project
         run: ./mvnw -DskipTests --quiet clean install
 
-      - name: "Run tests with postgres 9.6"
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.23'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+      - name: Run tests with postgres 11
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='11.9'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
       - name: Run tests with postgres 10
         run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
-      - name: Run tests with postgres 11
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='11.9'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+      - name: "Run tests with postgres 9.6"
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.23'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
   compatibility_tests_12_13_14:
     needs: [integraion_tests]
@@ -196,14 +196,14 @@ jobs:
       - name: Compile project
         run: ./mvnw -DskipTests --quiet clean install
 
-      - name: Run tests with postgres 12
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='12.4'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+      - name: Run tests with postgres 14
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='14.10'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
       - name: Run tests with postgres 13
         run: ./scripts/run_integration_tests.sh --postgres_docker_version='13.0'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
-      - name: Run tests with postgres 11
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='14.10'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+      - name: Run tests with postgres 12
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='12.4'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
   publish:
     runs-on: ubuntu-latest
