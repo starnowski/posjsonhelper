@@ -56,7 +56,7 @@ public class FunctionDescriptorRegisterFactoriesSupplier {
         List<FunctionDescriptorRegisterFactory> results = new ArrayList<>();
         for (Class<? extends FunctionDescriptorRegisterFactory> type : types) {
             try {
-                results.add(type.newInstance());
+                results.add(type.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
                 throw new RuntimeException("Unable to create instance of class with default constructor", e);
             }
