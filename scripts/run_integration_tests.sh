@@ -4,7 +4,7 @@ set -e
 DIRNAME="$(dirname $0)"
 . "$DIRNAME"/utils.sh
 
-export POSTGRES_DOCKER_VERSION="9.6.12"
+export POSTGRES_DOCKER_VERSION="9.6.23"
 
 # Call getopt to validate the provided input.
 options=$(getopt -o "" --long postgres_docker_version: -- "$@")
