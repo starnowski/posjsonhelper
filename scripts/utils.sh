@@ -36,10 +36,17 @@ function startPostgresDockerContainer {
 
 function copyCustomDictionaryToDatabaseDockerContainer {
 exportScriptDirEnvironment
+tmp_dictionary_dir=`mktemp -d`
+echo "Created temporary directory for dictionary ${tmp_dictionary_dir}"
 pushd dictionary
-tar -xvjf sjp-*-src.tar.bz2
+tar -xvjf sjp-*-src.tar.bz2 -C "${tmp_dictionary_dir}"
+cp polish.stopwords.txt "${tmp_dictionary_dir}"
+
+pushd "${tmp_dictionary_dir}"
 iconv -f ISO_8859-2 -t utf-8 polish.aff > polish.affix
 iconv -f ISO_8859-2 -t utf-8 polish.all > polish.dict
 mv polish.stopwords.txt polish.stop
+popd
+
 popd
 }
