@@ -133,7 +133,7 @@ jobs:
         run: ./mvnw -DskipTests --quiet clean install
 
       - name: "Run tests with postgres 9.6"
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.12'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.23'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
 
       - name: Run tests with postgres 10
         run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
