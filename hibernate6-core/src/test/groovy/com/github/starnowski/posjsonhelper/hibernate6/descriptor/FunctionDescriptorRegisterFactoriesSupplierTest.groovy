@@ -21,7 +21,7 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
             def results = tested.get()
 
         then:
-            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([TestFunctionDescriptorRegisterFactory1.class, TestFunctionDescriptorRegisterFactory2.class])
+            results.stream().map({it -> it.getClass()}).collect(Collectors.toSet()) == new HashSet([TestFunctionDescriptorRegisterFactory1.class, TestFunctionDescriptorRegisterFactory2.class, CastOperatorFunctionDescriptorRegisterFactory.class])
     }
 
     @Unroll
