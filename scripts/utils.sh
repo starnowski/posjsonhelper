@@ -34,7 +34,7 @@ function startPostgresDockerContainer {
     sudo docker run --rm --name test-postgres -e POSTGRES_PASSWORD=postgres -p 127.0.0.1:$DATABASE_PORT:5432/tcp -d postgres:$POSTGRES_DOCKER_VERSION
 }
 
-function copyCustomDictionaryToDatabaseDockerContainer {
+function unpackCustomDictionary {
 exportScriptDirEnvironment
 tmp_dictionary_dir=`mktemp -d`
 echo "Created temporary directory for dictionary ${tmp_dictionary_dir}"
@@ -50,4 +50,14 @@ iconv -f ISO_8859-2 -t utf-8 "${subDictionaryFile}/polish.all" > polish.dict
 popd
 
 popd
+export DIRECTORY_OUTPUT_DIR="${tmp_dictionary_dir}"
+}
+
+function copyCustomDictionaryToDatabaseDockerContainer {
+unpackCustomDictionary
+postgresSharedDir=`docker exec test-postgres pg_config --sharedir`
+echo "Shared directory for postgres in container : ${postgresSharedDir}"
+docker cp "${DIRECTORY_OUTPUT_DIR}/polish.affix" test-postgres:"${postgresSharedDir}/tsearch_data/"
+docker cp "${DIRECTORY_OUTPUT_DIR}/polish.dict" test-postgres:"${postgresSharedDir}/tsearch_data/"
+docker cp "${DIRECTORY_OUTPUT_DIR}/polish.stop" test-postgres:"${postgresSharedDir}/tsearch_data/"
 }
