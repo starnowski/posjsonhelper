@@ -53,7 +53,7 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
         given:
             def systemPropertyReader = Mock(SystemPropertyReader)
             def reflections = Mock(Reflections)
-            def tested = new FunctionDescriptorRegisterFactoriesSupplier({ () -> reflections }, systemPropertyReader)
+            def tested = new FunctionDescriptorRegisterFactoriesSupplier(() -> reflections, systemPropertyReader)
 
         when:
             def results = tested.get()
