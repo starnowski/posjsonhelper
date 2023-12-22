@@ -37,6 +37,7 @@ function startPostgresDockerContainer {
 function copyCustomDictionaryToDatabaseDockerContainer {
 exportScriptDirEnvironment
 pushd dictionary
+tar -xvjf sjp-*-src.tar.bz2
 iconv -f ISO_8859-2 -t utf-8 polish.aff > polish.affix
 iconv -f ISO_8859-2 -t utf-8 polish.all > polish.dict
 mv polish.stopwords.txt polish.stop
