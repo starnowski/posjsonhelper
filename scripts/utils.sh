@@ -38,7 +38,7 @@ function unpackCustomDictionary {
 exportScriptDirEnvironment
 tmp_dictionary_dir=`mktemp -d`
 echo "Created temporary directory for dictionary ${tmp_dictionary_dir}"
-pushd dictionary
+pushd "${SCRIPT_DIR}/dictionary"
 tar -xvjf sjp-*-src.tar.bz2 -C "${tmp_dictionary_dir}"
 cp polish.stopwords.txt "${tmp_dictionary_dir}"
 
