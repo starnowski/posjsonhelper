@@ -57,14 +57,8 @@ jobs:
       - name: Install library for postgres
         run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
 
-      - name: Create database owner
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database-owner.sql' -U postgres -h 127.0.0.1
-
       - name: Create database
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database.sql' -U postgres -h 127.0.0.1
-
-      - name: Create core module db and non public schema
-        run: export PGPASSWORD=postgres && psql -f 'test-utils/src/main/resources/create-database-core-database-and-data.sql' -U postgres -h 127.0.0.1
+        run: ./scripts/prepareDatabase.sh
 
       - name: Run tests
         run: ./mvnw -DskipTests --quiet clean install && ./mvnw test
@@ -83,10 +77,138 @@ jobs:
       - name: Run tests for hibernate6
         run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-core,:hibernate6 -P jdk11 test
 
+  compatibility_tests_9_10_11:
+    needs: [integraion_tests]
+    runs-on: ubuntu-latest
+    name: "Running integration and functional tests that checks if code is compatible with postgres versions 9, 10, 11"
+    services:
+      postgres:
+        image: postgres:10.22-bullseye
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_HOST: localhost
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+        # Install JDKs and maven toolchain
+      - uses: actions/setup-java@v3
+        name: Set up JDK 11
+        id: setupJava11
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '11'
+      - uses: actions/setup-java@v3
+        name: Set up JDK 17
+        id: setupJava17
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '17'
+      - name: Set up JDK 1.8
+        id: setupJava8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - uses: cactuslab/maven-toolchains-xml-action@v1
+        with:
+          toolchains: |
+            [
+            {"jdkVersion": "8", "jdkHome": "${{steps.setupJava8.outputs.path}}"},
+            {"jdkVersion": "11", "jdkHome": "${{steps.setupJava11.outputs.path}}"},
+            {"jdkVersion": "17", "jdkHome": "${{steps.setupJava17.outputs.path}}"}
+            ]
+
+      - name: Install library for postgres
+        run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
+
+      - name: Compile project
+        run: ./mvnw -DskipTests --quiet clean install
+
+      - name: "Run tests with postgres 9.6"
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.12'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+
+      - name: Run tests with postgres 10
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+
+      - name: Run tests with postgres 11
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='11.9'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+
+  compatibility_tests_12_13_14:
+    needs: [integraion_tests]
+    runs-on: ubuntu-latest
+    name: "Running integration and functional tests that checks if code is compatible with postgres versions 12, 13 and 14"
+    services:
+      postgres:
+        image: postgres:10.22-bullseye
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_HOST: localhost
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+        # Install JDKs and maven toolchain
+      - uses: actions/setup-java@v3
+        name: Set up JDK 11
+        id: setupJava11
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '11'
+      - uses: actions/setup-java@v3
+        name: Set up JDK 17
+        id: setupJava17
+        with:
+          distribution: 'zulu' # See 'Supported distributions' for available options
+          java-version: '17'
+      - name: Set up JDK 1.8
+        id: setupJava8
+        uses: actions/setup-java@v1
+        with:
+          java-version: 1.8
+      - uses: cactuslab/maven-toolchains-xml-action@v1
+        with:
+          toolchains: |
+            [
+            {"jdkVersion": "8", "jdkHome": "${{steps.setupJava8.outputs.path}}"},
+            {"jdkVersion": "11", "jdkHome": "${{steps.setupJava11.outputs.path}}"},
+            {"jdkVersion": "17", "jdkHome": "${{steps.setupJava17.outputs.path}}"}
+            ]
+
+      - name: Install library for postgres
+        run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
+
+      - name: Compile project
+        run: ./mvnw -DskipTests --quiet clean install
+
+      - name: Run tests with postgres 12
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='12.4'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+
+      - name: Run tests with postgres 13
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='13.0'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+
+      - name: Run tests with postgres 11
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='14.10'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+
   publish:
     runs-on: ubuntu-latest
     name: "Publish to the Maven Central Repository"
-    needs: [integraion_tests]
+    needs: [compatibility_tests_9_10_11,compatibility_tests_12_13_14]
     steps:
       - name: Git checkout
         if: startsWith(github.ref, 'refs/tags/v')
