@@ -43,9 +43,10 @@ tar -xvjf sjp-*-src.tar.bz2 -C "${tmp_dictionary_dir}"
 cp polish.stopwords.txt "${tmp_dictionary_dir}"
 
 pushd "${tmp_dictionary_dir}"
-iconv -f ISO_8859-2 -t utf-8 polish.aff > polish.affix
-iconv -f ISO_8859-2 -t utf-8 polish.all > polish.dict
 mv polish.stopwords.txt polish.stop
+subDictionaryFile=`find ./ -maxdepth 1 -type d -name 'sjp-*'`
+iconv -f ISO_8859-2 -t utf-8 "${subDictionaryFile}/polish.aff" > polish.affix
+iconv -f ISO_8859-2 -t utf-8 "${subDictionaryFile}/polish.all" > polish.dict
 popd
 
 popd
