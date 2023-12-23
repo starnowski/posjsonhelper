@@ -28,6 +28,6 @@ public class TextOperatorFunctionDescriptorRegister extends AbstractConditionalF
 
     @Override
     protected String getHqlFunctionName() {
-        return hibernateContext.getJsonFunctionJsonArrayOperator();
+        return hibernateContext.getTextFunctionOperator();
     }
 }

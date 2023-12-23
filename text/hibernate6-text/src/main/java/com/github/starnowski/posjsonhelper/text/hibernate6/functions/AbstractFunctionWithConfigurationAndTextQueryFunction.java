@@ -5,6 +5,7 @@ import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
+import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.hibernate.type.StandardBasicTypes;
 
 import java.io.Serializable;
@@ -15,6 +16,10 @@ public abstract class AbstractFunctionWithConfigurationAndTextQueryFunction exte
 
 
     public AbstractFunctionWithConfigurationAndTextQueryFunction(NodeBuilder nodeBuilder, String configuration, String query, String functionName) {
+        this(mapPathParameters(nodeBuilder, configuration, query), nodeBuilder, functionName);
+    }
+
+    public AbstractFunctionWithConfigurationAndTextQueryFunction(NodeBuilder nodeBuilder, SqmExpression<?> configuration, String query, String functionName) {
         this(mapPathParameters(nodeBuilder, configuration, query), nodeBuilder, functionName);
     }
 
@@ -41,6 +46,18 @@ public abstract class AbstractFunctionWithConfigurationAndTextQueryFunction exte
             }
             //TODO Literal
             result.add(nodeBuilder.literal(configuration));
+        }
+        result.add(nodeBuilder.value(query));
+        return result;
+    }
+
+    private static List<? extends SqmTypedNode<?>> mapPathParameters(NodeBuilder nodeBuilder, SqmExpression<?> configuration, String query) {
+        if (query == null || query.trim().isEmpty()) {
+            throw new IllegalArgumentException("Query argument can not be null or empty string");
+        }
+        List<SqmTypedNode<?>> result = new ArrayList<>();
+        if (configuration != null) {
+            result.add(configuration);
         }
         result.add(nodeBuilder.value(query));
         return result;
