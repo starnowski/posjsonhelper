@@ -89,6 +89,22 @@ public class TweetDaoTest {
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
     }
 
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for plainto_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    public void shouldFindCorrectTweetsBySinglePlainQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionObjectInstance(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
     private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
         return Stream.of(
                 Arguments.of("Rats and cats", asList(3L)),

@@ -69,4 +69,13 @@ public class TweetDao {
         query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+    }
 }

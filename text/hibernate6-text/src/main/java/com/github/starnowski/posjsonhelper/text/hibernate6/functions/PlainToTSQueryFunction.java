@@ -15,7 +15,7 @@ public class PlainToTSQueryFunction extends AbstractFunctionWithConfigurationAnd
     }
 
     public PlainToTSQueryFunction(NodeBuilder nodeBuilder, SqmExpression<?> configuration, String query) {
-        super(nodeBuilder, configuration, query, PHRASETO_TSQUERY_FUNCTION_NAME);
+        super(nodeBuilder, configuration, query, PLAINTO_TSQUERY_FUNCTION_NAME);
     }
 
     public PlainToTSQueryFunction(List<? extends SqmTypedNode<?>> arguments, NodeBuilder nodeBuilder) {
