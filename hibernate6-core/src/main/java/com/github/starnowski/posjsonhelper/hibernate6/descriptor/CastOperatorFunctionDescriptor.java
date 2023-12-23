@@ -12,6 +12,7 @@ import org.hibernate.sql.ast.SqlAstNodeRenderingMode;
 import org.hibernate.sql.ast.SqlAstTranslator;
 import org.hibernate.sql.ast.spi.SqlAppender;
 import org.hibernate.sql.ast.tree.SqlAstNode;
+import org.hibernate.sql.ast.tree.expression.Literal;
 import org.hibernate.type.spi.TypeConfiguration;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 
 public class CastOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunctionDescriptor {
     protected final HibernateContext hibernateContext;
+
     public CastOperatorFunctionDescriptor(HibernateContext hibernateContext) {
         super(hibernateContext.getCastFunctionOperator(), null, null, null);
         this.hibernateContext = hibernateContext;
@@ -31,10 +33,21 @@ public class CastOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunc
         boolean firstPass = true;
         for (Iterator var11 = sqlAstArguments.iterator(); var11.hasNext(); firstPass = false) {
             SqlAstNode arg = (SqlAstNode) var11.next();
-            if (!firstPass) {
+            if (firstPass) {
+                translator.render(arg, SqlAstNodeRenderingMode.DEFAULT);
+            } else {
                 sqlAppender.appendSql("::");
+                if (arg instanceof Literal) {
+                    Object value = ((Literal) arg).getLiteralValue();
+                    if (value == null) {
+                        translator.render(arg, SqlAstNodeRenderingMode.DEFAULT);
+                    } else {
+                        sqlAppender.appendSql(value.toString());
+                    }
+                } else {
+                    translator.render(arg, SqlAstNodeRenderingMode.DEFAULT);
+                }
             }
-            translator.render(arg, SqlAstNodeRenderingMode.DEFAULT);
         }
     }
 

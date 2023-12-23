@@ -23,7 +23,7 @@ public class TextOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunc
     protected final HibernateContext hibernateContext;
 
     public TextOperatorFunctionDescriptor(HibernateContext hibernateContext) {
-        super("text_operator", null, null, null);
+        super(hibernateContext.getTextFunctionOperator(), null, null, null);
         this.hibernateContext = hibernateContext;
     }
 

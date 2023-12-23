@@ -25,7 +25,7 @@ public class CastOperatorFunction extends SelfRenderingSqmFunction<String> imple
     public CastOperatorFunction(NodeBuilder nodeBuilder, SqmExpression<?> argument, SqmExpression<String> type, HibernateContext hibernateContext) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getCastFunctionOperator()),
                 (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getCastFunctionOperator()),
-                contactParameters(argument, type, nodeBuilder),
+                contactParameters(argument, type),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.useFirstNonNull(),
@@ -36,7 +36,7 @@ public class CastOperatorFunction extends SelfRenderingSqmFunction<String> imple
         this.type = type;
     }
 
-    private static List<? extends SqmExpression<?>> contactParameters(SqmExpression<?> argument, SqmExpression<String> type, NodeBuilder nodeBuilder) {
+    private static List<? extends SqmExpression<?>> contactParameters(SqmExpression<?> argument, SqmExpression<String> type) {
         if (argument == null) {
             throw new IllegalArgumentException("Argument argument can not be null");
         }

@@ -89,11 +89,11 @@ public class Constants {
     /**
      * 	The default name for the HQL function that wraps Postgres text "@@" operator.
      */
-    public static final String DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR = "json_function_json_array";
+    public static final String DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR = "text_operator_function";
     /**
      * 	The default name for the HQL function that wraps Postgres cast "::" operator.
      */
-    public static final String DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR = "json_function_json_array";
+    public static final String DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR = "cast_operator_function";
     /**
      * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
      */
