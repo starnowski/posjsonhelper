@@ -30,7 +30,7 @@ public class TweetDao {
         CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
-        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, null, phrase), hibernateContext));
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, (String) null, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -48,7 +48,7 @@ public class TweetDao {
         CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
-        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, null, phrase), hibernateContext));
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, (String) null, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 
@@ -66,7 +66,7 @@ public class TweetDao {
         CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
-        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 }
