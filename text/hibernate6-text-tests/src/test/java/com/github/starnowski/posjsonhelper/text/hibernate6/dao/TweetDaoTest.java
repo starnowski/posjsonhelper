@@ -47,7 +47,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for plainto_tsquery function")
+    @DisplayName("should return all ids when searching by query for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration")
     public void shouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
@@ -76,7 +76,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for plainto_tsquery function")
+    @DisplayName("should return all ids when searching by query for english configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
     public void shouldFindCorrectTweetsBySinglePlainQueryInDescription(String phrase, List<Long> expectedIds) {
@@ -92,7 +92,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for plainto_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
+    @DisplayName("should return all ids when searching by query for english configuration' for plainto_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
     public void shouldFindCorrectTweetsBySinglePlainQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
@@ -116,7 +116,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for phraseto_tsquery function")
+    @DisplayName("should return all ids when searching by query for phraseto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration")
     public void shouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
@@ -141,7 +141,7 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for phraseto_tsquery function")
+    @DisplayName("should return all ids when searching by query for english configuration' for phraseto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescription")
     public void shouldFindCorrectTweetsBySinglePhraseInDescription(String phrase, List<Long> expectedIds) {
@@ -157,13 +157,42 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids {0} when searching by query '{1}' for english configuration' for phraseto_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
+    @DisplayName("should return all ids when searching by query for english configuration' for phraseto_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePhraseInDescription")
     public void shouldFindCorrectTweetsBySinglePhraseInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
 
         // when
         List<Tweet> results = tested.findBySinglePhraseInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionInstance(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription() {
+        return Stream.of(
+                Arguments.of("Postgres", asList(4L,5L)),
+                Arguments.of("Postgres Oracle", new ArrayList<>()),
+                Arguments.of("Postgres or Oracle", asList(4L,5L,6L)),
+                Arguments.of("database", asList(5L,6L)),
+                Arguments.of("database -Postgres", asList(6L)),
+                Arguments.of("\"already existed functions\"", asList(4L)),
+                Arguments.of("\"existed already functions\"", new ArrayList<>())
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for english configuration' for websearch_to_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptioAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptioAndRegconfigTypeCastOperatorFunctionObjectInstance(phrase, ENGLISH_CONFIGURATION);
 
         // then
         assertThat(results).hasSize(expectedIds.size());

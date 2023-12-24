@@ -78,4 +78,8 @@ public class TweetDao {
         query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptioAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String englishConfiguration) {
+        return null;
+    }
 }
