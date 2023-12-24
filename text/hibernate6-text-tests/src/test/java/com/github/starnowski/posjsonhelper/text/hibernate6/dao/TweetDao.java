@@ -4,6 +4,7 @@ import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.PhraseToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.PlainToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
+import com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
@@ -79,11 +80,21 @@ public class TweetDao {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String englishConfiguration) {
-        return null;
+    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new WebsearchToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
     }
 
-    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, String englishConfiguration) {
-        return null;
+    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new WebsearchToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
     }
 }
