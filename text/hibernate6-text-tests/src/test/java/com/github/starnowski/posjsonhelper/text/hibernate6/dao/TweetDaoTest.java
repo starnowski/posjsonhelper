@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.test.utils.TestUtils;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
+import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,6 +26,7 @@ import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.*;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
@@ -226,6 +228,7 @@ public class TweetDaoTest {
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
     public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 10, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // when
         List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescription(phrase, ENGLISH_CONFIGURATION);
@@ -242,6 +245,7 @@ public class TweetDaoTest {
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
     public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 10, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // when
         List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(phrase, ENGLISH_CONFIGURATION);

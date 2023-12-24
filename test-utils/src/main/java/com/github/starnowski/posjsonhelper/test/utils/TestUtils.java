@@ -88,8 +88,8 @@ public class TestUtils {
     }
 
     public static PostgresVersion returnPostgresVersion(Statement statement) throws SQLException {
-        ResultSet rs = statement.executeQuery("SELECT split_part(split_part(version(), ' ', 2), '.', 1)::numeric AS major_version,\n" +
-                "                split_part(split_part(version(), ' ', 2), '.', 2)::numeric AS minor_version;");
+        ResultSet rs = statement.executeQuery("SELECT split_part(split_part(split_part(version(), ' ', 2), '.', 1), ',', 1)::numeric AS major_version,\n" +
+                "       split_part(split_part(split_part(version(), ' ', 2), '.', 2), ',', 1)::numeric AS minor_version;");
         rs.next();
         return new PostgresVersion(parseLong(rs.getString(1)), parseLong(rs.getString(2)));
     }
