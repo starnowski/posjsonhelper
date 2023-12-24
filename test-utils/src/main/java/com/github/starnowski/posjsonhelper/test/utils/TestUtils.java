@@ -13,6 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.lang.Long.parseLong;
+
 public class TestUtils {
 
     public static boolean isAnyRecordExists(Statement statement, final String sql) throws SQLException {
@@ -32,7 +34,7 @@ public class TestUtils {
 
     public static Set<Long> selectAndReturnSetOfLongObjects(EntityManager entityManager, final String sql) throws SQLException {
         Query query = entityManager.createNativeQuery(sql);
-        return (Set<Long>) query.getResultList().stream().map(ob -> ((BigInteger)ob).longValue()).collect(Collectors.toSet());
+        return (Set<Long>) query.getResultList().stream().map(ob -> ((BigInteger) ob).longValue()).collect(Collectors.toSet());
     }
 
     public static boolean isFunctionExists(Statement statement, String functionName, String schema) throws SQLException {
@@ -81,7 +83,32 @@ public class TestUtils {
         return new HashSet<>(jdbcTemplate.queryForList(sql, Long.class));
     }
 
-    public static String functionReference(String functionName, String schema){
+    public static String functionReference(String functionName, String schema) {
         return (schema == null ? "" : schema + ".") + functionName;
+    }
+
+    public static PostgresVersion returnPostgresVersion(Statement statement) throws SQLException {
+        ResultSet rs = statement.executeQuery("SELECT split_part(split_part(split_part(version(), ' ', 2), '.', 1), ',', 1)::numeric AS major_version,\n" +
+                "       split_part(split_part(split_part(version(), ' ', 2), '.', 2), ',', 1)::numeric AS minor_version;");
+        rs.next();
+        return new PostgresVersion(parseLong(rs.getString(1)), parseLong(rs.getString(2)));
+    }
+
+    public static class PostgresVersion {
+        private final long major;
+        private final long minor;
+
+        public PostgresVersion(long major, long minor) {
+            this.major = major;
+            this.minor = minor;
+        }
+
+        public long getMajor() {
+            return major;
+        }
+
+        public long getMinor() {
+            return minor;
+        }
     }
 }
