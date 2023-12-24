@@ -1,15 +1,22 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
+import com.github.starnowski.posjsonhelper.test.utils.TestUtils;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -32,16 +39,88 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 public class TweetDaoTest {
 
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
     private TweetDao tested;
+    private TestUtils.PostgresVersion postgresVersion;
 
     private static Stream<Arguments> provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration() {
         return Stream.of(
                 Arguments.of("cats", asList(1L, 3L)),
                 Arguments.of("rats", asList(2L, 3L)),
-                Arguments.of("rats cats", asList(3L)),
-                Arguments.of("cats rats", asList(3L)),
-                Arguments.of("cats rats cats", asList(3L))
+                Arguments.of("rats cats", List.of(3L)),
+                Arguments.of("cats rats", List.of(3L)),
+                Arguments.of("cats rats cats", List.of(3L))
         );
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescription() {
+        return Stream.of(
+                Arguments.of("cats", asList(1L, 3L)),
+                Arguments.of("cat", asList(1L, 3L)),
+                Arguments.of("rats", asList(2L, 3L)),
+                Arguments.of("rat", asList(2L, 3L)),
+                Arguments.of("rats cats", List.of(3L)),
+                Arguments.of("cats rats", List.of(3L)),
+                Arguments.of("rat cat", List.of(3L)),
+                Arguments.of("cat rat", List.of(3L))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
+        return Stream.of(
+                Arguments.of("Rats and cats", List.of(3L)),
+                Arguments.of("Rats cats", new ArrayList<>()),
+                Arguments.of("cats Rats", new ArrayList<>())
+        );
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescription() {
+        return Stream.of(
+                Arguments.of("rat and cats", List.of(3L)),
+                Arguments.of("rat and cat", List.of(3L)),
+                Arguments.of("rat cat", new ArrayList<>()),
+                Arguments.of("cat Rats", new ArrayList<>())
+        );
+    }
+
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription() {
+        return Stream.of(
+                Arguments.of("Postgres", asList(4L, 5L)),
+                Arguments.of("Postgres Oracle", new ArrayList<>()),
+                Arguments.of("Postgres or Oracle", asList(4L, 5L, 6L)),
+                Arguments.of("database", asList(5L, 6L)),
+                Arguments.of("database -Postgres", List.of(6L)),
+                Arguments.of("\"already existed functions\"", List.of(4L)),
+                Arguments.of("\"existed already functions\"", new ArrayList<>())
+        );
+    }
+
+    @BeforeEach
+    public void readPostgresVersion() throws SQLException {
+        DataSource dataSource = jdbcTemplate.getDataSource();
+
+        // Use DataSource to get a Connection
+        try (Connection connection = dataSource.getConnection()) {
+            // Create a Statement from the Connection
+            Statement statement = connection.createStatement();
+
+            try {
+                // Execute the native query
+                postgresVersion = TestUtils.returnPostgresVersion(statement);
+
+                // Process the result set or perform other operations
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            } finally {
+                // Close the statement when done
+                try {
+                    statement.close();
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
@@ -58,19 +137,6 @@ public class TweetDaoTest {
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
-    }
-
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescription() {
-        return Stream.of(
-                Arguments.of("cats", asList(1L, 3L)),
-                Arguments.of("cat", asList(1L, 3L)),
-                Arguments.of("rats", asList(2L, 3L)),
-                Arguments.of("rat", asList(2L, 3L)),
-                Arguments.of("rats cats", asList(3L)),
-                Arguments.of("cats rats", asList(3L)),
-                Arguments.of("rat cat", asList(3L)),
-                Arguments.of("cat rat", asList(3L))
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
@@ -105,14 +171,6 @@ public class TweetDaoTest {
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
-        return Stream.of(
-                Arguments.of("Rats and cats", asList(3L)),
-                Arguments.of("Rats cats", new ArrayList<>()),
-                Arguments.of("cats Rats", new ArrayList<>())
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -127,15 +185,6 @@ public class TweetDaoTest {
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
-    }
-
-    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescription() {
-        return Stream.of(
-                Arguments.of("rat and cats", asList(3L)),
-                Arguments.of("rat and cat", asList(3L)),
-                Arguments.of("rat cat", new ArrayList<>()),
-                Arguments.of("cat Rats", new ArrayList<>())
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
@@ -168,19 +217,6 @@ public class TweetDaoTest {
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
-    }
-
-
-    private static Stream<Arguments> provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription() {
-        return Stream.of(
-                Arguments.of("Postgres", asList(4L,5L)),
-                Arguments.of("Postgres Oracle", new ArrayList<>()),
-                Arguments.of("Postgres or Oracle", asList(4L,5L,6L)),
-                Arguments.of("database", asList(5L,6L)),
-                Arguments.of("database -Postgres", asList(6L)),
-                Arguments.of("\"already existed functions\"", asList(4L)),
-                Arguments.of("\"existed already functions\"", new ArrayList<>())
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
