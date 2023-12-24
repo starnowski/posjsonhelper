@@ -4,6 +4,7 @@ import com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTS
 import com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PlainToTSQueryFunctionDescriptorRegisterFactory
 import com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TSVectorFunctionDescriptorRegisterFactory
 import com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TextOperatorFunctionDescriptorRegisterFactory
+import com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptorRegisterFactory
 import spock.lang.Specification
 
 import java.util.stream.Collectors
@@ -22,7 +23,8 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
                                                                                                 PlainToTSQueryFunctionDescriptorRegisterFactory.class,
                                                                                                 TextOperatorFunctionDescriptorRegisterFactory.class,
                                                                                                 TSVectorFunctionDescriptorRegisterFactory.class,
-                                                                                                CastOperatorFunctionDescriptorRegisterFactory.class])
+                                                                                                CastOperatorFunctionDescriptorRegisterFactory.class,
+                                                                                                WebsearchToTSQueryFunctionDescriptorRegisterFactory.class])
     }
 
 }

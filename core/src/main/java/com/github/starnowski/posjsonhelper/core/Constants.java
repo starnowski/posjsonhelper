@@ -50,6 +50,14 @@ public class Constants {
      */
     public static final String PHRASETO_TSQUERY_FUNCTION_NAME = "phraseto_tsquery";
     /**
+     * Name of the Postgres function 'websearch_to_tsquery' websearch_to_tsquery.
+     * creates a tsquery value from querytext using an alternative syntax in which simple unformatted text is a valid query.
+     * Unlike plainto_tsquery and phraseto_tsquery, it also recognizes certain operators.
+     * Moreover, this function will never raise syntax errors, which makes it possible to use raw user-supplied input for search.
+     * Please check <a href="https://www.postgresql.org/docs/16/textsearch-controls.html">Postgres doc</a>
+     */
+    public static final String WEBSEARCH_TO_TSQUERY_FUNCTION_NAME = "websearch_to_tsquery";
+    /**
      * Name of the Postgres function 'to_tsvector' that is converting a document to the tsvector data type.
      * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
      */
