@@ -228,7 +228,7 @@ public class TweetDaoTest {
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
     public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, List<Long> expectedIds) {
-        assumeTrue(postgresVersion.getMajor() >= 10, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // when
         List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescription(phrase, ENGLISH_CONFIGURATION);
@@ -245,7 +245,7 @@ public class TweetDaoTest {
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
     public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
-        assumeTrue(postgresVersion.getMajor() >= 10, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // when
         List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(phrase, ENGLISH_CONFIGURATION);
