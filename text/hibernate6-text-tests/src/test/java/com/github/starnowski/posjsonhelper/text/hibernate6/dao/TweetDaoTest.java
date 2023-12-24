@@ -186,13 +186,29 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for english configuration' for websearch_to_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescription(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should return all ids when searching by query for english configuration' for websearch_to_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
-    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptioAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, List<Long> expectedIds) {
 
         // when
-        List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptioAndRegconfigTypeCastOperatorFunctionObjectInstance(phrase, ENGLISH_CONFIGURATION);
+        List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(phrase, ENGLISH_CONFIGURATION);
 
         // then
         assertThat(results).hasSize(expectedIds.size());

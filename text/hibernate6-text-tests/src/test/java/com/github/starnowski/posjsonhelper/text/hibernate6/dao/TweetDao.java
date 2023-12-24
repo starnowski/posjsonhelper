@@ -79,7 +79,11 @@ public class TweetDao {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptioAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String englishConfiguration) {
+    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String englishConfiguration) {
+        return null;
+    }
+
+    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, String englishConfiguration) {
         return null;
     }
 }
