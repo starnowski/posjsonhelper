@@ -148,4 +148,12 @@ public class TweetDao {
         query.setParameter("configuration", configuration);
         return query.getResultList();
     }
+
+    public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionWithHQL(String phrase, String configuration) {
+        //websearch_to_tsquery
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector('%1$s', tweet.shortContent), websearch_to_tsquery('%1$s', :phrase))", configuration);
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
 }
