@@ -9,6 +9,7 @@ import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
@@ -96,5 +97,13 @@ public class TweetDao {
         query.select(root);
         query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new WebsearchToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
+    }
+
+    public List<Tweet> findBySinglePlainQueryInDescriptionForDefaultConfigurationWithHQL(String phrase) {
+        //websearch_to_tsquery
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(tweet.shortContent), plainto_tsquery(:phrase))");
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
     }
 }
