@@ -100,8 +100,16 @@ public class TweetDao {
     }
 
     public List<Tweet> findBySinglePlainQueryInDescriptionForDefaultConfigurationWithHQL(String phrase) {
-        //websearch_to_tsquery
+        //plainto_tsquery
         String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(tweet.shortContent), plainto_tsquery(:phrase))");
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationWithHQL(String phrase, String configuration) {
+        //plainto_tsquery
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector('%1$s', tweet.shortContent), plainto_tsquery('%1$s', :phrase))", configuration);
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();
