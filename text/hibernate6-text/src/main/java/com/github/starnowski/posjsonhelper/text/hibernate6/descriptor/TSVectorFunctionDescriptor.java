@@ -7,6 +7,7 @@ import org.hibernate.query.spi.QueryEngine;
 import org.hibernate.query.sqm.function.NamedSqmFunctionDescriptor;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
+import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.hibernate.type.spi.TypeConfiguration;
 
 import java.util.List;
@@ -21,6 +22,6 @@ public class TSVectorFunctionDescriptor extends NamedSqmFunctionDescriptor {
     @Override
     protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine, TypeConfiguration typeConfiguration) {
         //TODO Check arguments size
-        return (SelfRenderingSqmFunction<T>) new TSVectorFunction((Path) arguments.get(0), queryEngine.getCriteriaBuilder());
+        return (SelfRenderingSqmFunction<T>) new TSVectorFunction((Path) arguments.get(arguments.size() > 1 ? 1: 0), arguments.size() > 1 ? (SqmExpression<?>) arguments.get(0) : null,queryEngine.getCriteriaBuilder());
     }
 }
