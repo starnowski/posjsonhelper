@@ -139,4 +139,13 @@ public class TweetDao {
         query.setParameter("phrase", phrase);
         return query.getResultList();
     }
+
+    public List<Tweet> findBySinglePhraseInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionInstanceWithHQL(String phrase, String configuration) {
+        //phraseto_tsquery regconfig cast_operator_function
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), phraseto_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))");
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        query.setParameter("configuration", configuration);
+        return query.getResultList();
+    }
 }
