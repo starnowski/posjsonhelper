@@ -52,7 +52,7 @@ public class SQLInjectionItTest extends AbstractItTest {
         );
     }
 
-    @DisplayName("should not modify current configuration property #property with expected value #value when executing correct statement, sql pattern #sqlPattern, jsonPathInput #jsonPathInput, array input #arrayInput")
+    @DisplayName("should not modify current configuration property #property with expected value #value when executing correct statement without corrupted data")
     @ParameterizedTest
     @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyWithExpectedValue")
     public void shouldNotModifyCurrentConfigurationPropertyWithExpectedValue(String property, String value, String sqlPattern, String textQuery, List<String> expectedQueryResults, int minimalMajorPostgresVersion) {
@@ -83,7 +83,7 @@ public class SQLInjectionItTest extends AbstractItTest {
         );
     }
 
-    @DisplayName("should modify current configuration property #property and change current value #value with expected #expected when using statements jsonPath #jsonPath, array elements #array, sql statement #sqlPattern")
+    @DisplayName("should modify current configuration property #property and change current value #value with expected #expected when using statements with corrupted query")
     @ParameterizedTest
     @MethodSource("provideShouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
     public void shouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected(String property, String value, String sqlPattern, String textQuery, String expected, int minimalMajorPostgresVersion) {
@@ -109,32 +109,39 @@ public class SQLInjectionItTest extends AbstractItTest {
                 Arguments.of("prop.value"  ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
         );
     }
-//
-//    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAllArrayStringsExistPredicate with array elements #tags as passed arguments")
-//    @ParameterizedTest
-//    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments")
-//    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments(String property, String value, String tags){
-//        //GIVEN:
-//        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
-//
-//        //WHEN:
-//        var results = tested.findAllByAllMatchingTags(new HashSet<String>(Arrays.asList(tags)));
-//
-//        //THEN:
-//        assertThat(results).isEmpty();
-//        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
-//        assertThat(currentValue).isEqualTo(value);
-//        results.isEmpty();
-//
-//        // https://portswigger.net/web-security/sql-injection
-//    }
-//
-//    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAnyArrayStringsExistPredicateWithArrayElementsAsPassedArguments() {
-//        return Stream.of(
-//                Arguments.of("prop.value"   ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
-//        );
-//    }
-//
+
+    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected() {
+        return Stream.of(
+                Arguments.of("c.prop1", "some value", "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"),
+                Arguments.of("prop.value", "this is a test",  "'rats'); SELECT set_config('prop.value', 'WARNING', false)--")
+        );
+    }
+
+    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAllArrayStringsExistPredicate with array elements #tags as passed arguments")
+    @ParameterizedTest
+    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
+    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPlainQueryWihtCorruptedQuery(String property, String value, String query){
+        //GIVEN:
+        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
+
+        //WHEN:
+        var results = tested.findBySinglePlainQueryInDescriptionForDefaultConfiguration(query);
+
+        //THEN:
+        assertThat(results).isEmpty();
+        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
+        assertThat(currentValue).isEqualTo(value);
+        results.isEmpty();
+
+        // https://portswigger.net/web-security/sql-injection
+    }
+
+    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAnyArrayStringsExistPredicateWithArrayElementsAsPassedArguments() {
+        return Stream.of(
+                Arguments.of("prop.value"   ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
+        );
+    }
+
 //    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAnyArrayStringsExistPredicate with array elements #tags as passed arguments")
 //    @ParameterizedTest
 //    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAnyArrayStringsExistPredicateWithArrayElementsAsPassedArguments")
