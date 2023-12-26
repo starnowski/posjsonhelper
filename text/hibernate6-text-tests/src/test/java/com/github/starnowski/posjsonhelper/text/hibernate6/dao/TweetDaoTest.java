@@ -42,7 +42,6 @@ public class TweetDaoTest extends AbstractItTest {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private TweetDao tested;
-    private TestUtils.PostgresVersion postgresVersion;
 
     private static Stream<Arguments> provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration() {
         return Stream.of(

@@ -104,12 +104,6 @@ public class SQLInjectionItTest extends AbstractItTest {
         // https://portswigger.net/web-security/sql-injection
     }
 
-    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments() {
-        return Stream.of(
-                Arguments.of("prop.value"  ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
-        );
-    }
-
     private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected() {
         return Stream.of(
                 Arguments.of("c.prop1", "some value", "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"),
@@ -117,7 +111,7 @@ public class SQLInjectionItTest extends AbstractItTest {
         );
     }
 
-    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAllArrayStringsExistPredicate with array elements #tags as passed arguments")
+    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate PlainToTSQueryFunction with corrupted query")
     @ParameterizedTest
     @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
     public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPlainQueryWihtCorruptedQuery(String property, String value, String query){
@@ -136,27 +130,42 @@ public class SQLInjectionItTest extends AbstractItTest {
         // https://portswigger.net/web-security/sql-injection
     }
 
-    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAnyArrayStringsExistPredicateWithArrayElementsAsPassedArguments() {
-        return Stream.of(
-                Arguments.of("prop.value"   ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
-        );
+    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate PhraseToTSQueryFunction with corrupted query")
+    @ParameterizedTest
+    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
+    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPhrasetoTSQueryWihtCorruptedQuery(String property, String value, String query){
+        //GIVEN:
+        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
+
+        //WHEN:
+        var results = tested.findBySinglePhraseInDescriptionForDefaultConfiguration(query);
+
+        //THEN:
+        assertThat(results).isEmpty();
+        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
+        assertThat(currentValue).isEqualTo(value);
+        results.isEmpty();
+
+        // https://portswigger.net/web-security/sql-injection
     }
 
-//    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAnyArrayStringsExistPredicate with array elements #tags as passed arguments")
-//    @ParameterizedTest
-//    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAnyArrayStringsExistPredicateWithArrayElementsAsPassedArguments")
-//    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAnyArrayStringsExistPredicateWithArrayElementsAsPassedArguments(String property, String value, String tags){
-//        //GIVEN:
-//        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
-//
-//        //WHEN:
-//        var results = tested.findAllByAnyMatchingTags(new HashSet<String>(Arrays.asList(tags)));
-//
-//        //THEN:
-//        results.isEmpty();
-//        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
-//        assertThat(currentValue).isEqualTo(value);
-//        results.isEmpty();
-//        // https://portswigger.net/web-security/sql-injection
-//    }
+    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate WebsearchToTSQueryFunction with corrupted query")
+    @ParameterizedTest
+    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
+    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingWebsearchToTSQueryWihtCorruptedQuery(String property, String value, String query){
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+        //GIVEN:
+        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
+
+        //WHEN:
+        var results = tested.findByWebSearchToTSQueryInDescriptionForDefaultConfiguration(query);
+
+        //THEN:
+        assertThat(results).isEmpty();
+        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
+        assertThat(currentValue).isEqualTo(value);
+        results.isEmpty();
+
+        // https://portswigger.net/web-security/sql-injection
+    }
 }
