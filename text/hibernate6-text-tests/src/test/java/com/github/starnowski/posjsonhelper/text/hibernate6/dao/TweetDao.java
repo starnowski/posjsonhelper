@@ -101,7 +101,7 @@ public class TweetDao {
 
     public List<Tweet> findBySinglePlainQueryInDescriptionForDefaultConfigurationWithHQL(String phrase) {
         //plainto_tsquery
-        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(tweet.shortContent), plainto_tsquery(:phrase))");
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(tweet.shortContent), plainto_tsquery(:phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();
@@ -117,7 +117,7 @@ public class TweetDao {
 
     public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionObjectInstanceWithHQL(String phrase, String configuration) {
         //plainto_tsquery regconfig cast_operator_function
-        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))");
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         query.setParameter("configuration", configuration);
@@ -126,7 +126,7 @@ public class TweetDao {
 
     public List<Tweet> findBySinglePhraseInDescriptionForDefaultConfigurationWithHQL(String phrase) {
         //phraseto_tsquery
-        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(tweet.shortContent), phraseto_tsquery(:phrase))");
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(tweet.shortContent), phraseto_tsquery(:phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();
@@ -142,7 +142,7 @@ public class TweetDao {
 
     public List<Tweet> findBySinglePhraseInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionInstanceWithHQL(String phrase, String configuration) {
         //phraseto_tsquery regconfig cast_operator_function
-        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), phraseto_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))");
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), phraseto_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         query.setParameter("configuration", configuration);
@@ -159,10 +159,19 @@ public class TweetDao {
 
     public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionAndRegconfigTypeCastOperatorFunctionObjectInstanceWithHQL(String phrase, String configuration) {
         //websearch_to_tsquery regconfig cast_operator_function
-        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), websearch_to_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))");
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), websearch_to_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         query.setParameter("configuration", configuration);
         return query.getResultList();
+    }
+
+    public List<Tweet> findByWebSearchToTSQueryInDescriptionForDefaultConfiguration(String phrase) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new WebsearchToTSQueryFunction((NodeBuilder) cb, (String) null, phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
     }
 }

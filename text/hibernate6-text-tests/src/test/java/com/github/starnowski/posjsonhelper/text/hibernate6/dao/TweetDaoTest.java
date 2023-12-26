@@ -2,7 +2,6 @@ package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.test.utils.TestUtils;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,20 +30,18 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = BEFORE_TEST_METHOD)
 @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = AFTER_TEST_METHOD)
-public class TweetDaoTest {
+public class TweetDaoTest extends AbstractItTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private TweetDao tested;
-    private TestUtils.PostgresVersion postgresVersion;
 
     private static Stream<Arguments> provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration() {
         return Stream.of(
@@ -96,33 +93,6 @@ public class TweetDaoTest {
                 Arguments.of("\"already existed functions\"", List.of(4L)),
                 Arguments.of("\"existed already functions\"", new ArrayList<>())
         );
-    }
-
-    @BeforeEach
-    public void readPostgresVersion() throws SQLException {
-        DataSource dataSource = jdbcTemplate.getDataSource();
-
-        // Use DataSource to get a Connection
-        try (Connection connection = dataSource.getConnection()) {
-            // Create a Statement from the Connection
-            Statement statement = connection.createStatement();
-
-            try {
-                // Execute the native query
-                postgresVersion = TestUtils.returnPostgresVersion(statement);
-
-                // Process the result set or perform other operations
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                // Close the statement when done
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
@@ -345,6 +315,23 @@ public class TweetDaoTest {
 
         // when
         List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptionWithHQL(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for WebSearchToTSQuery function with HQL")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptionForDefaultConfigurationWithHQL(String phrase, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
+        // when
+        List<Tweet> results = tested.findByWebSearchToTSQueryInDescriptionForDefaultConfiguration(phrase);
 
         // then
         assertThat(results).hasSize(expectedIds.size());
