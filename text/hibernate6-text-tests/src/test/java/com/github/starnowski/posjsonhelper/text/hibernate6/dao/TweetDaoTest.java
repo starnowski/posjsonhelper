@@ -2,7 +2,6 @@ package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.test.utils.TestUtils;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
-import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
