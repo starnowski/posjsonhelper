@@ -30,14 +30,13 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = BEFORE_TEST_METHOD)
 @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = AFTER_TEST_METHOD)
-public class TweetDaoTest {
+public class TweetDaoTest extends AbstractItTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -95,33 +94,6 @@ public class TweetDaoTest {
                 Arguments.of("\"already existed functions\"", List.of(4L)),
                 Arguments.of("\"existed already functions\"", new ArrayList<>())
         );
-    }
-
-    @BeforeEach
-    public void readPostgresVersion() throws SQLException {
-        DataSource dataSource = jdbcTemplate.getDataSource();
-
-        // Use DataSource to get a Connection
-        try (Connection connection = dataSource.getConnection()) {
-            // Create a Statement from the Connection
-            Statement statement = connection.createStatement();
-
-            try {
-                // Execute the native query
-                postgresVersion = TestUtils.returnPostgresVersion(statement);
-
-                // Process the result set or perform other operations
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            } finally {
-                // Close the statement when done
-                try {
-                    statement.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
