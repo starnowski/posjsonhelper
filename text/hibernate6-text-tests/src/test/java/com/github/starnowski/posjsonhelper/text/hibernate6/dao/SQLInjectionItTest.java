@@ -72,40 +72,43 @@ public class SQLInjectionItTest extends AbstractItTest {
         assertThat(new HashSet<>(results)).isEqualTo(new HashSet<>(expectedQueryResults));
     }
 
-//    private static Stream<Arguments> provideShouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected() {
-//        return Stream.of(
-//                Arguments.of("c.prop1", "some value", JSON_ALL_STATEMENT_PATTERN, "'top_element_with_set_of_values'), array['X1']); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--", "'TAG1', 'TAG2'", "SECURITY FAILED"),
-//                Arguments.of("conf.value", "some value", JSON_ALL_STATEMENT_PATTERN, "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--", "'Val1'", "New value"),
-//                Arguments.of("prop.value", "this is a test", JSON_ALL_STATEMENT_PATTERN, "'top_element_with_set_of_values'", "'some val']); SELECT set_config('prop.value', 'WARNING', false);--", "WARNING"),
-//                Arguments.of("prop.value", "this is a test", JSON_ANY_STATEMENT_PATTERN, "'top_element_with_set_of_values'", "'some val']); SELECT set_config('prop.value', 'WARNING', false);--", "WARNING"),
-//                Arguments.of("conf.value", "some value", JSON_ANY_STATEMENT_PATTERN, "'some_element'), array['sss']); SELECT set_config('conf.value', 'New value', false)--", "'Val1'", "New value")
-//        );
-//    }
-//
-//    @DisplayName("should modify current configuration property #property and change current value #value with expected #expected when using statements jsonPath #jsonPath, array elements #array, sql statement #sqlPattern")
-//    @ParameterizedTest
-//    @MethodSource("provideShouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
-//    public void shouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected(String property, String value, String sqlPattern, String jsonPath, String array, String expected) {
-//        //GIVEN
-//        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
-//        var query = String.format(JSON_ALL_STATEMENT_PATTERN, jsonPath, array);
-//        System.out.println("Testing query : " + query);
-//
-//        //WHEN
-//        jdbcTemplate.execute(String.format(sqlPattern, jsonPath, array));
-//
-//        //THEN
-//        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
-//        assertThat(currentValue).isEqualTo(expected);
-//
-//        // https://portswigger.net/web-security/sql-injection
-//    }
-//
-//    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments() {
-//        return Stream.of(
-//                Arguments.of("prop.value"  ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
-//        );
-//    }
+    private static Stream<Arguments> provideShouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected() {
+        return Stream.of(
+                Arguments.of("c.prop1", "some value", PLAINTO_TSQUERY_STATEMENT_PATTERN, "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--", "SECURITY FAILED", 9),
+                Arguments.of("prop.value", "this is a test", PLAINTO_TSQUERY_STATEMENT_PATTERN, "'rats'); SELECT set_config('prop.value', 'WARNING', false)--", "WARNING", 9),
+                Arguments.of("c.prop1", "some value", WEBSEARCH_TO_TSQUERY_STATEMENT_PATTERN, "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--", "SECURITY FAILED", 11),
+                Arguments.of("prop.value", "this is a test", WEBSEARCH_TO_TSQUERY_STATEMENT_PATTERN, "'rats'); SELECT set_config('prop.value', 'WARNING', false)--", "WARNING", 11),
+                Arguments.of("prop.value", "this is a test", PHRASETO_TSQUERY_STATEMENT_PATTERN, "'Rats and cats'); SELECT set_config('prop.value', 'SECURITY FAILED', false)--", "SECURITY FAILED", 9),
+                Arguments.of("prop.value", "this is a test", PHRASETO_TSQUERY_STATEMENT_PATTERN, "'Rats cats'); SELECT set_config('prop.value', 'WARNING', false)--", "WARNING", 9)
+        );
+    }
+
+    @DisplayName("should modify current configuration property #property and change current value #value with expected #expected when using statements jsonPath #jsonPath, array elements #array, sql statement #sqlPattern")
+    @ParameterizedTest
+    @MethodSource("provideShouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
+    public void shouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected(String property, String value, String sqlPattern, String textQuery, String expected, int minimalMajorPostgresVersion) {
+        assumeTrue(postgresVersion.getMajor() >= minimalMajorPostgresVersion, String.format("Test ignored because the minimal postgres version of Postgres is %d", minimalMajorPostgresVersion));
+
+        //GIVEN
+        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
+        var query = String.format(sqlPattern, textQuery);
+        System.out.println("Testing query : " + query);
+
+        //WHEN
+        jdbcTemplate.execute(String.format(query, textQuery));
+
+        //THEN
+        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
+        assertThat(currentValue).isEqualTo(expected);
+
+        // https://portswigger.net/web-security/sql-injection
+    }
+
+    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPredicateJsonbAllArrayStringsExistPredicateWithArrayElementsTagsAsPassedArguments() {
+        return Stream.of(
+                Arguments.of("prop.value"  ,   "this is a test" ,  "'some val']); SELECT set_config('prop.value', 'WARNING', false);--")
+        );
+    }
 //
 //    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate JsonbAllArrayStringsExistPredicate with array elements #tags as passed arguments")
 //    @ParameterizedTest
