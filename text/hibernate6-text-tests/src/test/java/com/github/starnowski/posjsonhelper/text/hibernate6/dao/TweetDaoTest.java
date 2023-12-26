@@ -354,6 +354,23 @@ public class TweetDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for WebSearchToTSQuery function with HQL")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByPlainQueryInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptionForDefaultConfigurationWithHQL(String phrase, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
+        // when
+        List<Tweet> results = tested.findByWebSearchToTSQueryInDescriptionForDefaultConfiguration(phrase);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should return all ids when searching by query for english configuration' for websearch_to_tsquery function with RegconfigTypeCastOperatorFunction object as configuration")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
