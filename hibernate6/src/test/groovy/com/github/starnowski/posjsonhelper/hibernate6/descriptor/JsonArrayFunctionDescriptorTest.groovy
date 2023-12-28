@@ -45,7 +45,7 @@ class JsonArrayFunctionDescriptorTest extends Specification {
             hibernateContext.getJsonFunctionJsonArrayOperator() >> method
 
         when:
-            def result = jsonArrayFunctionDescriptor.generateSqmFunctionExpression(arguments, null, queryEngine, null)
+            def result = jsonArrayFunctionDescriptor.generateSqmFunctionExpression(arguments, null, queryEngine)
 
         then:
             queryEngine.getCriteriaBuilder() >> criteriaBuilder

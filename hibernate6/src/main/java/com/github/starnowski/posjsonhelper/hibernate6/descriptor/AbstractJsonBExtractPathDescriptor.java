@@ -48,7 +48,7 @@ public abstract class AbstractJsonBExtractPathDescriptor<T extends AbstractJsonB
 
     abstract protected T generateAbstractJsonBExtractPathImpl(Path referencedPathSource, List<SqmTypedNode<?>> pathArguments, NodeBuilder nodeBuilder);
 
-    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine, TypeConfiguration typeConfiguration) {
+    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine) {
         List<SqmTypedNode<?>> pathArguments = new ArrayList<>();
         for (int i = 1; i < arguments.size(); i++) {
             pathArguments.add(arguments.get(i));

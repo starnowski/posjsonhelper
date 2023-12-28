@@ -31,7 +31,7 @@ abstract class AbstractJsonbArrayStringsExistPredicateDescriptorTest <T extends 
             org.hibernate.type.BasicType basicType = Mock(org.hibernate.type.BasicType)
 
         when:
-            def result = tested.generateSqmFunctionExpression(arguments, null, queryEngine, null)
+            def result = tested.generateSqmFunctionExpression(arguments, null, queryEngine)
 
         then:
             queryEngine.getCriteriaBuilder() >> sqmCriteriaNodeBuilder

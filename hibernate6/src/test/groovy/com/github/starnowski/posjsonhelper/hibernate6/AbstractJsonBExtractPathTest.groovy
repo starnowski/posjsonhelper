@@ -3,6 +3,7 @@ package com.github.starnowski.posjsonhelper.hibernate6
 import jakarta.persistence.criteria.Path
 import org.hibernate.query.spi.QueryEngine
 import org.hibernate.query.sqm.NodeBuilder
+import org.hibernate.query.sqm.function.FunctionRenderer
 import org.hibernate.query.sqm.function.FunctionRenderingSupport
 import org.hibernate.query.sqm.function.SqmFunctionDescriptor
 import org.hibernate.query.sqm.function.SqmFunctionRegistry
@@ -90,5 +91,5 @@ abstract class AbstractJsonBExtractPathTest <T extends AbstractJsonBExtractPath>
 
     protected abstract String expectedFunctionName()
 
-    private static interface TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport extends SqmFunctionDescriptor, FunctionRenderingSupport {}
+    private static interface TestInterfaceThatImplementsSqmFunctionDescriptorAndFunctionRenderingSupport extends SqmFunctionDescriptor, FunctionRenderer {}
 }
