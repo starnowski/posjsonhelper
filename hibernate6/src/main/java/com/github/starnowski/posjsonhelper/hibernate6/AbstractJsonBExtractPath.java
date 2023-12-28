@@ -22,7 +22,9 @@
 package com.github.starnowski.posjsonhelper.hibernate6;
 
 import jakarta.persistence.criteria.Path;
+import org.hibernate.query.criteria.JpaExpression;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.function.FunctionRenderer;
 import org.hibernate.query.sqm.function.FunctionRenderingSupport;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
@@ -65,7 +67,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
 
     public AbstractJsonBExtractPath(Path referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
-                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 contactParameters(referencedPathSource, (List<? extends SqmTypedNode<?>>) path),
                 null,
                 null,
@@ -79,7 +81,7 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
             throw new IllegalArgumentException("Path argument can not be null or empty list");
         }
         List<SqmTypedNode<?>> result = new ArrayList<>();
-        result.addAll(path.stream().map(p -> nodeBuilder.value(p)).collect(Collectors.toList()));
+        result.addAll(path.stream().map(p -> (SqmTypedNode<String>)nodeBuilder.value(p)).collect(Collectors.toList()));
         return result;
     }
 
