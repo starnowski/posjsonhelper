@@ -13,6 +13,7 @@
     <artifactId>parent</artifactId>
     <packaging>pom</packaging>
     <modules>
+        <module>hibernate6-text</module>
         <module>hibernate6-text-tests</module>
     </modules>
 
@@ -23,5 +24,16 @@
         <maven.compiler.target>11</maven.compiler.target>
         <license.dir>${project.parent.basedir}</license.dir>
     </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${org.hibernate.hibernate.core.version}</version>
+                <optional>true</optional>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
 </project>

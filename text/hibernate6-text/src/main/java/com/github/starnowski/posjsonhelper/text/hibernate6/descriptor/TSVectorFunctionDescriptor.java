@@ -20,7 +20,7 @@ public class TSVectorFunctionDescriptor extends NamedSqmFunctionDescriptor {
     }
 
     @Override
-    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine, TypeConfiguration typeConfiguration) {
+    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine) {
         //TODO Check arguments size
         return (SelfRenderingSqmFunction<T>) new TSVectorFunction((Path) arguments.get(arguments.size() > 1 ? 1: 0), arguments.size() > 1 ? (SqmExpression<?>) arguments.get(0) : null,queryEngine.getCriteriaBuilder());
     }

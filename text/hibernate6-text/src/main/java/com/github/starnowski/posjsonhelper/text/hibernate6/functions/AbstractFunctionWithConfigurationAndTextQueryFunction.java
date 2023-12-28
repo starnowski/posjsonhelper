@@ -47,7 +47,7 @@ public abstract class AbstractFunctionWithConfigurationAndTextQueryFunction exte
             //TODO Literal
             result.add(nodeBuilder.literal(configuration));
         }
-        result.add(nodeBuilder.value(query));
+        result.add((SqmTypedNode<?>) nodeBuilder.value(query));
         return result;
     }
 
@@ -59,7 +59,7 @@ public abstract class AbstractFunctionWithConfigurationAndTextQueryFunction exte
         if (configuration != null) {
             result.add(configuration);
         }
-        result.add(nodeBuilder.value(query));
+        result.add((SqmTypedNode<?>) nodeBuilder.value(query));
         return result;
     }
 }
