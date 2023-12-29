@@ -28,7 +28,7 @@ public class TextOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunc
     }
 
     @Override
-    public void render(SqlAppender sqlAppender, List<? extends SqlAstNode> sqlAstArguments, SqlAstTranslator<?> translator) {
+    public void render(SqlAppender sqlAppender, List<? extends SqlAstNode> sqlAstArguments, ReturnableType<?> returnableType, SqlAstTranslator<?> translator) {
         //TODO Check if sqlAstArguments has two arguments only!
 
         translator.render(sqlAstArguments.get(0), SqlAstNodeRenderingMode.DEFAULT);
@@ -37,7 +37,7 @@ public class TextOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunc
     }
 
     @Override
-    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine, TypeConfiguration typeConfiguration) {
+    protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine) {
         List<SqmExpression<String>> args = new ArrayList<>();
         //TODO Check if arguments has two arguments only!
         for (int i = 0; i < arguments.size(); i++) {
