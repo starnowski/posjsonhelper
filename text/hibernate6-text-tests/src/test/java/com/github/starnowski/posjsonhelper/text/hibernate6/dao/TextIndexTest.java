@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
+import com.github.starnowski.posjsonhelper.text.hibernate6.model.TweetWithLocale;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledIfSystemProperty;
@@ -26,22 +27,40 @@ import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TES
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
-@Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TEXT_INDEX_SCRIPT_PATH},
+@Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TEXT_INDEX_SCRIPT_PATH, TWEETS_WITH_LOCALE_SCRIPT_PATH},
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = BEFORE_TEST_METHOD)
 @Sql(value = CLEAR_DATABASE_SCRIPT_PATH,
         config = @SqlConfig(transactionMode = ISOLATED),
         executionPhase = AFTER_TEST_METHOD)
+@EnabledIfSystemProperty(named = "run.custom.directory.test", matches = "true")
 public class TextIndexTest extends AbstractItTest {
 
     @Autowired
-    private TweetDao tested;
+    private TweetWithLocalDao tested;
 
-    @Test
-    @EnabledIfSystemProperty(named = "run.custom.directory.test", matches = "true")
-    public void doSomeTest()
-    {
-        //TODO
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescription() {
+        return Stream.of(
+                Arguments.of("EV future", ENGLISH_CONFIGURATION, asList(1L)),
+                Arguments.of("Hydrogen", ENGLISH_CONFIGURATION, asList(2L, 3L)),
+                Arguments.of("Hydrogen", POLISH_CONFIGURATION, asList(4L)),
+                Arguments.of("Zmywarka 61 kWh", POLISH_CONFIGURATION, asList(5L, 6L, 8L))
+        );
     }
+
+    @DisplayName("should return all ids when searching by query for english configuration' for plainto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    @EnabledIfSystemProperty(named = "run.custom.directory.test", matches = "true")
+    public void shouldFindCorrectTweetsBySinglePlainQueryInDescription(String phrase, String configuration, List<Long> expectedIds) {
+
+        // when
+        List<TweetWithLocale> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, configuration);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
 
 }

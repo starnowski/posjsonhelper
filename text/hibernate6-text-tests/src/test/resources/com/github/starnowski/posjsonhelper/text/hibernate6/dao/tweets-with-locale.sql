@@ -1,5 +1,5 @@
 
-INSERT INTO tweet_with_locale (id, title, short_content, locale) VALUES (1, 'EV cars', 'EV cars are the future', 'english');
+INSERT INTO tweet_with_locale (id, title, short_content, locale) VALUES (1, 'EV cars', 'Thier are the future', 'english');
 INSERT INTO tweet_with_locale (id, title, short_content, locale) VALUES (2, 'Hydrogen Cars', 'Those cars do not have luck for infrastructure', 'english');
 INSERT INTO tweet_with_locale (id, title, short_content, locale) VALUES (3, 'Hydrogen batteries', 'It is great idea for storing electicity power', 'english');
 
