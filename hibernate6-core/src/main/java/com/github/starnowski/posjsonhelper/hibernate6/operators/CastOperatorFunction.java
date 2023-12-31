@@ -2,7 +2,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.operators;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import org.hibernate.query.sqm.NodeBuilder;
-import org.hibernate.query.sqm.function.FunctionRenderingSupport;
+import org.hibernate.query.sqm.function.FunctionRenderer;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmCopyContext;
@@ -24,7 +24,7 @@ public class CastOperatorFunction extends SelfRenderingSqmFunction<String> imple
 
     public CastOperatorFunction(NodeBuilder nodeBuilder, SqmExpression<?> argument, SqmExpression<String> type, HibernateContext hibernateContext) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getCastFunctionOperator()),
-                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getCastFunctionOperator()),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getCastFunctionOperator()),
                 contactParameters(argument, type),
                 null,
                 null,
