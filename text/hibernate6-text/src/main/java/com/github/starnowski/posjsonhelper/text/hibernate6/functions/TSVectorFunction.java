@@ -2,7 +2,7 @@ package com.github.starnowski.posjsonhelper.text.hibernate6.functions;
 
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
-import org.hibernate.query.sqm.function.FunctionRenderingSupport;
+import org.hibernate.query.sqm.function.FunctionRenderer;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
@@ -22,7 +22,7 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
 
     public TSVectorFunction(Path referencedPathSource, String configuration, NodeBuilder nodeBuilder) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
-                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 contactParameters(referencedPathSource, configuration, nodeBuilder),
                 null,
                 null,
@@ -33,7 +33,7 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
 
     public TSVectorFunction(Path referencedPathSource, SqmExpression<?> configuration, NodeBuilder nodeBuilder) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
-                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 contactParameters(referencedPathSource, configuration),
                 null,
                 null,

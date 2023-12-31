@@ -1,7 +1,7 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.functions;
 
 import org.hibernate.query.sqm.NodeBuilder;
-import org.hibernate.query.sqm.function.FunctionRenderingSupport;
+import org.hibernate.query.sqm.function.FunctionRenderer;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.produce.function.StandardFunctionReturnTypeResolvers;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
@@ -25,7 +25,7 @@ public abstract class AbstractFunctionWithConfigurationAndTextQueryFunction exte
 
     public AbstractFunctionWithConfigurationAndTextQueryFunction(List<? extends SqmTypedNode<?>> parameters, NodeBuilder nodeBuilder, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
-                (FunctionRenderingSupport) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 //TODO Check if only two arguments are being passed!
                 parameters,
                 null,
