@@ -18,6 +18,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
@@ -57,6 +58,20 @@ public class TextIndexTest extends AbstractItTest {
 
         // when
         List<TweetWithLocale> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, configuration);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @DisplayName("should return all ids when searching by query for specific configuration' for websearch_to_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, String configuration, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
+        // when
+        List<TweetWithLocale> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescription(phrase, configuration);
 
         // then
         assertThat(results).hasSize(expectedIds.size());
