@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -51,6 +52,18 @@ public class TextIndexTest extends AbstractItTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription() {
+        return Stream.of(
+                Arguments.of("Postgres", ENGLISH_CONFIGURATION, asList(14L, 15L)),
+                Arguments.of("Postgres Oracle", ENGLISH_CONFIGURATION, new ArrayList<>()),
+                Arguments.of("Postgres or Oracle", ENGLISH_CONFIGURATION, asList(14L, 15L, 16L)),
+                Arguments.of("database", ENGLISH_CONFIGURATION, asList(15L, 16L)),
+                Arguments.of("database -Postgres", ENGLISH_CONFIGURATION, List.of(16L)),
+                Arguments.of("\"already existed functions\"", ENGLISH_CONFIGURATION, List.of(14L)),
+                Arguments.of("\"existed already functions\"", ENGLISH_CONFIGURATION, new ArrayList<>())
+        );
+    }
+
     @DisplayName("should return all ids when searching by query for specific configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
@@ -66,7 +79,7 @@ public class TextIndexTest extends AbstractItTest {
 
     @DisplayName("should return all ids when searching by query for specific configuration' for websearch_to_tsquery function")
     @ParameterizedTest
-    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    @MethodSource({"provideShouldFindCorrectTweetsBySinglePlainQueryInDescription", "provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription"})
     public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, String configuration, List<Long> expectedIds) {
         assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
@@ -77,6 +90,5 @@ public class TextIndexTest extends AbstractItTest {
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
     }
-
 
 }
