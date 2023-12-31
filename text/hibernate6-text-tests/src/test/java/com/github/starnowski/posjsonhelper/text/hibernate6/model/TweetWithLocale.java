@@ -1,10 +1,8 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.model;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import org.hibernate.annotations.Formula;
 
 @Entity
 @Table(name = "tweet_with_locale")
@@ -17,6 +15,9 @@ public class TweetWithLocale {
     private String shortContent;
     @Column
     private String locale;
+//    @Transient
+    @Formula("title || ' ' || short_content")
+    private String titleAndShortContent;
 
     public Long getId() {
         return id;

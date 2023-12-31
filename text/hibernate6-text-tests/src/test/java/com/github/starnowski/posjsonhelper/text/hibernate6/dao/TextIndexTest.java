@@ -15,11 +15,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
 import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.*;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
@@ -43,15 +45,17 @@ public class TextIndexTest extends AbstractItTest {
         return Stream.of(
                 Arguments.of("EV future", ENGLISH_CONFIGURATION, asList(1L)),
                 Arguments.of("Hydrogen", ENGLISH_CONFIGURATION, asList(2L, 3L)),
-                Arguments.of("Hydrogen", POLISH_CONFIGURATION, asList(4L)),
-                Arguments.of("Zmywarka 61 kWh", POLISH_CONFIGURATION, asList(5L, 6L, 8L))
+                Arguments.of("Hydrogen", POLISH_CONFIGURATION, emptyList()),
+                Arguments.of("Wodór", POLISH_CONFIGURATION, asList(4L)),
+                Arguments.of("Zmywarka czarny", POLISH_CONFIGURATION, asList(5L)),
+                Arguments.of("Zmywarka biały", POLISH_CONFIGURATION, asList(6L, 7L)),
+                Arguments.of("Zmywarka srebrny", POLISH_CONFIGURATION, asList(8L))
         );
     }
 
-    @DisplayName("should return all ids when searching by query for english configuration' for plainto_tsquery function")
+    @DisplayName("should return all ids when searching by query for specific configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
-    @EnabledIfSystemProperty(named = "run.custom.directory.test", matches = "true")
     public void shouldFindCorrectTweetsBySinglePlainQueryInDescription(String phrase, String configuration, List<Long> expectedIds) {
 
         // when
