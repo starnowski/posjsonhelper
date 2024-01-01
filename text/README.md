@@ -6,6 +6,7 @@
     * [Building project locally](#building-project-locally)
 * [How to attach FunctionContributor](#how-to-attach-functioncontributor)
 * [How to use query helper](#how-to-use-query-helper)
+  * [TODO Search context configuration parameter]TODO
   * [Hibernate Context](#hibernate-context)
   * [Text operator wrapper '@@'](#text-operator-wrapper--)
 
@@ -72,4 +73,7 @@ TextOperatorFunction is component that wraps Postgres [text operator](https://ww
 Beside of the to_tsvector function, this operator is necessary to do text search.
 The usage is going to be presented in below examples.
 
+### Vector function 'to_tsvector'
+
+TSVectorFunction wraps the [to_tsvector](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
 
