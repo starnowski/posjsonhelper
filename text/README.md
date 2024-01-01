@@ -11,6 +11,7 @@
   * [Text operator wrapper '@@'](#text-operator-wrapper--)
   * [Vector function 'to_tsvector'](#vector-function--totsvector)
   * [Function 'plainto_tsquery'](#function--plaintotsquery)
+    * [Cast operator and text search configuration](#cast-operator-and-text-search-configuration)
   * [Function 'phraseto_tsquery'](#function--phrasetotsquery)
   * [Function 'websearch_to_tsquery'](#function--websearchtotsquery)
 
@@ -84,8 +85,11 @@ Every call of to_tsvector or to_tsquery needs a text search configuration to per
 
 There are also constructors without search text configuration name that will create document in SQL query based on default configuration specified in postgres.
 
-Components like:
-
+Below components have such constructor with configuration parameter:
+* [Vector function 'to_tsvector'](#vector-function--totsvector)
+* [Function 'plainto_tsquery'](#function--plaintotsquery)
+* [Function 'phraseto_tsquery'](#function--phrasetotsquery)
+* [Function 'websearch_to_tsquery'](#function--websearchtotsquery)
 
 #### Text operator wrapper  '@@'
 
@@ -124,6 +128,37 @@ select
         tweet t1_0 
     where
         to_tsvector('english', t1_0.short_content) @@ plainto_tsquery('english', ?);
+```
+
+//TODO HQL
+
+#### Cast operator and text search configuration
+
+One more example that pass also text search configuration name but in different way.
+On below example the configuration is being passed as object of type RegconfigTypeCastOperatorFunction.
+
+```java
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionObjectInstance(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, configuration, hibernateContext), phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For such code hibernate is going to generate below sql:
+
+```sql
+select
+        t1_0.id,
+        t1_0.short_content,
+        t1_0.title 
+    from
+        tweet t1_0 
+    where
+        to_tsvector(?::regconfig, t1_0.short_content) @@ plainto_tsquery(?::regconfig, ?)
 ```
 
 TODO
