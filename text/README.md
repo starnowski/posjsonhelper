@@ -4,6 +4,8 @@
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
+* [How to attach FunctionContributor](#how-to-attach-functioncontributor)
+
 
 # Introduction
 Posjsonhelper text module adds support of Hibernate query for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
@@ -25,3 +27,9 @@ You can use it just by adding it as a dependency in the project descriptor file 
 
 ### Building project locally
 If someone would like to build the project locally from the source please see the [CONTRIBUTING.md](../CONTRIBUTING.md) file to check how to set up the project locally.
+
+### How to attach FunctionContributor
+Please see section in the main [README.md file](../README.md#how-to-attach-functioncontributor) to know how to attach FunctionContributor.
+For the text module it is not required to [apply DDL changes](../README.md#apply-ddl-changes).
+The text search components do not required custom SQL functions.
+
