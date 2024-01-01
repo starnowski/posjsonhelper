@@ -9,6 +9,7 @@
   * [TODO Search context configuration parameter]TODO
   * [Hibernate Context](#hibernate-context)
   * [Text operator wrapper '@@'](#text-operator-wrapper--)
+  * [Vector function 'to_tsvector'](#vector-function--totsvector)
 
 # Introduction
 Posjsonhelper text module adds support of Hibernate query for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
@@ -67,13 +68,29 @@ Most predicate components use Hibernate Context object.
 It holds mostly the names of hibernate function names used in project.
 To know how to create it please see [the right section in main document](../README.md#hibernate-context)
 
+#### Search context configuration parameter
+
+Most of the query components in text module have constructor with the name of search text configuration.
+Based on [postgres documentation](https://www.postgresql.org/docs/9.4/textsearch-configuration.html)
+
+`
+A text search configuration specifies all options necessary to transform a document into a tsvector: the parser to use to break text into tokens,
+and the dictionaries to use to transform each token into a lexeme.
+Every call of to_tsvector or to_tsquery needs a text search configuration to perform its processing.
+`
+
+There are also constructors without search text configuration name that will create document in SQL query based on default configuration specified in postgres.
+
+Components like:
+
+
 #### Text operator wrapper  '@@'
 
 TextOperatorFunction is component that wraps Postgres [text operator](https://www.postgresql.org/docs/9.4/textsearch-intro.html).
 Beside of the to_tsvector function, this operator is necessary to do text search.
 The usage is going to be presented in below examples.
 
-### Vector function 'to_tsvector'
+#### Vector function 'to_tsvector'
 
 TSVectorFunction wraps the [to_tsvector](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
 
