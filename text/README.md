@@ -6,10 +6,13 @@
     * [Building project locally](#building-project-locally)
 * [How to attach FunctionContributor](#how-to-attach-functioncontributor)
 * [How to use query helper](#how-to-use-query-helper)
-  * [TODO Search context configuration parameter]TODO
+  * [Search context configuration parameter](#search-context-configuration-parameter)
   * [Hibernate Context](#hibernate-context)
   * [Text operator wrapper '@@'](#text-operator-wrapper--)
   * [Vector function 'to_tsvector'](#vector-function--totsvector)
+  * [Function 'plainto_tsquery'](#function--plaintotsquery)
+  * [Function 'phraseto_tsquery'](#function--phrasetotsquery)
+  * [Function 'websearch_to_tsquery'](#function--websearchtotsquery)
 
 # Introduction
 Posjsonhelper text module adds support of Hibernate query for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
@@ -93,4 +96,17 @@ The usage is going to be presented in below examples.
 #### Vector function 'to_tsvector'
 
 TSVectorFunction wraps the [to_tsvector](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
+The usage is going to be presented in all below examples.
+
+#### Function 'plainto_tsquery'
+
+PlainToTSQueryFunction wraps the [plainto_tsquery](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
+TODO
+
+#### Function 'phraseto_tsquery'
+
+#### Function 'websearch_to_tsquery'
+
+
+
 
