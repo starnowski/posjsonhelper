@@ -249,6 +249,11 @@ INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of r
 Most predicate components use Hibernate Context object.
 It holds mostly the names of hibernate function names used in project.
 The dialect classes and FunctionContributor type use HibernateContextPropertiesSupplier component that generates HibernateContext object based on system property.
+If there is no need to change default HQL function names for psojsonhelper operators then it is even to use HibernateContext created by builder component like below:
+
+```java
+    HibernateContext hibernateContext = HibernateContext.builder().build();
+```
 
 #### JsonBExtractPath - jsonb_extract_path
 

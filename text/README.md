@@ -58,3 +58,11 @@ INSERT INTO tweet (id, title, short_content) VALUES (5, 'Postgres database', 'Po
 INSERT INTO tweet (id, title, short_content) VALUES (6, 'Database', 'On the market there is a lot of database that have similar features like Oracle');
 ```
 
+#### Hibernate Context
+
+Most predicate components use Hibernate Context object.
+It holds mostly the names of hibernate function names used in project.
+To know how to create it please see [the right section in main document](../README.md#hibernate-context)
+
+
+
