@@ -5,7 +5,9 @@
     * [Setting maven dependency](#setting-maven-dependency)
     * [Building project locally](#building-project-locally)
 * [How to attach FunctionContributor](#how-to-attach-functioncontributor)
-
+* [How to use query helper](#how-to-use-query-helper)
+  * [Hibernate Context](#hibernate-context)
+  * [Text operator wrapper '@@'](#text-operator-wrapper--)
 
 # Introduction
 Posjsonhelper text module adds support of Hibernate query for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
@@ -64,5 +66,10 @@ Most predicate components use Hibernate Context object.
 It holds mostly the names of hibernate function names used in project.
 To know how to create it please see [the right section in main document](../README.md#hibernate-context)
 
+#### Text operator wrapper  '@@'
+
+TextOperatorFunction is component that wraps Postgres [text operator](https://www.postgresql.org/docs/9.4/textsearch-intro.html).
+Beside of the to_tsvector function, this operator is necessary to do text search.
+The usage is going to be presented in below examples.
 
 
