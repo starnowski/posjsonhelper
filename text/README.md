@@ -29,7 +29,32 @@ You can use it just by adding it as a dependency in the project descriptor file 
 If someone would like to build the project locally from the source please see the [CONTRIBUTING.md](../CONTRIBUTING.md) file to check how to set up the project locally.
 
 ### How to attach FunctionContributor
-Please see section in the main [README.md file](../README.md#how-to-attach-functioncontributor) to know how to attach FunctionContributor.
+Please see the section in the main [README.md file](../README.md#how-to-attach-functioncontributor) to know how to attach FunctionContributor.
 For the text module it is not required to [apply DDL changes](../README.md#apply-ddl-changes).
-The text search components do not required custom SQL functions.
+The text search components do not require custom SQL functions.
+
+### How to use query helper
+
+For easier explanation let's assume that we have a database table with one table with column that holds short description.
+
+```sql
+create table tweet (
+        id bigint not null,
+        short_content varchar(255),
+        title varchar(255),
+        primary key (id)
+    )
+```
+
+And database we have such data for example:
+
+```sql
+INSERT INTO tweet (id, title, short_content) VALUES (1, 'Cats', 'Cats rules the world');
+INSERT INTO tweet (id, title, short_content) VALUES (2, 'Rats', 'Rats rules in the sewers');
+INSERT INTO tweet (id, title, short_content) VALUES (3, 'Rats vs Cats', 'Rats and Cats hates each other');
+
+INSERT INTO tweet (id, title, short_content) VALUES (4, 'Feature', 'This project is design to wrap already existed functions of Postgres');
+INSERT INTO tweet (id, title, short_content) VALUES (5, 'Postgres database', 'Postgres is one of the widly used database on the market');
+INSERT INTO tweet (id, title, short_content) VALUES (6, 'Database', 'On the market there is a lot of database that have similar features like Oracle');
+```
 

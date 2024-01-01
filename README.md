@@ -248,7 +248,7 @@ INSERT INTO item (id, jsonb_content) VALUES (18, '{"string_value": "the end of r
 
 Most predicate components use Hibernate Context object.
 It holds mostly the names of hibernate function names used in project.
-The dialect classes use HibernateContextPropertiesSupplier component that generates HibernateContext object based on system property.
+The dialect classes and FunctionContributor type use HibernateContextPropertiesSupplier component that generates HibernateContext object based on system property.
 
 #### JsonBExtractPath - jsonb_extract_path
 
