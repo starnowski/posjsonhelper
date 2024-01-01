@@ -24,6 +24,8 @@
 
 # Introduction
 Posjsonhelper library is an open-source project that adds support of Hibernate query for [postgresql json functions](https://www.postgresql.org/docs/10/functions-json.html).
+Library also has support for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
+To know more on how to use text search components check inscturions for the [text module](/text).
 The library is written in a java programming language.
 The project for this moment supports Hibernate with version 5 and 6.
 The required version of java is at least version 8 for hibernate 5 support and version 11 for hibernate 6.
