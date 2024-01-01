@@ -24,4 +24,4 @@ You can use it just by adding it as a dependency in the project descriptor file 
 ```
 
 ### Building project locally
-If someone would like to build the project locally from the source please see the CONTRIBUTING.md file to check how to set up the project locally.
+If someone would like to build the project locally from the source please see the [CONTRIBUTING.md](../CONTRIBUTING.md) file to check how to set up the project locally.
