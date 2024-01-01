@@ -36,12 +36,12 @@ public class TweetDao {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public List<Tweet> findBySinglePlainQueryInDescriptionForConfiguration(String phrase, String configuration) {
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfiguration(String textQuery, String configuration) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
         Root<Tweet> root = query.from(Tweet.class);
         query.select(root);
-        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, configuration, textQuery), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
 

@@ -101,6 +101,31 @@ The usage is going to be presented in all below examples.
 #### Function 'plainto_tsquery'
 
 PlainToTSQueryFunction wraps the [plainto_tsquery](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
+Let's check below code example:
+```java
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfiguration(String textQuery, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new PlainToTSQueryFunction((NodeBuilder) cb, configuration, textQuery), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
+
+For above code and configuration 'english' hibernate is going to generate below sql:
+
+```sql
+select
+        t1_0.id,
+        t1_0.short_content,
+        t1_0.title 
+    from
+        tweet t1_0 
+    where
+        to_tsvector('english', t1_0.short_content) @@ plainto_tsquery('english', ?);
+```
+
 TODO
 
 #### Function 'phraseto_tsquery'
