@@ -161,7 +161,30 @@ select
         to_tsvector(?::regconfig, t1_0.short_content) @@ plainto_tsquery(?::regconfig, ?)
 ```
 
-TODO
+As that could be observer on example the configuration is passed as prepared statement parameter.
+Same code could be implemented with usage of HQL language as on below example:
+
+```java
+public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationAndRegconfigTypeCastOperatorFunctionObjectInstanceWithHQL(String phrase, String configuration) {
+        //plainto_tsquery regconfig cast_operator_function
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(cast_operator_function(:configuration,'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration,'regconfig'), :phrase))";
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        query.setParameter("configuration", configuration);
+        return query.getResultList();
+    }
+```
+
+HQL:
+```hql
+from
+    Tweet as tweet 
+where
+    text_operator_function(to_tsvector(cast_operator_function(:configuration, 'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration, 'regconfig'), :phrase))
+```
+
+Below components [PhraseToTSQueryFunction](#function--phrasetotsquery) and [WebsearchToTSQueryFunction](#function--websearchtotsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
+
 
 #### Function 'phraseto_tsquery'
 
