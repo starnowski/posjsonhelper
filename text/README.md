@@ -10,7 +10,7 @@
   * [Hibernate Context](#hibernate-context)
   * [Text operator wrapper '@@'](#text-operator-wrapper--)
   * [Vector function 'to_tsvector'](#vector-function--totsvector)
-  * [Function 'plainto_tsquery'](#function--plaintotsquery)
+  * [Function 'plainto_tsquery'](#function-plaintotsquery)
     * [Cast operator and text search configuration](#cast-operator-and-text-search-configuration)
   * [Function 'phraseto_tsquery'](#function--phrasetotsquery)
   * [Function 'websearch_to_tsquery'](#function--websearchtotsquery)
@@ -87,9 +87,9 @@ There are also constructors without search text configuration name that will cre
 
 Below components have such constructor with configuration parameter:
 * [Vector function 'to_tsvector'](#vector-function--totsvector)
-* [Function 'plainto_tsquery'](#function--plaintotsquery)
-* [Function 'phraseto_tsquery'](#function--phrasetotsquery)
-* [Function 'websearch_to_tsquery'](#function--websearchtotsquery)
+* [Function 'plainto_tsquery'](#function-plaintotsquery)
+* [Function 'phraseto_tsquery'](#function-phrasetotsquery)
+* [Function 'websearch_to_tsquery'](#function-websearchtotsquery)
 
 #### Text operator wrapper  '@@'
 
@@ -102,7 +102,7 @@ The usage is going to be presented in below examples.
 TSVectorFunction wraps the [to_tsvector](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
 The usage is going to be presented in all below examples.
 
-#### Function 'plainto_tsquery'
+#### Function plainto_tsquery
 
 PlainToTSQueryFunction wraps the [plainto_tsquery](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
 Let's check below code example:
@@ -194,9 +194,9 @@ where
     text_operator_function(to_tsvector(cast_operator_function(:configuration, 'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration, 'regconfig'), :phrase))
 ```
 
-Components [PhraseToTSQueryFunction](#function--phrasetotsquery) and [WebsearchToTSQueryFunction](#function--websearchtotsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
+Components [PhraseToTSQueryFunction](#function-phrasetotsquery) and [WebsearchToTSQueryFunction](#function-websearchtotsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
 
-#### Function 'phraseto_tsquery'
+#### Function phraseto_tsquery
 
 PhraseToTSQueryFunction wraps the [phraseto_tsquery](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
 Let's check below code example:
@@ -238,7 +238,7 @@ And the same example but with HQL:
 
 Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
 
-#### Function 'websearch_to_tsquery'
+#### Function websearch_to_tsquery
 
 WebsearchToTSQueryFunction wraps the [websearch_to_tsquery](https://www.postgresql.org/docs/11/textsearch-controls.html) function.
 Please be in mind that the websearch_to_tsquery function was added in version 11 of Postgres so this component is going to return error for database version earlier than 11.
