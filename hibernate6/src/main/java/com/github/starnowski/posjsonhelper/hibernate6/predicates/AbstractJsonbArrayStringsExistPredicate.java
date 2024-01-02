@@ -33,7 +33,6 @@ import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.hibernate.type.StandardBasicTypes;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -69,6 +68,13 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
         this(context, nodeBuilder, jsonBExtractPath, mapArrayValues(nodeBuilder, context, values), functionName);
     }
 
+    /**
+     * @param context          object of type {@link HibernateContext}
+     * @param nodeBuilder      node builder {@link NodeBuilder}
+     * @param jsonBExtractPath json path for json property {@link JsonBExtractPath}
+     * @param arrayFunction    component of type {@link JsonArrayFunction} that represent array of values passed to as argument for function
+     * @param functionName     function name
+     */
     public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction arrayFunction, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
@@ -95,7 +101,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
             throw new IllegalArgumentException("Values can not be null or empty list");
         }
         List<SqmExpression<String>> arrayArguments = new ArrayList<>();
-        arrayArguments.addAll(Stream.of(values).map(p -> (SqmExpression<String>)nodeBuilder.value(p)).collect(Collectors.toList()));
+        arrayArguments.addAll(Stream.of(values).map(p -> (SqmExpression<String>) nodeBuilder.value(p)).collect(Collectors.toList()));
         JsonArrayFunction jsonArrayFunction = new JsonArrayFunction(nodeBuilder, arrayArguments, context);
         return jsonArrayFunction;
     }
