@@ -32,19 +32,19 @@ import org.hibernate.query.sqm.NodeBuilder;
  */
 public class JsonbAnyArrayStringsExistPredicate extends AbstractJsonbArrayStringsExistPredicate<JsonbAnyArrayStringsExistPredicate> {
     /**
-     * @param context object of type {@link HibernateContext}
-     * @param nodeBuilder node builder {@link NodeBuilder}
+     * @param context          object of type {@link HibernateContext}
+     * @param nodeBuilder      node builder {@link NodeBuilder}
      * @param jsonBExtractPath json path for json property {@link JsonBExtractPath}
-     * @param values array of string values passed to as argument for function
+     * @param values           array of string values passed to as argument for function
      */
     public JsonbAnyArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
         super(context, nodeBuilder, jsonBExtractPath, values, context.getJsonbAnyArrayStringsExistOperator());
     }
 
     /**
-     * @param context object of type {@link HibernateContext}
-     * @param nodeBuilder node builder {@link NodeBuilder}
-     * @param jsonBExtractPath json path for json property {@link JsonBExtractPath}
+     * @param context           object of type {@link HibernateContext}
+     * @param nodeBuilder       node builder {@link NodeBuilder}
+     * @param jsonBExtractPath  json path for json property {@link JsonBExtractPath}
      * @param jsonArrayFunction component of type {@link JsonArrayFunction} that represent array of values passed to as argument for function
      */
     public JsonbAnyArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction) {
