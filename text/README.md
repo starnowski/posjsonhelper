@@ -14,6 +14,9 @@
     * [Cast operator and text search configuration](#cast-operator-and-text-search-configuration)
   * [Function 'phraseto_tsquery'](#function-phraseto_tsquery)
   * [Function 'websearch_to_tsquery'](#function-websearch_to_tsquery)
+* [Properties](#properties)
+* [Reporting issues](#reporting-issues)
+* [Project contribution](#project-contribution)
 
 # Introduction
 Posjsonhelper text module adds support of Hibernate query for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
@@ -281,3 +284,15 @@ public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionWithHQL(Str
 ```
 
 Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
+
+### Properties
+
+Please check the [properties](../README.md#properties) section in main document.
+
+### Reporting issues
+
+Please check the [reporting issues](../README.md#reporting-issues) section in main document.
+
+### Project contribution
+
+Please check the [project contribution](../README.md#project-contribution) section in main document.
