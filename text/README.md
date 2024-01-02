@@ -10,10 +10,10 @@
   * [Hibernate Context](#hibernate-context)
   * [Text operator wrapper '@@'](#text-operator-wrapper--)
   * [Vector function 'to_tsvector'](#vector-function--totsvector)
-  * [Function 'plainto_tsquery'](#function-plaintotsquery)
+  * [Function 'plainto_tsquery'](#function-plainto_tsquery)
     * [Cast operator and text search configuration](#cast-operator-and-text-search-configuration)
-  * [Function 'phraseto_tsquery'](#function--phrasetotsquery)
-  * [Function 'websearch_to_tsquery'](#function--websearchtotsquery)
+  * [Function 'phraseto_tsquery'](#function-phraseto_tsquery)
+  * [Function 'websearch_to_tsquery'](#function-websearch_to_tsquery)
 
 # Introduction
 Posjsonhelper text module adds support of Hibernate query for [postgresql text search functions](https://www.postgresql.org/docs/current/textsearch-intro.html).
@@ -87,9 +87,9 @@ There are also constructors without search text configuration name that will cre
 
 Below components have such constructor with configuration parameter:
 * [Vector function 'to_tsvector'](#vector-function--totsvector)
-* [Function 'plainto_tsquery'](#function-plaintotsquery)
-* [Function 'phraseto_tsquery'](#function-phrasetotsquery)
-* [Function 'websearch_to_tsquery'](#function-websearchtotsquery)
+* [Function 'plainto_tsquery'](#function-plainto_tsquery)
+* [Function 'phraseto_tsquery'](#function-phraseto_tsquery)
+* [Function 'websearch_to_tsquery'](#function-websearch_to_tsquery)
 
 #### Text operator wrapper  '@@'
 
@@ -194,7 +194,7 @@ where
     text_operator_function(to_tsvector(cast_operator_function(:configuration, 'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration, 'regconfig'), :phrase))
 ```
 
-Components [PhraseToTSQueryFunction](#function-phrasetotsquery) and [WebsearchToTSQueryFunction](#function-websearchtotsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
+Components [PhraseToTSQueryFunction](#function-phraseto_tsquery) and [WebsearchToTSQueryFunction](#function-websearch_to_tsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
 
 #### Function phraseto_tsquery
 
