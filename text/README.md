@@ -194,10 +194,49 @@ where
     text_operator_function(to_tsvector(cast_operator_function(:configuration, 'regconfig'), tweet.shortContent), plainto_tsquery(cast_operator_function(:configuration, 'regconfig'), :phrase))
 ```
 
-Below components [PhraseToTSQueryFunction](#function--phrasetotsquery) and [WebsearchToTSQueryFunction](#function--websearchtotsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
-
+Components [PhraseToTSQueryFunction](#function--phrasetotsquery) and [WebsearchToTSQueryFunction](#function--websearchtotsquery) also have such constructor with configuration parameter passed as object of type RegconfigTypeCastOperatorFunction.
 
 #### Function 'phraseto_tsquery'
+
+PhraseToTSQueryFunction wraps the [phraseto_tsquery](https://www.postgresql.org/docs/9.4/textsearch-intro.html) function.
+Let's check below code example:
+```java
+    public List<Tweet> findBySinglePhraseInDescriptionForConfiguration(String textQuery, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new PhraseToTSQueryFunction((NodeBuilder) cb, configuration, textQuery), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+        }
+```
+
+This code is going to produce for the 'english' configuration below SQL statement:
+
+```sql
+select
+        t1_0.id,
+        t1_0.short_content,
+        t1_0.title 
+    from
+        tweet t1_0 
+    where
+        to_tsvector('english', t1_0.short_content) @@ phraseto_tsquery('english', ?)
+```
+
+And the same example but with HQL:
+
+```hql
+    public List<Tweet> findBySinglePhraseInDescriptionForConfigurationWithHQL(String phrase, String configuration) {
+        //phraseto_tsquery
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector('%1$s', tweet.shortContent), phraseto_tsquery('%1$s', :phrase))", configuration);
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+```
+
+Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
 
 #### Function 'websearch_to_tsquery'
 
