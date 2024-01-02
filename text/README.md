@@ -240,6 +240,44 @@ Component has also constructor to which developer can pass [the cast operator](#
 
 #### Function 'websearch_to_tsquery'
 
+WebsearchToTSQueryFunction wraps the [websearch_to_tsquery](https://www.postgresql.org/docs/11/textsearch-controls.html) function.
+Please be in mind that the websearch_to_tsquery function was added in version 11 of Postgres so this component is going to return error for database version earlier than 11.
+Let's check below code example:
 
+```java
+public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescription(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), configuration, (NodeBuilder) cb), new WebsearchToTSQueryFunction((NodeBuilder) cb, configuration, phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+    }
+```
 
+For such code hibernate is going to generate below sql:
 
+```sql
+select
+        t1_0.id,
+        t1_0.short_content,
+        t1_0.title 
+    from
+        tweet t1_0 
+    where
+        to_tsvector('english', t1_0.short_content) @@ websearch_to_tsquery('english', ?)
+```
+
+And the same example but with HQL:
+
+```hql
+public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionWithHQL(String phrase, String configuration) {
+        //websearch_to_tsquery
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector('%1$s', tweet.shortContent), websearch_to_tsquery('%1$s', :phrase))", configuration);
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+```
+
+Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
