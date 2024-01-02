@@ -130,7 +130,17 @@ select
         to_tsvector('english', t1_0.short_content) @@ plainto_tsquery('english', ?);
 ```
 
-//TODO HQL
+Similar code but implemeneted with usage of HQL language:
+
+```java
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationWithHQL(String phrase, String configuration) {
+        //plainto_tsquery
+        String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector('%1$s', tweet.shortContent), plainto_tsquery('%1$s', :phrase))", configuration);
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+```
 
 #### Cast operator and text search configuration
 
@@ -176,6 +186,7 @@ public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationAndRegconf
 ```
 
 HQL:
+
 ```hql
 from
     Tweet as tweet 
