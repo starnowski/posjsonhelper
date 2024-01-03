@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.3.0](#030---2024-01-03)
 * [0.2.1](#021---2023-06-20)
 * [0.2.0](#020---2023-06-13)
 * [0.1.2](#012---2023-05-12)
@@ -17,6 +18,8 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.3.0] - 2024-01-03
 
 ### Added
 
