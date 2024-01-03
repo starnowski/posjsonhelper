@@ -21,6 +21,7 @@
  */
 package com.github.starnowski.posjsonhelper.text.hibernate6.functions;
 
+import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderer;
@@ -37,17 +38,10 @@ import java.util.List;
 import static com.github.starnowski.posjsonhelper.core.Constants.TO_TSVECTOR_FUNCTION_NAME;
 
 /**
- * The component renders arguments in the below form. Based on path parameter and optional configuration parameter.
- * <p>
- * Examples:
- * <p>
- * Only path parameter
- * <p>
- * {@code {@link com.github.starnowski.posjsonhelper.core.Constants#TO_TSVECTOR_FUNCTION_NAME}( path )}
- * <p>
- * Two arguments - path parameter and configuration parameter
- * <p>
- * {@code {@link com.github.starnowski.posjsonhelper.core.Constants#TO_TSVECTOR_FUNCTION_NAME}( configuration, path )}
+ * Component that generates SQM nodes for the <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">to_tsvector</a> function.
+ * It uses value returned by {@link com.github.starnowski.posjsonhelper.core.Constants#TO_TSVECTOR_FUNCTION_NAME} constant as function name.
+ *
+ * @see com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TSVectorFunctionDescriptor
  */
 public class TSVectorFunction extends SelfRenderingSqmFunction<String> implements Serializable {
     /**
