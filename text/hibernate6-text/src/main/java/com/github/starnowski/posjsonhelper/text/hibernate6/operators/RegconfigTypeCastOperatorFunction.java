@@ -31,6 +31,12 @@ import org.hibernate.query.sqm.tree.expression.SqmExpression;
  * It extends its base type so that pass the "regconfig" as type for which the value should be cast.
  */
 public class RegconfigTypeCastOperatorFunction extends CastOperatorFunction {
+
+    /**
+     * @param nodeBuilder      component of type {@link NodeBuilder}
+     * @param value            value for cast operation
+     * @param hibernateContext context object of type {@link HibernateContext}
+     */
     public RegconfigTypeCastOperatorFunction(NodeBuilder nodeBuilder, String value, HibernateContext hibernateContext) {
         super(nodeBuilder, (SqmExpression<?>) nodeBuilder.value(value), "regconfig", hibernateContext);
     }
