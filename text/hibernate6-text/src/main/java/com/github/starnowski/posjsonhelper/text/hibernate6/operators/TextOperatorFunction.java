@@ -35,6 +35,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Component that generates SQM nodes for the <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">text operator</a> function.
+ * It uses value returned by {@link HibernateContext#getTextFunctionOperator()} method as function name.
+ *
+ * @see com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TextOperatorFunctionDescriptor
+ */
 public class TextOperatorFunction extends SelfRenderingSqmFunction<Boolean> implements Serializable {
 
     private final HibernateContext context;
