@@ -20,6 +20,17 @@ https://www.markdownguide.org/basic-syntax/
 
 ### Added
 
+- Add support for the cast "::" operator [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR constant [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.castFunctionOperator property and its setter and getter [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Constants#FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_EXCLUDED_PROPERTY constant [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptor type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegister type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegister type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegisterFactory type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.CastOperatorFunction type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+
 - Added configuration parameter to functions [71](https://github.com/starnowski/posjsonhelper/issues/71)
   - Added com.github.starnowski.posjsonhelper.core.Constants#PHRASETO_TSQUERY_FUNCTION_NAME constant [71](https://github.com/starnowski/posjsonhelper/issues/71)
   - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptor type [71](https://github.com/starnowski/posjsonhelper/issues/71)
