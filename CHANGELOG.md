@@ -24,6 +24,13 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.hibernate6.Constants type [68](https://github.com/starnowski/posjsonhelper/issues/68)
   - Type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister implements interface com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegister [68](https://github.com/starnowski/posjsonhelper/issues/68)
   - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegister type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathTextDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAllArrayStringsExistPredicateDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAnyArrayStringsExistPredicateDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
 
 - Moved stuff related to JSON operations to json-core from core [65](https://github.com/starnowski/posjsonhelper/issues/65)
   - Added com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionContextFactorySupplier type [65](https://github.com/starnowski/posjsonhelper/issues/65)
