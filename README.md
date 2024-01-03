@@ -39,7 +39,7 @@ You can use it just by adding it as a dependency in the project descriptor file 
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>hibernate5</artifactId>
-            <version>0.2.1</version>
+            <version>0.3.0</version>
         </dependency>
 ```
 
@@ -48,7 +48,7 @@ You can use it just by adding it as a dependency in the project descriptor file 
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>hibernate6</artifactId>
-            <version>0.2.1</version>
+            <version>0.3.0</version>
         </dependency>
 ```
 
