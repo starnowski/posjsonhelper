@@ -20,6 +20,12 @@ https://www.markdownguide.org/basic-syntax/
 
 ### Added
 
+- Added support for the "@@" operator [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants.PLAINTO_TSQUERY_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants.TO_TSVECTOR_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.textFunctionOperator property and its setter and getter [67](https://github.com/starnowski/posjsonhelper/issues/67)
+
 - Moved common component for hibernate 6 to hibernate6-core module [68](https://github.com/starnowski/posjsonhelper/issues/68)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Constants type [68](https://github.com/starnowski/posjsonhelper/issues/68)
   - Type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister implements interface com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegister [68](https://github.com/starnowski/posjsonhelper/issues/68)
@@ -34,7 +40,7 @@ https://www.markdownguide.org/basic-syntax/
 
 - Moved stuff related to JSON operations to json-core from core [65](https://github.com/starnowski/posjsonhelper/issues/65)
   - Added com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionContextFactorySupplier type [65](https://github.com/starnowski/posjsonhelper/issues/65)
-  - Added com.github.starnowski.posjsonhelper.core.Constants.SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY  constant [65](https://github.com/starnowski/posjsonhelper/issues/65)
+  - Added com.github.starnowski.posjsonhelper.core.Constants.SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY constant [65](https://github.com/starnowski/posjsonhelper/issues/65)
 
 ## [0.2.1] - 2023-06-20
 
