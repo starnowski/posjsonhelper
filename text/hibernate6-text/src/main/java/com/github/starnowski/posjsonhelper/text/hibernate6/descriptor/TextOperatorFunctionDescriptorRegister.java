@@ -28,7 +28,7 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
 /**
  * Type extends {@link  AbstractConditionalFunctionDescriptorRegister} type.
- * Responsible for register of hql function that is going to be rendered to the postgres ARRAY.
+ * Responsible for register of hql function that is going to be rendered to the postgres text operator "@@".
  * It uses component of type {@link TextOperatorFunctionDescriptor} for rendering.
  * As key the component use {@link HibernateContext#getTextFunctionOperator()} ()}
  */

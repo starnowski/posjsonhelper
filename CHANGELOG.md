@@ -18,6 +18,74 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+### Added
+
+- Added implementation for the websearch_to_tsquery function [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#WEBSEARCH_TO_TSQUERY_FUNCTION_NAME constant [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptor type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptorRegister type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptorRegisterFactory type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+
+- Added support for the cast "::" operator [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR constant [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.castFunctionOperator property and its setter and getter [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Constants#FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_EXCLUDED_PROPERTY constant [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptor type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegister type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegister type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptorRegisterFactory type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.CastOperatorFunction type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction type [74](https://github.com/starnowski/posjsonhelper/issues/74)
+
+- Added configuration parameter to functions [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#PHRASETO_TSQUERY_FUNCTION_NAME constant [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptor type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptorRegister type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptorRegisterFactory type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.PhraseToTSQueryFunction type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+
+- Added support for the "@@" operator [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#PLAINTO_TSQUERY_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#TO_TSVECTOR_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.textFunctionOperator property and its setter and getter [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.AbstractFunctionWithConfigurationAndTextQueryFunctionDescriptor type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.AbstractFunctionWithConfigurationAndTextQueryFunctionDescriptorRegister type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PlainToTSQueryFunctionDescriptor type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PlainToTSQueryFunctionDescriptorRegister type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PlainToTSQueryFunctionDescriptorRegisterFactory type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TSVectorFunctionDescriptor type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TSVectorFunctionDescriptorRegister type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TSVectorFunctionDescriptorRegisterFactory type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TextOperatorFunctionDescriptor type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TextOperatorFunctionDescriptorRegister type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TextOperatorFunctionDescriptorRegisterFactory type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.AbstractFunctionWithConfigurationAndTextQueryFunction type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.PlainToTSQueryFunction type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.TextOperatorFunction type [67](https://github.com/starnowski/posjsonhelper/issues/67)
+
+- Moved common component for hibernate 6 to hibernate6-core module [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Constants type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Type com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractConditionalFunctionDescriptorRegister implements interface com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegister [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegister type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonBExtractPathTextDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAllArrayStringsExistPredicateDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbAnyArrayStringsExistPredicateDescriptorRegisterFactory type [68](https://github.com/starnowski/posjsonhelper/issues/68)
+
+- Moved stuff related to JSON operations to json-core from core [65](https://github.com/starnowski/posjsonhelper/issues/65)
+  - Added com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionContextFactorySupplier type [65](https://github.com/starnowski/posjsonhelper/issues/65)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY constant [65](https://github.com/starnowski/posjsonhelper/issues/65)
+
+### Changed
+
+- Upgrade Hibernate to 6.4 [92](https://github.com/starnowski/posjsonhelper/issues/92)
+
 ## [0.2.1] - 2023-06-20
 
 ### Added
