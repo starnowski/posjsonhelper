@@ -20,10 +20,17 @@ https://www.markdownguide.org/basic-syntax/
 
 ### Added
 
+- Added configuration parameter to functions [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#PHRASETO_TSQUERY_FUNCTION_NAME constant [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptor type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptorRegister type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.PhraseToTSQueryFunctionDescriptorRegisterFactory type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.PhraseToTSQueryFunction type [71](https://github.com/starnowski/posjsonhelper/issues/71)
+
 - Added support for the "@@" operator [67](https://github.com/starnowski/posjsonhelper/issues/67)
-  - Added com.github.starnowski.posjsonhelper.core.Constants.PLAINTO_TSQUERY_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
-  - Added com.github.starnowski.posjsonhelper.core.Constants.TO_TSVECTOR_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
-  - Added com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#PLAINTO_TSQUERY_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#TO_TSVECTOR_FUNCTION_NAME constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR constant [67](https://github.com/starnowski/posjsonhelper/issues/67)
   - Added com.github.starnowski.posjsonhelper.core.HibernateContext.textFunctionOperator property and its setter and getter [67](https://github.com/starnowski/posjsonhelper/issues/67)
   - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.AbstractFunctionWithConfigurationAndTextQueryFunctionDescriptor type [67](https://github.com/starnowski/posjsonhelper/issues/67)
   - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.AbstractFunctionWithConfigurationAndTextQueryFunctionDescriptorRegister type [67](https://github.com/starnowski/posjsonhelper/issues/67)
@@ -55,7 +62,7 @@ https://www.markdownguide.org/basic-syntax/
 
 - Moved stuff related to JSON operations to json-core from core [65](https://github.com/starnowski/posjsonhelper/issues/65)
   - Added com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionContextFactorySupplier type [65](https://github.com/starnowski/posjsonhelper/issues/65)
-  - Added com.github.starnowski.posjsonhelper.core.Constants.SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY constant [65](https://github.com/starnowski/posjsonhelper/issues/65)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY constant [65](https://github.com/starnowski/posjsonhelper/issues/65)
 
 ## [0.2.1] - 2023-06-20
 
