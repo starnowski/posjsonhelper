@@ -47,6 +47,12 @@ public class TextOperatorFunction extends SelfRenderingSqmFunction<Boolean> impl
     private final TSVectorFunction tsVectorFunction;
     private final SqmExpression<String> argument;
 
+    /**
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param tsVectorFunction object of type {@link TSVectorFunction}
+     * @param argument text query expression
+     * @param hibernateContext context object of type {@link HibernateContext}
+     */
     public TextOperatorFunction(NodeBuilder nodeBuilder, TSVectorFunction tsVectorFunction, SqmExpression<String> argument, HibernateContext hibernateContext) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getTextFunctionOperator()),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getTextFunctionOperator()),
