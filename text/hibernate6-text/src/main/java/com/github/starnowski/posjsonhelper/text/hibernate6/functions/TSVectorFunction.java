@@ -1,3 +1,24 @@
+/**
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
+ */
 package com.github.starnowski.posjsonhelper.text.hibernate6.functions;
 
 import jakarta.persistence.criteria.Path;
@@ -15,11 +36,26 @@ import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.TO_TSVECTOR_FUNCTION_NAME;
 
+/**
+ * Component that generates SQM nodes for the <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">to_tsvector</a> function.
+ * It uses value returned by {@link com.github.starnowski.posjsonhelper.core.Constants#TO_TSVECTOR_FUNCTION_NAME} constant as function name.
+ *
+ * @see com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.TSVectorFunctionDescriptor
+ */
 public class TSVectorFunction extends SelfRenderingSqmFunction<String> implements Serializable {
+    /**
+     * @param referencedPathSource path for property that represent text. Property has to implement {@link SqmTypedNode}
+     * @param nodeBuilder          component of type {@link NodeBuilder}
+     */
     public TSVectorFunction(Path referencedPathSource, NodeBuilder nodeBuilder) {
         this(referencedPathSource, (String) null, nodeBuilder);
     }
 
+    /**
+     * @param referencedPathSource path for property that represent text. Property has to implement {@link SqmTypedNode}
+     * @param configuration        text search configuration name
+     * @param nodeBuilder          component of type {@link NodeBuilder}
+     */
     public TSVectorFunction(Path referencedPathSource, String configuration, NodeBuilder nodeBuilder) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
@@ -31,6 +67,11 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
                 TO_TSVECTOR_FUNCTION_NAME);
     }
 
+    /**
+     * @param referencedPathSource path for property that represent text. Property has to implement {@link SqmTypedNode}
+     * @param configuration        expression that represents text search configuration name
+     * @param nodeBuilder          component of type {@link NodeBuilder}
+     */
     public TSVectorFunction(Path referencedPathSource, SqmExpression<?> configuration, NodeBuilder nodeBuilder) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),

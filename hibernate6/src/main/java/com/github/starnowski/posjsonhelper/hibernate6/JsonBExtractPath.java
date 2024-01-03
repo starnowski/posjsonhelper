@@ -34,10 +34,22 @@ import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_EXTRACT_P
  * Implemented of HQL function defined by constant {@link com.github.starnowski.posjsonhelper.core.Constants#JSONB_EXTRACT_PATH_FUNCTION_NAME}
  */
 public class JsonBExtractPath extends AbstractJsonBExtractPath<JsonBExtractPath> {
+    /**
+     *
+     * @param referencedPathSource path for property that represent JSON or String type. Property has to implement {@link SqmTypedNode}
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param path list of values that represent JSON path. The order of elements is important!
+     */
     public JsonBExtractPath(Path referencedPathSource, NodeBuilder nodeBuilder, List<String> path) {
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_FUNCTION_NAME);
     }
 
+    /**
+     *
+     * @param referencedPathSource path for property that represent JSON or String type. Property has to implement {@link SqmTypedNode}
+     * @param path list of values that represent JSON path. The order of elements is important!
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     */
     public JsonBExtractPath(Path referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder) {
         super(referencedPathSource, path, nodeBuilder, JSONB_EXTRACT_PATH_FUNCTION_NAME);
     }
