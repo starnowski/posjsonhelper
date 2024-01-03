@@ -18,6 +18,12 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+### Added
+
+- Moved stuff related to JSON operations to json-core from core [65](https://github.com/starnowski/posjsonhelper/issues/65)
+  - Added com.github.starnowski.posjsonhelper.core.sql.SQLDefinitionContextFactorySupplier type [65](https://github.com/starnowski/posjsonhelper/issues/65)
+  - Added com.github.starnowski.posjsonhelper.core.Constants.SQLDEFINITIONCONTEXTFACTORY_TYPES_PROPERTY  constant [65](https://github.com/starnowski/posjsonhelper/issues/65)
+
 ## [0.2.1] - 2023-06-20
 
 ### Added
