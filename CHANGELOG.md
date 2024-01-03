@@ -20,7 +20,14 @@ https://www.markdownguide.org/basic-syntax/
 
 ### Added
 
-- Add support for the cast "::" operator [74](https://github.com/starnowski/posjsonhelper/issues/74)
+- Added implementation for the websearch_to_tsquery function [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#WEBSEARCH_TO_TSQUERY_FUNCTION_NAME constant [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptor type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptorRegister type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.WebsearchToTSQueryFunctionDescriptorRegisterFactory type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction type [76](https://github.com/starnowski/posjsonhelper/issues/76)
+
+- Added support for the cast "::" operator [74](https://github.com/starnowski/posjsonhelper/issues/74)
   - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR constant [74](https://github.com/starnowski/posjsonhelper/issues/74)
   - Added com.github.starnowski.posjsonhelper.core.HibernateContext.castFunctionOperator property and its setter and getter [74](https://github.com/starnowski/posjsonhelper/issues/74)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Constants#FUNCTIONDESCRIPTORREGISTERFACTORY_TYPES_EXCLUDED_PROPERTY constant [74](https://github.com/starnowski/posjsonhelper/issues/74)
