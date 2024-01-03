@@ -33,6 +33,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Component that generates SQM nodes for cast operation.
+ * It uses value returned by {@link HibernateContext#getCastFunctionOperator()} method as function name.
+ *
+ * @see com.github.starnowski.posjsonhelper.hibernate6.descriptor.CastOperatorFunctionDescriptor
+ */
 public class CastOperatorFunction extends SelfRenderingSqmFunction<String> implements Serializable {
 
     private final HibernateContext context;
