@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.starnowski.posjsonhelper</groupId>
         <artifactId>parent</artifactId>
-        <version>0.3.0</version>
+        <version>0.4.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>hibernate6-core</artifactId>
