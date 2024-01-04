@@ -364,4 +364,22 @@ public class TweetDaoTest extends AbstractItTest {
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
     }
+
+    // Native support
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for english configuration' for plainto_tsquery function with native SQL")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
+    public void shouldFindCorrectTweetsBySinglePlainQueryInDescriptionWithNativeSQL(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForConfigurationWithNativeSQL(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
 }

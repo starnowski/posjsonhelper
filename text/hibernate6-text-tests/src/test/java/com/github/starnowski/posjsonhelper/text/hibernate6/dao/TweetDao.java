@@ -174,4 +174,8 @@ public class TweetDao {
         query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(root.get("shortContent"), (NodeBuilder) cb), new WebsearchToTSQueryFunction((NodeBuilder) cb, (String) null, phrase), hibernateContext));
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationWithNativeSQL(String textQuery, String configuration) {
+        return entityManager.createNativeQuery(String.format("select * from tweet t1_0 where to_tsvector('%1$s', t1_0.short_content) @@ plainto_tsquery('%1$s', :textQuery)", configuration), Tweet.class).setParameter("textQuery", textQuery).getResultList();
+    }
 }
