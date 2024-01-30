@@ -9,21 +9,6 @@ jobs:
 #    needs: [compilation_and_unit_tests]
     runs-on: ubuntu-latest
     name: "Integration and functional tests in core module"
-    services:
-      postgres:
-        image: postgres:16.1
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_HOST: localhost
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
     steps:
       - name: Git checkout
         uses: actions/checkout@v2
@@ -57,11 +42,8 @@ jobs:
       - name: Install library for postgres
         run: sudo apt-get update -y && sudo apt-get -y install libpq-dev postgresql-client
 
-      - name: Create database
-        run: ./scripts/prepareDatabase.sh
-
       - name: Run tests
-        run: ./mvnw -DskipTests --quiet clean install && ./mvnw -Drun.custom.directory.test=true test
+        run: ./mvnw -DskipTests --quiet clean install && ./scripts/run_integration_tests.sh --postgres_docker_version='16.1'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
       - name: Run mutation tests
         run: ./mvnw -pl :hibernate5,:core,:json-core -P pitest test org.pitest:pitest-maven:mutationCoverage
@@ -75,7 +57,7 @@ jobs:
           java-version: '11'
 
       - name: Run tests for hibernate6
-        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-core,:hibernate6,:hibernate6-text -Drun.custom.directory.test=true -P jdk11 test
+        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-core,:hibernate6,:hibernate6-text -P jdk11 test
 
   compatibility_tests_9_10_11:
     needs: [integraion_tests]
