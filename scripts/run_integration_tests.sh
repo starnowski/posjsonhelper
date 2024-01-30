@@ -45,6 +45,8 @@ exportScriptDirEnvironment
 
 copyCustomDictionaryToDatabaseDockerContainer
 psql -f "${DIRNAME}/dictionary/create-polish-dict.sql" -U postgres -h "${DOCKER_DB_IP}" -p "${DATABASE_PORT}"
+psql -f "${DIRNAME}/dictionary/create-polish-configuration.sql" -U postgres -h "${DOCKER_DB_IP}" -p "${DATABASE_PORT}"
+psql -f "${DIRNAME}/dictionary/create-ext-polish-configuration.sql" -U postgres -h "${DOCKER_DB_IP}" -p "${DATABASE_PORT}"
 
 #Run test
 pushd "$SCRIPT_DIR/.."
