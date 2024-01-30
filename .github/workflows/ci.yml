@@ -61,7 +61,7 @@ jobs:
         run: ./scripts/prepareDatabase.sh
 
       - name: Run tests
-        run: ./mvnw -DskipTests --quiet clean install && ./mvnw test
+        run: ./mvnw -DskipTests --quiet clean install && ./mvnw -Drun.custom.directory.test=true test
 
       - name: Run mutation tests
         run: ./mvnw -pl :hibernate5,:core,:json-core -P pitest test org.pitest:pitest-maven:mutationCoverage
@@ -75,7 +75,7 @@ jobs:
           java-version: '11'
 
       - name: Run tests for hibernate6
-        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-core,:hibernate6 -P jdk11 test
+        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-core,:hibernate6,:hibernate6-text -Drun.custom.directory.test=true -P jdk11 test
 
   compatibility_tests_9_10_11:
     needs: [integraion_tests]
@@ -118,13 +118,13 @@ jobs:
         run: ./mvnw -DskipTests --quiet clean install
 
       - name: Run tests with postgres 11
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='11.9'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='11.9'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
       - name: Run tests with postgres 10
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='10.14'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
       - name: "Run tests with postgres 9.6"
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.23'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='9.6.23'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
   compatibility_tests_12_13_14:
     needs: [integraion_tests]
@@ -167,13 +167,13 @@ jobs:
         run: ./mvnw -DskipTests --quiet clean install
 
       - name: Run tests with postgres 14
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='14.10'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='14.10'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
       - name: Run tests with postgres 13
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='13.0'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='13.0'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
       - name: Run tests with postgres 12
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='12.4'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='12.4'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
   compatibility_tests_15:
     needs: [integraion_tests]
@@ -216,7 +216,7 @@ jobs:
         run: ./mvnw -DskipTests --quiet clean install
 
       - name: Run tests with postgres 15
-        run: ./scripts/run_integration_tests.sh --postgres_docker_version='15.5'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' test
+        run: ./scripts/run_integration_tests.sh --postgres_docker_version='15.5'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
 
   publish:
