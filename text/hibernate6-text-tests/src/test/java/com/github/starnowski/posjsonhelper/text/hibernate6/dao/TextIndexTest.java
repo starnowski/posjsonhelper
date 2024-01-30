@@ -64,6 +64,13 @@ public class TextIndexTest extends AbstractItTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescriptionWithNumWord() {
+        return Stream.of(
+                Arguments.of("ESF2400OK", List.of(5L)),
+                Arguments.of("SKS51E32EU", List.of(6L))
+        );
+    }
+
     @DisplayName("should return all ids when searching by query for specific configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
@@ -89,6 +96,31 @@ public class TextIndexTest extends AbstractItTest {
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @DisplayName("should return all ids when searching by query with word that has letters and digits for specific configuration' for plainto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescriptionWithNumWord")
+    public void shouldFindCorrectTweetsBySinglePlainQueryInDescriptionWithNumWord(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<TweetWithLocale> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, POLISH_EXTENDED_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @DisplayName("should return empty ids list when searching by query with word that has letters and digits for specific configuration that do not handles the numword for plainto_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescriptionWithNumWord")
+    public void shouldNotFindCorrectTweetsBySinglePlainQueryInDescriptionWithNumWord(String phrase) {
+
+        // when
+        List<TweetWithLocale> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, POLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).isEmpty();
     }
 
 }
