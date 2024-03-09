@@ -530,6 +530,15 @@ For more details and examples with the IN operator or how to use numeric values 
 |com.github.starnowski.posjsonhelper.hibernate6.functiondescriptorregisterfactory.types   | 	(Used only in Hibernate 6) System property that stores list of com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier types that should be loaded. Instead of loading types that can be found on the classpath for package "com.github.starnowski.posjsonhelper". Types on the list are separated by comma character ".".                                                                                             |
 |com.github.starnowski.posjsonhelper.hibernate6.functiondescriptorregisterfactory.types.excluded   | 	(Used only in Hibernate 6) System property that stores list of com.github.starnowski.posjsonhelper.hibernate6.descriptor.FunctionDescriptorRegisterFactoriesSupplier types that should be excluded from loading. If "com.github.starnowski.posjsonhelper.hibernate6.functiondescriptorregisterfactory.types" property is also specified then "com.github.starnowski.posjsonhelper.hibernate6.functiondescriptorregisterfactory.types.excluded" has higher priority. Types on the list are separated by comma character ".". |
 
+### Hibernate 6 version compatibility
+
+Compatibility matrix with Hibernate 6.  
+
+| Posjsonhelper | Hibernate 6 |
+|---------------|-------------|
+| 0.3.0         | 6.4.0.Final |
+| 0.2.0 - 0.2.1 | 6.1.5.Final |
+
 # Reporting issues
 * Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
 
