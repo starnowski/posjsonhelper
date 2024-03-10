@@ -21,6 +21,7 @@
  */
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
+import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
@@ -40,12 +41,14 @@ import java.util.List;
  *
  * @param <T> child type for {@link AbstractJsonbArrayStringsExistPredicate}
  */
-public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extends AbstractJsonbArrayStringsExistPredicate> extends NamedSqmFunctionDescriptor {
+public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extends AbstractJsonbArrayStringsExistPredicate> extends NamedSqmFunctionWithSchemaReferenceDescriptor {
 
     protected final HibernateContext hibernateContext;
+    protected final Context context;
 
-    public AbstractJsonbArrayStringsExistPredicateDescriptor(String name, HibernateContext hibernateContext) {
-        super(name, false, null, null);
+    public AbstractJsonbArrayStringsExistPredicateDescriptor(String name, Context context, HibernateContext hibernateContext) {
+        super(name, context);
+        this.context = context;
         this.hibernateContext = hibernateContext;
     }
 
