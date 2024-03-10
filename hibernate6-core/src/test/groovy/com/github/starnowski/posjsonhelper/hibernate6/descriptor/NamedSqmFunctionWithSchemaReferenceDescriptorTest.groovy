@@ -90,6 +90,32 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             "non_public_schema"     | ["some function"]                         |   "some_other_fun"
             "non_public_schema"     | ["fun", "get_some"]                       |   "some_other_fun"
     }
+
+    @Unroll
+    def "render method with predicate and sort specification for function (#funName) with adding schema reference (#schema) at the beginning of statement (#functionThatRequiredExecutionWithSchema)"() {
+        given:
+            Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
+            def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
+                    .withSchema(schema)
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
+                    HibernateContext.builder().build())
+            def sqlAppender = new StringBuilderSqlAppender()
+            SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
+            sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
+
+        when:
+            descriptor.render(sqlAppender, [], (Predicate) null, [new SortSpecification(Mock(Expression), SortDirection.ASCENDING)], (ReturnableType)null, sqlAstTranslator)
+
+        then:
+            sqlAppender.toString().startsWith(schema + ".")
+
+        where:
+            schema                  | functionThatRequiredExecutionWithSchema   |   funName
+            "sche1"                 | ["funcName"]                              |   "funcName"
+            "non_public_schema"     | ["get_some", "fun1"]                      |   "fun1"
+            "non_public_schema"     | ["some_other_fun"]                        |   "some_other_fun"
+            "non_public_schema"     | ["fun", "get_some"]                       |   "fun"
+    }
 //
 //    def "render method with filter parameter"() {
 //        given:
