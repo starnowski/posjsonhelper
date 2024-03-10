@@ -116,44 +116,58 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             "non_public_schema"     | ["some_other_fun"]                        |   "some_other_fun"
             "non_public_schema"     | ["fun", "get_some"]                       |   "fun"
     }
-//
-//    def "render method with filter parameter"() {
-//        given:
-//        def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor("funcName", Context.builder().build(), HibernateContext.builder().build())
-//
-//        when:
-//        def sqlAppender = new StringBuilder()
-//        def filter = { /* mock filter */ }
-//        descriptor.render(sqlAppender, [], filter, null)
-//
-//        then:
-//        sqlAppender.toString() == "funcName() filter (where mock filter)"
-//    }
-//
-//    def "render method with withinGroup parameter"() {
-//        given:
-//        def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor("funcName", Context.builder().build(), HibernateContext.builder().build())
-//
-//        when:
-//        def sqlAppender = new StringBuilder()
-//        def withinGroup = [new SortSpecification()] // Provide a valid SortSpecification instance
-//        descriptor.render(sqlAppender, [], null, withinGroup, null, null, null)
-//
-//        then:
-//        sqlAppender.toString() == "funcName() within group (order by sortSpecification)"
-//    }
-//
-//    def "render method with all optional parameters"() {
-//        given:
-//        def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor("funcName", Context.builder().build(), HibernateContext.builder().build())
-//
-//        when:
-//        def sqlAppender = new StringBuilder()
-//        def filter = { /* mock filter */ }
-//        def withinGroup = [new SortSpecification()] // Provide a valid SortSpecification instance
-//        descriptor.render(sqlAppender, [], filter, withinGroup, true, true, null)
-//
-//        then:
-//        sqlAppender.toString() == "funcName() filter (where mock filter) within group (order by sortSpecification) from first respect nulls"
-//    }
+
+    @Unroll
+    def "render method with predicate for function (#funName) without adding schema reference (#schema) at the beginning of statement (#functionThatRequiredExecutionWithSchema)"() {
+        given:
+            Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
+            def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
+                    .withSchema(schema)
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
+                    HibernateContext.builder().build())
+            def sqlAppender = new StringBuilderSqlAppender()
+            SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
+            sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
+
+        when:
+            descriptor.render(sqlAppender, [], (Predicate) null, (ReturnableType)null, sqlAstTranslator)
+
+        then:
+            !sqlAppender.toString().startsWith(schema + ".")
+
+        where:
+            schema                  | functionThatRequiredExecutionWithSchema   |   funName
+            "sche1"                 | []                                        |   "funcName"
+            "non_public_schema"     | null                                      |   "funcName"
+            "non_public_schema"     | []                                        |   "fun1"
+            "non_public_schema"     | ["some function"]                         |   "some_other_fun"
+            "non_public_schema"     | ["fun", "get_some"]                       |   "some_other_fun"
+    }
+
+    @Unroll
+    def "render method with predicate for function (#funName) with adding schema reference (#schema) at the beginning of statement (#functionThatRequiredExecutionWithSchema)"() {
+        given:
+            Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
+            def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
+                    .withSchema(schema)
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
+                    HibernateContext.builder().build())
+            def sqlAppender = new StringBuilderSqlAppender()
+            SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
+            sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
+
+        when:
+            descriptor.render(sqlAppender, [], (Predicate) null, (ReturnableType)null, sqlAstTranslator)
+
+        then:
+            sqlAppender.toString().startsWith(schema + ".")
+
+        where:
+            schema                  | functionThatRequiredExecutionWithSchema   |   funName
+            "sche1"                 | ["funcName"]                              |   "funcName"
+            "non_public_schema"     | ["get_some", "fun1"]                      |   "fun1"
+            "non_public_schema"     | ["some_other_fun"]                        |   "some_other_fun"
+            "non_public_schema"     | ["fun", "get_some"]                       |   "fun"
+    }
+
 }
