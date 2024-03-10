@@ -16,6 +16,7 @@ public class NamedSqmFunctionWithSchemaReferenceDescriptor extends NamedSqmFunct
 
     protected final HibernateContext hibernateContext;
     protected final Context context;
+
     public NamedSqmFunctionWithSchemaReferenceDescriptor(String functionName, Context context, HibernateContext hibernateContext) {
         super(functionName, false, null, null);
         this.context = context;
@@ -46,8 +47,8 @@ public class NamedSqmFunctionWithSchemaReferenceDescriptor extends NamedSqmFunct
         super.render(sqlAppender, sqlAstArguments, filter, respectNulls, fromFirst, returnType, walker);
     }
 
-    protected void renderOptionalSchemaReference(SqlAppender sqlAppender){
-        if (context.getFunctionsThatShouldBeExecutedWithSchemaReference().contains(getName())) {
+    protected void renderOptionalSchemaReference(SqlAppender sqlAppender) {
+        if (context.getFunctionsThatShouldBeExecutedWithSchemaReference() != null && context.getFunctionsThatShouldBeExecutedWithSchemaReference().contains(getName())) {
             sqlAppender.appendSql(context.getSchema());
             sqlAppender.appendSql(".");
         }

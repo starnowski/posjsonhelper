@@ -67,12 +67,11 @@ public class Context {
 
     /**
      * Returns copy of value of property {@link #functionsThatShouldBeExecutedWithSchemaReference}.
-     * If {@link #functionsThatShouldBeExecutedWithSchemaReference} is null then the empty set is being returned.
      *
      * @return copy of value of property {@link #functionsThatShouldBeExecutedWithSchemaReference}
      */
     public Set<String> getFunctionsThatShouldBeExecutedWithSchemaReference() {
-        return functionsThatShouldBeExecutedWithSchemaReference == null ? new HashSet<>() : new HashSet<>(functionsThatShouldBeExecutedWithSchemaReference);
+        return functionsThatShouldBeExecutedWithSchemaReference == null ? null : new HashSet<>(functionsThatShouldBeExecutedWithSchemaReference);
     }
 
     /**
@@ -116,7 +115,8 @@ public class Context {
         public ContextBuilder withContext(Context context) {
             return withJsonbAllArrayStringsExistFunctionReference(context.getJsonbAllArrayStringsExistFunctionReference())
                     .withJsonbAnyArrayStringsExistFunctionReference(context.getJsonbAnyArrayStringsExistFunctionReference())
-                    .withSchema(context.getSchema());
+                    .withSchema(context.getSchema())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(context.getFunctionsThatShouldBeExecutedWithSchemaReference());
         }
 
         public ContextBuilder withSchema(String schema) {
