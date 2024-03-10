@@ -56,6 +56,9 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
         then:
             sqlAppender.toString().startsWith(schema + ".")
 
+        and: "statement contains only one phrase with schema reference"
+            sqlAppender.toString().split(schema + ".").length == 2 // first element is empty
+
         where:
             schema                  | functionThatRequiredExecutionWithSchema   |   funName
             "sche1"                 | ["funcName"]                              |   "funcName"
@@ -108,6 +111,9 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
 
         then:
             sqlAppender.toString().startsWith(schema + ".")
+
+        and: "statement contains only one phrase with schema reference"
+            sqlAppender.toString().split(schema + ".").length == 2 // first element is empty
 
         where:
             schema                  | functionThatRequiredExecutionWithSchema   |   funName
@@ -162,6 +168,9 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
         then:
             sqlAppender.toString().startsWith(schema + ".")
 
+        and: "statement contains only one phrase with schema reference"
+            sqlAppender.toString().split(schema + ".").length == 2 // first element is empty
+
         where:
             schema                  | functionThatRequiredExecutionWithSchema   |   funName
             "sche1"                 | ["funcName"]                              |   "funcName"
@@ -214,6 +223,9 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
 
         then:
             sqlAppender.toString().startsWith(schema + ".")
+
+        and: "statement contains only one phrase with schema reference"
+            sqlAppender.toString().split(schema + ".").length == 2 // first element is empty
 
         where:
             schema                  | functionThatRequiredExecutionWithSchema   |   funName
