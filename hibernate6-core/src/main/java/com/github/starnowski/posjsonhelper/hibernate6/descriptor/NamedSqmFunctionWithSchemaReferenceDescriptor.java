@@ -1,7 +1,6 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
 import com.github.starnowski.posjsonhelper.core.Context;
-import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import org.hibernate.query.ReturnableType;
 import org.hibernate.query.sqm.function.NamedSqmFunctionDescriptor;
 import org.hibernate.sql.ast.SqlAstTranslator;
@@ -14,13 +13,11 @@ import java.util.List;
 
 public class NamedSqmFunctionWithSchemaReferenceDescriptor extends NamedSqmFunctionDescriptor {
 
-    protected final HibernateContext hibernateContext;
     protected final Context context;
 
-    public NamedSqmFunctionWithSchemaReferenceDescriptor(String functionName, Context context, HibernateContext hibernateContext) {
+    public NamedSqmFunctionWithSchemaReferenceDescriptor(String functionName, Context context) {
         super(functionName, false, null, null);
         this.context = context;
-        this.hibernateContext = hibernateContext;
     }
 
     @Override

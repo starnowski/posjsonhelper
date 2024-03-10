@@ -22,8 +22,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
 
         when:
@@ -46,8 +45,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
         given:
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(new HashSet<>(functionThatRequiredExecutionWithSchema)).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(new HashSet<>(functionThatRequiredExecutionWithSchema)).build())
             def sqlAppender = new StringBuilderSqlAppender()
 
         when:
@@ -73,8 +71,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
             SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
             sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
@@ -100,8 +97,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
             SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
             sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
@@ -129,8 +125,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
             SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
             sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
@@ -156,8 +151,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
             SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
             sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
@@ -185,8 +179,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
             SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
             sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)
@@ -212,8 +205,7 @@ class NamedSqmFunctionWithSchemaReferenceDescriptorTest extends Specification {
             Set<String> functionThatRequiredExecutionWithSchemaSet = new HashSet<>(ofNullable(functionThatRequiredExecutionWithSchema).orElse(new ArrayList()))
             def descriptor = new NamedSqmFunctionWithSchemaReferenceDescriptor(funName, Context.builder()
                     .withSchema(schema)
-                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build(),
-                    HibernateContext.builder().build())
+                    .withFunctionsThatShouldBeExecutedWithSchemaReference(functionThatRequiredExecutionWithSchemaSet).build())
             def sqlAppender = new StringBuilderSqlAppender()
             SqlAstTranslator sqlAstTranslator = Mock(SqlAstTranslator)
             sqlAstTranslator.getCurrentClauseStack() >> Mock(org.hibernate.internal.util.collections.Stack)

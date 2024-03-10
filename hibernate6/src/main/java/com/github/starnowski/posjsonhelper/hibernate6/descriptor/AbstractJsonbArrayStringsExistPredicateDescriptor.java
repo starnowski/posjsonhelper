@@ -47,7 +47,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicateDescriptor<T extend
     protected final Context context;
 
     public AbstractJsonbArrayStringsExistPredicateDescriptor(String name, Context context, HibernateContext hibernateContext) {
-        super(name, context, hibernateContext);
+        super(name, context);
         this.context = context;
         this.hibernateContext = hibernateContext;
     }
