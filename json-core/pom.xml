@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.starnowski.posjsonhelper</groupId>
         <artifactId>parent</artifactId>
-        <version>0.3.0</version>
+        <version>0.3.1</version>
     </parent>
 
     <artifactId>json-core</artifactId>
