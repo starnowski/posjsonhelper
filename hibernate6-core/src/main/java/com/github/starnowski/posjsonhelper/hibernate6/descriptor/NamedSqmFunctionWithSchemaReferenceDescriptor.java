@@ -11,6 +11,11 @@ import org.hibernate.sql.ast.tree.select.SortSpecification;
 
 import java.util.List;
 
+/**
+ * Function descriptor that renders function execution with schema reference depending on whether the function name
+ * exists in the {@link Context#functionsThatShouldBeExecutedWithSchemaReference}.
+ * If not schema reference is not added during rendering.
+ */
 public class NamedSqmFunctionWithSchemaReferenceDescriptor extends NamedSqmFunctionDescriptor {
 
     protected final Context context;
