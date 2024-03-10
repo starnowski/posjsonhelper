@@ -33,7 +33,7 @@ import org.hibernate.query.sqm.NodeBuilder;
  */
 public class JsonbAllArrayStringsExistPredicateDescriptor extends AbstractJsonbArrayStringsExistPredicateDescriptor<JsonbAllArrayStringsExistPredicate> {
     public JsonbAllArrayStringsExistPredicateDescriptor(Context context, HibernateContext hibernateContext) {
-        super(context.getJsonbAllArrayStringsExistFunctionReference(), hibernateContext);
+        super(context.getJsonbAllArrayStringsExistFunctionReference(), context, hibernateContext);
     }
 
     @Override
