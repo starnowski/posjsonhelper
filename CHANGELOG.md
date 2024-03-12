@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.3.1](#031---2024-03-11)
 * [0.3.0](#030---2024-01-03)
 * [0.2.1](#021---2023-06-20)
 * [0.2.0](#020---2023-06-13)
@@ -18,6 +19,18 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.3.1] - 2024-03-11
+
+### Added
+
+- Added a set of functions that define which function should be rendered with a schema reference. [116](https://github.com/starnowski/posjsonhelper/issues/116)
+  - Added com.github.starnowski.posjsonhelper.core.Context#functionsThatShouldBeExecutedWithSchemaReference property [116](https://github.com/starnowski/posjsonhelper/issues/116)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.NamedSqmFunctionWithSchemaReferenceDescriptor type [116](https://github.com/starnowski/posjsonhelper/issues/116)
+
+### Changed
+
+  - Changed base type for com.github.starnowski.posjsonhelper.hibernate6.descriptor.AbstractJsonbArrayStringsExistPredicateDescriptor to com.github.starnowski.posjsonhelper.hibernate6.descriptor.NamedSqmFunctionWithSchemaReferenceDescriptor [116](https://github.com/starnowski/posjsonhelper/issues/116)
 
 ## [0.3.0] - 2024-01-03
 
