@@ -68,9 +68,9 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
         return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L))),
+                Arguments.of(asList("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
         );
     }
 
@@ -92,9 +92,9 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
         return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L))),
+                Arguments.of(asList("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
         );
     }
 
@@ -136,9 +136,9 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
         return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L, 3L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(Arrays.asList(1L, 3L, 5L)))
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L, 3L))),
+                Arguments.of(asList("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(asList(1L, 3L, 5L)))
         );
     }
 
@@ -178,13 +178,13 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
         return Stream.of(
-                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(Arrays.asList(11L))),
-                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(Arrays.asList(10L))),
-                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(Arrays.asList(10L, 11L, 12L))),
-                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(Arrays.asList(10L, 12L))),
-                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(Arrays.asList(11L))),
-                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(Arrays.asList())),
-                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(Arrays.asList(10L, 11L)))
+                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(asList(11L))),
+                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(asList(10L))),
+                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(asList(10L, 11L, 12L))),
+                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(asList(10L, 12L))),
+                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(asList(11L))),
+                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(asList())),
+                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(asList(10L, 11L)))
         );
     }
 
@@ -207,9 +207,9 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
         return Stream.of(
-                Arguments.of(asList("SUPER", "USER"), new HashSet<>(Arrays.asList(14L, 13L))),
-                Arguments.of(asList("SUPER"), new HashSet<>(Arrays.asList(13L))),
-                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(Arrays.asList(13L, 15L)))
+                Arguments.of(asList("SUPER", "USER"), new HashSet<>(asList(14L, 13L))),
+                Arguments.of(asList("SUPER"), new HashSet<>(asList(13L))),
+                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(asList(13L, 15L)))
         );
     }
 
@@ -232,12 +232,12 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression() {
         return Stream.of(
-                Arguments.of("this is full sentence", new HashSet<>(Arrays.asList(16L))),
-                Arguments.of("this is ", new HashSet<>(Arrays.asList())),
-                Arguments.of("this is %", new HashSet<>(Arrays.asList(16L, 17L))),
-                Arguments.of("end of", new HashSet<>(Arrays.asList())),
-                Arguments.of("end of%", new HashSet<>(Arrays.asList())),
-                Arguments.of("%end of%", new HashSet<>(Arrays.asList(18L)))
+                Arguments.of("this is full sentence", new HashSet<>(asList(16L))),
+                Arguments.of("this is ", new HashSet<>(asList())),
+                Arguments.of("this is %", new HashSet<>(asList(16L, 17L))),
+                Arguments.of("end of", new HashSet<>(asList())),
+                Arguments.of("end of%", new HashSet<>(asList())),
+                Arguments.of("%end of%", new HashSet<>(asList(18L)))
         );
     }
 
@@ -275,39 +275,29 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
+    private static Stream<Arguments> provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements() {
+        return Stream.of(
+                Arguments.of(asList("dog"), new HashSet<>(asList(19L, 21L))),
+                Arguments.of(asList("cat"), new HashSet<>(asList(20L, 21L))),
+                Arguments.of(asList("hamster"), new HashSet<>(asList(22L))),
+                Arguments.of(asList("hamster", "cat"), new HashSet<>(asList(20L, 21L, 22L)))
+        );
+    }
+
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return correct id #expectedIds when searching by LIKE operator with #expresion and with usage of HQL query")
+    @DisplayName("should return correct id #expectedIds when searching by any matching tags [#tags] in inner elements")
     @ParameterizedTest
-    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression")
-    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpressionAndHQLQuery(String expression, Set<Long> expectedIds) {
+    @MethodSource("provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements")
+    public void shouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements(List<String> tags, Set<Long> expectedIds) {
 
         // when
-        List<Item> results = tested.findAllByStringValueAndLikeOperatorWithHQLQuery(expression);
+        List<Item> results = tested.findAllByAnyMatchingTagsInInnerElement(new HashSet<String>(tags));
 
         // then
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
         assertThat(ids).hasSize(expectedIds.size());
         assertThat(ids).isEqualTo(expectedIds);
-    }
-
-    @Unroll
-    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
-            config = @SqlConfig(transactionMode = ISOLATED),
-            executionPhase = BEFORE_TEST_METHOD)
-    def "should return correct id #expectedIds when searching by any matching tags [#tags] in inner elements" () {
-        when:
-        def results = tested.findAllByAnyMatchingTagsInInnerElement(new HashSet<String>(tags))
-
-        then:
-        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
-
-        where:
-        tags                            ||  expectedIds
-                ['dog']                         ||  [19, 21].toSet()
-                ['cat']                         ||  [20, 21].toSet()
-                ['hamster']                     ||  [22].toSet()
-                ['hamster', 'cat']              ||  [20, 21, 22].toSet()
     }
 }
