@@ -2,6 +2,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
+import com.jayway.jsonpath.JsonPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -299,5 +300,26 @@ public abstract class AbstractItemDaoTest {
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
         assertThat(ids).hasSize(expectedIds.size());
         assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    private static Stream<Arguments> provideShouldAddJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, "birthday", "1970-01-01")
+        );
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldAddJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldAddJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value) {
+        // when
+        tested.updateJsonPropertyForItem(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String)JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
     }
 }

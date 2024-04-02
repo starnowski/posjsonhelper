@@ -150,6 +150,11 @@ public class ItemDao {
         return entityManager.createQuery(query).getResultList();
     }
 
+    public Item findById(Long id)
+    {
+        return entityManager.find(Item.class, id);
+    }
+
     protected String generateParameters(String prefix, int index, int parametersNum)
     {
         StringBuilder sb = new StringBuilder();
@@ -165,6 +170,10 @@ public class ItemDao {
             first = false;
         }
         return sb.toString();
+    }
+
+    public void updateJsonPropertyForItem(Long itemId, String property, String value) {
+
     }
 
 //    from Item as item_ where jsonb_all_array_strings_exist( jsonb_extract_path( item_.jsonbContent , :param0 ) , json_function_json_array(:param1)) = TRUE
