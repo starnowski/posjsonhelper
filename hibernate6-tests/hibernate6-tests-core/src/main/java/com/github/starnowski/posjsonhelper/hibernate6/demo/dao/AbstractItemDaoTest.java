@@ -274,4 +274,40 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).hasSize(expectedIds.size());
         assertThat(ids).isEqualTo(expectedIds);
     }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by LIKE operator with #expresion and with usage of HQL query")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression")
+    public void shouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpressionAndHQLQuery(String expression, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByStringValueAndLikeOperatorWithHQLQuery(expression);
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    @Unroll
+    @Sql(value = [CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH],
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    def "should return correct id #expectedIds when searching by any matching tags [#tags] in inner elements" () {
+        when:
+        def results = tested.findAllByAnyMatchingTagsInInnerElement(new HashSet<String>(tags))
+
+        then:
+        results.stream().map({it.getId()}).collect(Collectors.toSet()) == expectedIds
+
+        where:
+        tags                            ||  expectedIds
+                ['dog']                         ||  [19, 21].toSet()
+                ['cat']                         ||  [20, 21].toSet()
+                ['hamster']                     ||  [22].toSet()
+                ['hamster', 'cat']              ||  [20, 21, 22].toSet()
+    }
 }

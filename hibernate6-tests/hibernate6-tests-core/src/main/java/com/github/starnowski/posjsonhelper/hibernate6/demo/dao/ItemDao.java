@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
 @Repository
@@ -137,6 +138,16 @@ public class ItemDao {
             query.setParameter("param" + p, parameters.get(i));
         }
         return query.getResultList();
+    }
+
+    public List<Item> findAllByAnyMatchingTagsInInnerElement(HashSet<String> tags) {
+        //TODO Add tests
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, asList("child", "pets")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
     }
 
     protected String generateParameters(String prefix, int index, int parametersNum)
