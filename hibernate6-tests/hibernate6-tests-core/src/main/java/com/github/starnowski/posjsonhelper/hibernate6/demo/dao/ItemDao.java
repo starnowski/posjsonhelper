@@ -11,6 +11,7 @@ import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
+import jakarta.transaction.Transactional;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.json.JSONException;
@@ -173,13 +174,15 @@ public class ItemDao {
         return sb.toString();
     }
 
+    @Transactional
     public void updateJsonPropertyForItem(Long itemId, String property, String value) throws JSONException {
         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
 // Set the property you want to update and the new value
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(property, value);
+        jsonObject.put("child", new JSONObject());
+        jsonObject.getJSONObject("child").put(property, value);
         criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
 
 // Add any conditions to restrict which entities will be updated
