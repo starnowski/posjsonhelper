@@ -3,6 +3,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import com.jayway.jsonpath.JsonPath;
+import org.json.JSONException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -314,7 +315,7 @@ public abstract class AbstractItemDaoTest {
     @DisplayName("should add json property with specific value to inner element")
     @ParameterizedTest
     @MethodSource("provideShouldAddJsonPropertyWithSpecificValueToInnerElement")
-    public void shouldAddJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value) {
+    public void shouldAddJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value) throws JSONException {
         // when
         tested.updateJsonPropertyForItem(itemId, property, value);
 

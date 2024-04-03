@@ -4,23 +4,24 @@ import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
@@ -172,8 +173,20 @@ public class ItemDao {
         return sb.toString();
     }
 
-    public void updateJsonPropertyForItem(Long itemId, String property, String value) {
+    public void updateJsonPropertyForItem(Long itemId, String property, String value) throws JSONException {
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
 
+// Set the property you want to update and the new value
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put(property, value);
+        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
+
+// Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+// Execute the update
+        int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
 
 //    from Item as item_ where jsonb_all_array_strings_exist( jsonb_extract_path( item_.jsonbContent , :param0 ) , json_function_json_array(:param1)) = TRUE
