@@ -2,8 +2,10 @@ package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
+import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,7 +16,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,8 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 public abstract class AbstractItemDaoTest {
 
     private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L));
+    @Autowired
+    private ItemDao tested;
 
     private static Stream<Arguments> provideShouldReturnSingleCorrectIdExpectedIdWhenSearchingByAllMatchingTags() {
         return Stream.of(
@@ -48,9 +51,75 @@ public abstract class AbstractItemDaoTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(List.of(1L))),
+                Arguments.of(List.of("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
+        );
+    }
 
-    @Autowired
-    private ItemDao tested;
+    private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(List.of(1L))),
+                Arguments.of(List.of("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L, 3L))),
+                Arguments.of(List.of("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(asList(1L, 3L, 5L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
+        return Stream.of(
+                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(List.of(11L))),
+                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(List.of(10L))),
+                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(asList(10L, 11L, 12L))),
+                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(asList(10L, 12L))),
+                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(List.of(11L))),
+                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(List.of())),
+                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(asList(10L, 11L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
+        return Stream.of(
+                Arguments.of(asList("SUPER", "USER"), new HashSet<>(asList(14L, 13L))),
+                Arguments.of(List.of("SUPER"), new HashSet<>(List.of(13L))),
+                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(asList(13L, 15L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression() {
+        return Stream.of(
+                Arguments.of("this is full sentence", new HashSet<>(List.of(16L))),
+                Arguments.of("this is ", new HashSet<>(List.of())),
+                Arguments.of("this is %", new HashSet<>(asList(16L, 17L))),
+                Arguments.of("end of", new HashSet<>(List.of())),
+                Arguments.of("end of%", new HashSet<>(List.of())),
+                Arguments.of("%end of%", new HashSet<>(List.of(18L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements() {
+        return Stream.of(
+                Arguments.of(List.of("dog"), new HashSet<>(asList(19L, 21L))),
+                Arguments.of(List.of("cat"), new HashSet<>(asList(20L, 21L))),
+                Arguments.of(List.of("hamster"), new HashSet<>(List.of(22L))),
+                Arguments.of(asList("hamster", "cat"), new HashSet<>(asList(20L, 21L, 22L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, "birthday", "1970-01-01")
+        );
+    }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
@@ -68,14 +137,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(results.get(0).getId()).isEqualTo(expectedId);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -90,14 +151,6 @@ public abstract class AbstractItemDaoTest {
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(r -> r.getId()).collect(Collectors.toSet())).isEqualTo(expectedIds);
-    }
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
@@ -136,14 +189,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L, 3L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(asList(3L, 2L))),
-                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(asList(1L, 3L, 5L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -178,18 +223,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
-        return Stream.of(
-                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(asList(11L))),
-                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(asList(10L))),
-                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(asList(10L, 11L, 12L))),
-                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(asList(10L, 12L))),
-                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(asList(11L))),
-                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(asList())),
-                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(asList(10L, 11L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -207,14 +240,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
-        return Stream.of(
-                Arguments.of(asList("SUPER", "USER"), new HashSet<>(asList(14L, 13L))),
-                Arguments.of(asList("SUPER"), new HashSet<>(asList(13L))),
-                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(asList(13L, 15L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -230,17 +255,6 @@ public abstract class AbstractItemDaoTest {
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
         assertThat(ids).hasSize(expectedIds.size());
         assertThat(ids).isEqualTo(expectedIds);
-    }
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression() {
-        return Stream.of(
-                Arguments.of("this is full sentence", new HashSet<>(asList(16L))),
-                Arguments.of("this is ", new HashSet<>(asList())),
-                Arguments.of("this is %", new HashSet<>(asList(16L, 17L))),
-                Arguments.of("end of", new HashSet<>(asList())),
-                Arguments.of("end of%", new HashSet<>(asList())),
-                Arguments.of("%end of%", new HashSet<>(asList(18L)))
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
@@ -277,15 +291,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements() {
-        return Stream.of(
-                Arguments.of(asList("dog"), new HashSet<>(asList(19L, 21L))),
-                Arguments.of(asList("cat"), new HashSet<>(asList(20L, 21L))),
-                Arguments.of(asList("hamster"), new HashSet<>(asList(22L))),
-                Arguments.of(asList("hamster", "cat"), new HashSet<>(asList(20L, 21L, 22L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -303,24 +308,21 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldAddJsonPropertyWithSpecificValueToInnerElement() {
-        return Stream.of(
-                Arguments.of(19L, "birthday", "1970-01-01")
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should add json property with specific value to inner element")
     @ParameterizedTest
-    @MethodSource("provideShouldAddJsonPropertyWithSpecificValueToInnerElement")
-    public void shouldAddJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value) throws JSONException {
+    @MethodSource("provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldReplaceJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value) throws JSONException {
         // when
         tested.updateJsonPropertyForItem(itemId, property, value);
 
         // then
         Item item = tested.findById(itemId);
-        assertThat((String)JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject().put(property, value);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString().substring(1).substring(0, jsonObject.toString().length() - 2));
     }
 }
