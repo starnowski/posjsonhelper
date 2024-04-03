@@ -323,6 +323,6 @@ public abstract class AbstractItemDaoTest {
         assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
         JSONObject jsonObject = new JSONObject().put(property, value);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
-        assertThat(document.jsonString()).isEqualTo(jsonObject.toString().substring(1).substring(0, jsonObject.toString().length() - 2));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
     }
 }
