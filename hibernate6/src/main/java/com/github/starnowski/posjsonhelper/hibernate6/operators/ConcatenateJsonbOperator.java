@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class ConcatenateJsonbOperator extends SelfRenderingSqmFunction<String> implements Serializable {
     public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, Path referencedPathSource, String value, HibernateContext hibernateContext) {
-        this(nodeBuilder, referencedPathSource, (SqmTypedNode<String>)nodeBuilder.value(value), hibernateContext);
+        this(nodeBuilder, referencedPathSource, new JsonbCastOperatorFunction(nodeBuilder, value, hibernateContext), hibernateContext);
     }
 
     public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, Path referencedPathSource, SqmTypedNode value, HibernateContext hibernateContext) {
