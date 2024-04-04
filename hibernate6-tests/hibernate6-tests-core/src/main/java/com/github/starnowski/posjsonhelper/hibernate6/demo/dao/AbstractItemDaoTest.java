@@ -121,6 +121,12 @@ public abstract class AbstractItemDaoTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldSetJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, "birthday", "1970-01-01", "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}")
+        );
+    }
+
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -323,6 +329,24 @@ public abstract class AbstractItemDaoTest {
         assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
         JSONObject jsonObject = new JSONObject().put(property, value);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldSetJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldSetJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItem(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
     }
 }

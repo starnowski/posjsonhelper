@@ -179,6 +179,21 @@ public class ItemDao {
         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("child", new JSONObject());
+        jsonObject.getJSONObject("child").put(property, value);
+        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
+
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
+    }
+
+    @Transactional
+    public void updateJsonBySettingPropertyForItem(Long itemId, String property, String value) throws JSONException {
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
 // Set the property you want to update and the new value
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("child", new JSONObject());
