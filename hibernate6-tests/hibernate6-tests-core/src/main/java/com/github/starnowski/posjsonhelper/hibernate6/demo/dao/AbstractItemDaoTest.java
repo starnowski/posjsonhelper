@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
+import com.github.starnowski.posjsonhelper.json.core.sql.JsonbSetFunctionJsonPathBuilder;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -16,6 +17,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +28,7 @@ import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.CL
 import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.ITEMS_SCRIPT_PATH;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.json.JSONObject.quote;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
@@ -124,6 +127,14 @@ public abstract class AbstractItemDaoTest {
     private static Stream<Arguments> provideShouldSetJsonPropertyWithSpecificValueToInnerElement() {
         return Stream.of(
                 Arguments.of(19L, "birthday", "1970-01-01", "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}")
+        );
+    }
+
+    private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("birthday"), quote("2021-11-23")),
+                        new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
         );
     }
 
@@ -348,5 +359,42 @@ public abstract class AbstractItemDaoTest {
         JSONObject jsonObject = new JSONObject(expectedJson);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldSetMultipleJsonPropertyWithSpecificValueToInnerElement(Long itemId, List<JsonBSetTestPair> pairs, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItem(itemId, pairs);
+
+        // then
+        Item item = tested.findById(itemId);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    //provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement
+
+    public static class JsonBSetTestPair {
+        private final JsonbSetFunctionJsonPathBuilder jsonbSetFunctionJsonPathBuilder;
+        private final String jsonValue;
+
+        public JsonBSetTestPair(JsonbSetFunctionJsonPathBuilder jsonbSetFunctionJsonPathBuilder, String jsonValue) {
+            this.jsonbSetFunctionJsonPathBuilder = jsonbSetFunctionJsonPathBuilder;
+            this.jsonValue = jsonValue;
+        }
+
+        public JsonbSetFunctionJsonPathBuilder getJsonbSetFunctionJsonPathBuilder() {
+            return jsonbSetFunctionJsonPathBuilder;
+        }
+
+        public String getJsonValue() {
+            return jsonValue;
+        }
     }
 }

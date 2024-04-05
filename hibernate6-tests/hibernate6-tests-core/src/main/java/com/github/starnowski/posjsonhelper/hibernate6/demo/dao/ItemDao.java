@@ -192,19 +192,42 @@ public class ItemDao {
     }
 
     @Transactional
-    public void updateJsonBySettingPropertyForItem(Long itemId, String property, String value) throws JSONException {
+    public void updateJsonBySettingPropertyForItem(Long itemId, String property, String value) {
         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
-// Set the property you want to update and the new value
-//        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
+        // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonbSetFunctionJsonPathBuilder().append("child").append(property).build(), JSONObject.quote(value), hibernateContext));
 
-// Add any conditions to restrict which entities will be updated
+        // Add any conditions to restrict which entities will be updated
         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
 
-// Execute the update
+        // Execute the update
         int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
 
+    @Transactional
+    public void updateJsonBySettingPropertyForItem(Long itemId, List<AbstractItemDaoTest.JsonBSetTestPair> pairs) {
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        JsonbSetFunction current = null;
+
+        for (AbstractItemDaoTest.JsonBSetTestPair pair : pairs) {
+            if (current == null) {
+                current = new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), pair.getJsonbSetFunctionJsonPathBuilder().build(), pair.getJsonValue(), hibernateContext);
+            } else {
+                current = new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), current, pair.getJsonbSetFunctionJsonPathBuilder().build(), pair.getJsonValue(), hibernateContext);
+            }
+        }
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", current);
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        // Execute the update
+        int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
+    }
 }
