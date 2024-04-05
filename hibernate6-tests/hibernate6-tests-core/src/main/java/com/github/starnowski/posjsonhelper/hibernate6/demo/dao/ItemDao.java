@@ -207,5 +207,4 @@ public class ItemDao {
         int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
 
-//    from Item as item_ where jsonb_all_array_strings_exist( jsonb_extract_path( item_.jsonbContent , :param0 ) , json_function_json_array(:param1)) = TRUE
 }
