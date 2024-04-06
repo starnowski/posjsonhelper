@@ -197,7 +197,7 @@ public class ItemDao {
         Root<Item> root = criteriaUpdate.from(Item.class);
 
         // Set the property you want to update and the new value
-        criteriaUpdate.set("jsonbContent", new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonbSetFunctionJsonPathBuilder().append("child").append(property).build(), JSONObject.quote(value), hibernateContext));
+        criteriaUpdate.set("jsonbContent", new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonbSetFunctionJsonPathBuilder().append("child").append(property).build().toString(), JSONObject.quote(value), hibernateContext));
 
         // Add any conditions to restrict which entities will be updated
         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
@@ -215,9 +215,9 @@ public class ItemDao {
 
         for (AbstractItemDaoTest.JsonBSetTestPair pair : pairs) {
             if (current == null) {
-                current = new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), pair.getJsonbSetFunctionJsonPathBuilder().build(), pair.getJsonValue(), hibernateContext);
+                current = new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), pair.getJsonbSetFunctionJsonPathBuilder().build().toString(), pair.getJsonValue(), hibernateContext);
             } else {
-                current = new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), current, pair.getJsonbSetFunctionJsonPathBuilder().build(), pair.getJsonValue(), hibernateContext);
+                current = new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), current, pair.getJsonbSetFunctionJsonPathBuilder().build().toString(), pair.getJsonValue(), hibernateContext);
             }
         }
 

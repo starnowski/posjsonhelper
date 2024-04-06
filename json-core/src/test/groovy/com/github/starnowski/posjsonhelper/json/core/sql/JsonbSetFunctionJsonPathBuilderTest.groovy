@@ -17,7 +17,9 @@ class JsonbSetFunctionJsonPathBuilderTest extends Specification {
             def result = tested.build()
 
         then:
-            result == expectedJsonPath
+            result
+            result.getPath() == list
+            result.toString() == expectedJsonPath
 
         where:
             list                        || expectedJsonPath

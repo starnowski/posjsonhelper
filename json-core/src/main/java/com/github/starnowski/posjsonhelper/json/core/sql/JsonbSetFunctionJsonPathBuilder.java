@@ -2,7 +2,6 @@ package com.github.starnowski.posjsonhelper.json.core.sql;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class JsonbSetFunctionJsonPathBuilder {
 
@@ -13,7 +12,11 @@ public class JsonbSetFunctionJsonPathBuilder {
         return this;
     }
 
-    public String build() {
-        return "{" + path.stream().map(String::valueOf).collect(Collectors.joining(",")) + "}";
+    public JsonbSetFunctionJsonPath build() {
+        return new JsonbSetFunctionJsonPath(path);
+    }
+
+    public String buildString() {
+        return build().toString();
     }
 }
