@@ -133,6 +133,7 @@ public abstract class AbstractItemDaoTest {
     private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement() {
         return Stream.of(
                 Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
+                Arguments.of(20L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
                 Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("birthday"), quote("2021-11-23")),
                         new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
         );
