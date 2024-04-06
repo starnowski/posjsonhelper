@@ -5,12 +5,12 @@ import spock.lang.Unroll
 
 import static java.util.Arrays.asList
 
-class JsonbSetFunctionJsonPathBuilderTest extends Specification {
+class JsonTextArrayBuilderTest extends Specification {
 
     @Unroll
     def "should create correct json path (#expectedJsonPath) for object list (#list)"() {
         given:
-            def tested = new JsonbSetFunctionJsonPathBuilder()
+            def tested = new JsonTextArrayBuilder()
             list.forEach {tested.append(it)}
 
         when:

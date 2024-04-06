@@ -1,7 +1,7 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
-import com.github.starnowski.posjsonhelper.json.core.sql.JsonbSetFunctionJsonPathBuilder;
+import com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
@@ -132,10 +132,10 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement() {
         return Stream.of(
-                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
-                Arguments.of(20L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
-                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("birthday"), quote("2021-11-23")),
-                        new JsonBSetTestPair(new JsonbSetFunctionJsonPathBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
+                Arguments.of(20L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
+                        new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
         );
     }
 
@@ -382,16 +382,16 @@ public abstract class AbstractItemDaoTest {
     //provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement
 
     public static class JsonBSetTestPair {
-        private final JsonbSetFunctionJsonPathBuilder jsonbSetFunctionJsonPathBuilder;
+        private final JsonTextArrayBuilder jsonTextArrayBuilder;
         private final String jsonValue;
 
-        public JsonBSetTestPair(JsonbSetFunctionJsonPathBuilder jsonbSetFunctionJsonPathBuilder, String jsonValue) {
-            this.jsonbSetFunctionJsonPathBuilder = jsonbSetFunctionJsonPathBuilder;
+        public JsonBSetTestPair(JsonTextArrayBuilder jsonTextArrayBuilder, String jsonValue) {
+            this.jsonTextArrayBuilder = jsonTextArrayBuilder;
             this.jsonValue = jsonValue;
         }
 
-        public JsonbSetFunctionJsonPathBuilder getJsonbSetFunctionJsonPathBuilder() {
-            return jsonbSetFunctionJsonPathBuilder;
+        public JsonTextArrayBuilder getJsonbSetFunctionJsonPathBuilder() {
+            return jsonTextArrayBuilder;
         }
 
         public String getJsonValue() {

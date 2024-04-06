@@ -3,17 +3,17 @@ package com.github.starnowski.posjsonhelper.json.core.sql;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JsonbSetFunctionJsonPathBuilder {
+public class JsonTextArrayBuilder {
 
     private final List<Object> path = new ArrayList<>();
 
-    public JsonbSetFunctionJsonPathBuilder append(Object node) {
+    public JsonTextArrayBuilder append(Object node) {
         path.add(node);
         return this;
     }
 
-    public JsonbSetFunctionJsonPath build() {
-        return new JsonbSetFunctionJsonPath(path);
+    public JsonTextArray build() {
+        return new JsonTextArray(path);
     }
 
     public String buildString() {
