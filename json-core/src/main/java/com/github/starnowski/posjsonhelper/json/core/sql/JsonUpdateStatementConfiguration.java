@@ -1,10 +1,15 @@
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
+import java.util.List;
 import java.util.Objects;
 
 public class JsonUpdateStatementConfiguration {
 
-    //TODO List<Tuple<JsonTextArray, OperationType, jsonValue>>
+    public JsonUpdateStatementConfiguration(List<JsonUpdateStatementOperation> operations) {
+        this.operations = operations;
+    }
+
+    private final List<JsonUpdateStatementOperation> operations;
 
     public static class JsonUpdateStatementOperation {
         private final JsonTextArray jsonTextArray;
