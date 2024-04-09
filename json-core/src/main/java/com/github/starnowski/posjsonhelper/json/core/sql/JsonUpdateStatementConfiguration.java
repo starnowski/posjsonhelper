@@ -1,15 +1,23 @@
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.Collections.emptyList;
+import static java.util.Optional.ofNullable;
+
 public class JsonUpdateStatementConfiguration {
 
+    private final List<JsonUpdateStatementOperation> operations;
+
     public JsonUpdateStatementConfiguration(List<JsonUpdateStatementOperation> operations) {
-        this.operations = operations;
+        this.operations = ofNullable(operations).map(Collections::unmodifiableList).orElse(emptyList());
     }
 
-    private final List<JsonUpdateStatementOperation> operations;
+    public List<JsonUpdateStatementOperation> getOperations() {
+        return operations;
+    }
 
     public static class JsonUpdateStatementOperation {
         private final JsonTextArray jsonTextArray;
