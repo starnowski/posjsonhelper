@@ -3,7 +3,7 @@ package com.github.starnowski.posjsonhelper.json.core.sql
 import spock.lang.Specification
 
 class JsonUpdateStatementConfigurationBuilderTest extends Specification {
-//TODO
+
     def "should build configuration based on components if component are defined"()
     {
         given:

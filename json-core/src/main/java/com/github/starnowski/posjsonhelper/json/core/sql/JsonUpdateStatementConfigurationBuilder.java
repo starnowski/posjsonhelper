@@ -24,6 +24,11 @@ public class JsonUpdateStatementConfigurationBuilder {
         return this;
     }
 
+    public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation) {
+        operations.add(operation);
+        return this;
+    }
+
     public JsonUpdateStatementConfiguration build() {
         //TODO
         return new JsonUpdateStatementConfiguration(operations);
