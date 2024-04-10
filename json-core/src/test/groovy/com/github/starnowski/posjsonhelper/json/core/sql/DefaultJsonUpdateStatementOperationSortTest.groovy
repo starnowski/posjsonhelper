@@ -19,6 +19,7 @@ class DefaultJsonUpdateStatementOperationSortTest extends Specification {
         where:
         operations  ||  expected    |   message
         [jsonbSet((new JsonTextArrayBuilder()).append("a").append("a").build()), jsonbSet((new JsonTextArrayBuilder()).append("a").build())] || [jsonbSet((new JsonTextArrayBuilder()).append("a").build()), jsonbSet((new JsonTextArrayBuilder()).append("a").append("a").build())] | "Sorting based on array length"
+        [jsonbSet((new JsonTextArrayBuilder()).append("a").build()), jsonbSet((new JsonTextArrayBuilder()).append("a").append("a").build())] || [jsonbSet((new JsonTextArrayBuilder()).append("a").build()), jsonbSet((new JsonTextArrayBuilder()).append("a").append("a").build())] | "Sorting based on array length"
         [jsonbSet((new JsonTextArrayBuilder()).append("b").build()), jsonbSet((new JsonTextArrayBuilder()).append("a").build())] || [jsonbSet((new JsonTextArrayBuilder()).append("a").build()), jsonbSet((new JsonTextArrayBuilder()).append("b").build())] | "Simple alphabet sorting"
     }
 
