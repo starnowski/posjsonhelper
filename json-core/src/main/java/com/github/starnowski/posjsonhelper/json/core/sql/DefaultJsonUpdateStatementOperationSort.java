@@ -23,6 +23,10 @@ public class DefaultJsonUpdateStatementOperationSort implements JsonUpdateStatem
                             Comparable c1 = (Comparable) ob1;
                             return c1.compareTo(ob2);
                         }
+                    } else {
+                        String ob1String = ob1.toString();
+                        String ob2String = ob2.toString();
+                        return ob1String.compareTo(ob2String);
                     }
                 }
                 return 0;
