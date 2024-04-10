@@ -27,6 +27,7 @@ class JsonUpdateStatementConfigurationBuilderTest extends Specification {
         then:
             1 * sort.sort([operation1, operation2, operation3, operation4]) >> [operation4, operation3, operation1, operation2]
             1 * filter.filter([operation4, operation3, operation1, operation2]) >> [operation4, operation3, operation2]
-            result == [operation4, operation3, operation2]
+            result
+            result.getOperations() == [operation4, operation3, operation2]
     }
 }
