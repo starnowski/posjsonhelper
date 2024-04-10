@@ -30,4 +30,27 @@ class JsonUpdateStatementConfigurationBuilderTest extends Specification {
             result
             result.getOperations() == [operation4, operation3, operation2]
     }
+
+    def "should build configuration even when component are null"()
+    {
+        given:
+            JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation1 = Mock(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation)
+            JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation2 = Mock(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation)
+            JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation3 = Mock(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation)
+            JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation4 = Mock(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation)
+            def tested = new JsonUpdateStatementConfigurationBuilder()
+                    .append(operation1)
+                    .append(operation2)
+                    .append(operation3)
+                    .append(operation4)
+                    .withPostSortFilter(null)
+                    .withSort(null)
+
+        when:
+            def result = tested.build()
+
+        then:
+            result
+            result.getOperations() == [operation1, operation2, operation3, operation4]
+    }
 }

@@ -1,9 +1,7 @@
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.unmodifiableList;
 
