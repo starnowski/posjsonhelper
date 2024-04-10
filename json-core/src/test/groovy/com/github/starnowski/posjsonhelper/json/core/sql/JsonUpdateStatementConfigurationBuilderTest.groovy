@@ -2,6 +2,8 @@ package com.github.starnowski.posjsonhelper.json.core.sql
 
 import spock.lang.Specification
 
+import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET
+
 class JsonUpdateStatementConfigurationBuilderTest extends Specification {
 
     def "should build configuration based on components if component are defined"()
@@ -52,5 +54,21 @@ class JsonUpdateStatementConfigurationBuilderTest extends Specification {
         then:
             result
             result.getOperations() == [operation1, operation2, operation3, operation4]
+    }
+
+    def "should build correct configuration"()
+    {
+        given:
+            def tested = new JsonUpdateStatementConfigurationBuilder()
+                    .append(JSONB_SET, (new JsonTextArrayBuilder()).append("parent").append("child1").build(), "some value1")
+                    .withPostSortFilter(null)
+                    .withSort(null)
+
+        when:
+            def result = tested.build()
+
+        then:
+            result
+            result.getOperations() == [new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation((new JsonTextArrayBuilder()).append("parent").append("child1").build(), JSONB_SET, "some value1")]
     }
 }
