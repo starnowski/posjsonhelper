@@ -7,7 +7,12 @@ public class JsonTextArrayBuilder {
 
     private final List<Object> path = new ArrayList<>();
 
-    public JsonTextArrayBuilder append(Object node) {
+    public JsonTextArrayBuilder append(String node) {
+        path.add(node);
+        return this;
+    }
+
+    public JsonTextArrayBuilder append(Integer node) {
         path.add(node);
         return this;
     }

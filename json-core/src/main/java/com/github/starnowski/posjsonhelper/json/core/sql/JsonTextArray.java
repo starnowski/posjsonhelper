@@ -10,7 +10,7 @@ public class JsonTextArray {
 
     private final List<Object> path;
 
-    public JsonTextArray(List<Object> path) {
+    JsonTextArray(List<Object> path) {
         this.path = path == null ? new ArrayList<>() : Collections.unmodifiableList(path);
     }
 
