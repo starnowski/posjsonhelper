@@ -1,21 +1,40 @@
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.sql.Array;
+import java.util.*;
 
 public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
     @Override
     public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
         // Process/Gather information about operations objects
+        OperationFilterContext context = buildOperationFilterContext(operations);
+        int i = 0;
+        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> results = new ArrayList<>(operations);
+        Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> it = results.iterator();
+        while (it.hasNext())
+        {
+            JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = it.next();
+            JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
+            if (context.numberOfOperations.get(key) > 1) {
+                int lastIndex = context.lastIndexOperations.get(key);
+                if (lastIndex != i) {
+                    it.remove();
+                }
+            }
+            i++;
+        }
         // Filter operations objects based on context
-        return operations;
+        return results;
     }
 
     private OperationFilterContext buildOperationFilterContext(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations){
-        OperationFilterContext context = new OperationFilterContext();
-
+        final OperationFilterContext context = new OperationFilterContext();
+        for(int i = 0; i < operations.size(); i++) {
+            JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = operations.get(i);
+            JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
+            context.numberOfOperations.merge(key, 1, (integer, integer2) -> integer + (integer2 == null ? 0 : integer2));
+            context.lastIndexOperations.put(key, i);
+        }
         return context;
     }
 
