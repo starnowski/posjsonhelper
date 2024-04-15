@@ -1,6 +1,5 @@
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
-import java.sql.Array;
 import java.util.*;
 
 public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
@@ -11,8 +10,7 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
         int i = 0;
         List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> results = new ArrayList<>(operations);
         Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> it = results.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = it.next();
             JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
             if (context.numberOfOperations.get(key) > 1) {
@@ -27,9 +25,9 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
         return results;
     }
 
-    private OperationFilterContext buildOperationFilterContext(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations){
+    private OperationFilterContext buildOperationFilterContext(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
         final OperationFilterContext context = new OperationFilterContext();
-        for(int i = 0; i < operations.size(); i++) {
+        for (int i = 0; i < operations.size(); i++) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = operations.get(i);
             JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
             context.numberOfOperations.merge(key, 1, (integer, integer2) -> integer + (integer2 == null ? 0 : integer2));
