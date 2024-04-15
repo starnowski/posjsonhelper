@@ -139,6 +139,17 @@ public abstract class AbstractItemDaoTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElementWithNewFields() {
+        return Stream.of(
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
+                        new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]"),
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents").append(0), "{\"type\":\"mom\", \"name\":\"simone\"}")  ,
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents"), "[]")
+                                )
+                        , "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}")
+        );
+    }
+
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -384,7 +395,7 @@ public abstract class AbstractItemDaoTest {
             executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should add json property with specific value to inner element by using Hibernate6JsonUpdateStatementBuilder")
     @ParameterizedTest
-    @MethodSource("provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement")
+    @MethodSource({"provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement", "provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElementWithNewFields"})
     public void shouldSetMultipleJsonPropertyWithSpecificValueToInnerElementByUsingHibernate6JsonUpdateStatementBuilder(Long itemId, List<JsonBSetTestPair> pairs, String expectedJson) throws JSONException {
         // when
         tested.updateJsonBySettingPropertyForItemWithHibernate6JsonUpdateStatementBuilder(itemId, pairs);
@@ -395,8 +406,6 @@ public abstract class AbstractItemDaoTest {
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
     }
-
-    //provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement
 
     public static class JsonBSetTestPair {
         private final JsonTextArrayBuilder jsonTextArrayBuilder;
@@ -409,6 +418,14 @@ public abstract class AbstractItemDaoTest {
 
         public JsonTextArrayBuilder getJsonbSetFunctionJsonPathBuilder() {
             return jsonTextArrayBuilder;
+        }
+
+        @Override
+        public String toString() {
+            return "JsonBSetTestPair{" +
+                    "jsonTextArrayBuilder=" + jsonTextArrayBuilder.buildString() +
+                    ", jsonValue='" + jsonValue + '\'' +
+                    '}';
         }
 
         public String getJsonValue() {
