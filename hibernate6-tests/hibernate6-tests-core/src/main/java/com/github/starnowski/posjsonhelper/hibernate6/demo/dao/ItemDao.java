@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath;
 import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
@@ -222,6 +223,26 @@ public class ItemDao {
 
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", current);
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        // Execute the update
+        int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
+    }
+
+    @Transactional
+    public void updateJsonBySettingPropertyForItemWithHibernate6JsonUpdateStatementBuilder(Long itemId, List<AbstractItemDaoTest.JsonBSetTestPair> pairs) {
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
+        for (AbstractItemDaoTest.JsonBSetTestPair pair : pairs) {
+            hibernate6JsonUpdateStatementBuilder.appendJsonbSet(pair.getJsonbSetFunctionJsonPathBuilder().build(), pair.getJsonValue());
+        }
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
