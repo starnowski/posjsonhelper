@@ -21,6 +21,6 @@ public class ConcatenateJsonbOperatorDescriptorRegister extends AbstractConditio
 
     @Override
     protected String getHqlFunctionName() {
-        return "XXXXX";
+        return hibernateContext.getConcatenateJsonbOperator();
     }
 }
