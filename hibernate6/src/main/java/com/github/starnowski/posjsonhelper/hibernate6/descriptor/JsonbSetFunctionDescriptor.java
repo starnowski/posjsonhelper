@@ -10,16 +10,16 @@ import org.hibernate.query.sqm.tree.SqmTypedNode;
 
 import java.util.List;
 
-public class JsonbSetFunctionDescriptor extends NamedSqmFunctionDescriptor {
-    protected final HibernateContext hibernateContext;
+import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_SET_FUNCTION_NAME;
 
-    public JsonbSetFunctionDescriptor(HibernateContext hibernateContext) {
-        super("jsonb_set", false, null, null);
-        this.hibernateContext = hibernateContext;
+public class JsonbSetFunctionDescriptor extends NamedSqmFunctionDescriptor {
+
+    public JsonbSetFunctionDescriptor() {
+        super(JSONB_SET_FUNCTION_NAME, false, null, null);
     }
 
     @Override
     protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine) {
-        return (SelfRenderingSqmFunction<T>) new JsonbSetFunction(queryEngine.getCriteriaBuilder(), arguments.get(0), arguments.get(1), arguments.get(2), hibernateContext);
+        return (SelfRenderingSqmFunction<T>) new JsonbSetFunction(queryEngine.getCriteriaBuilder(), arguments.get(0), arguments.get(1), arguments.get(2));
     }
 }

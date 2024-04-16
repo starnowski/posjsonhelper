@@ -15,28 +15,28 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_SET_FUNCTION_NAME;
+
 public class JsonbSetFunction extends SelfRenderingSqmFunction<String> implements Serializable {
 
     public JsonbSetFunction(NodeBuilder nodeBuilder, Path referencedPathSource, String jsonPath, String json, HibernateContext hibernateContext) {
-        this(nodeBuilder, (SqmTypedNode) referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), new JsonbCastOperatorFunction(nodeBuilder, json, hibernateContext), hibernateContext);
+        this(nodeBuilder, (SqmTypedNode) referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), new JsonbCastOperatorFunction(nodeBuilder, json, hibernateContext));
     }
 
     public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, String json, HibernateContext hibernateContext) {
-        this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), new JsonbCastOperatorFunction(nodeBuilder, json, hibernateContext), hibernateContext);
+        this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), new JsonbCastOperatorFunction(nodeBuilder, json, hibernateContext));
     }
 
-    public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, SqmTypedNode jsonPath, SqmTypedNode value, HibernateContext hibernateContext) {
+    public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, SqmTypedNode jsonPath, SqmTypedNode value) {
         super(
-//                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()), //TODO
-                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor("jsonb_set"), //TODO
-//                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()), //TODO
-                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor("jsonb_set"), //TODO
+                nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(JSONB_SET_FUNCTION_NAME),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(JSONB_SET_FUNCTION_NAME),
                 mapParameters(nodeBuilder, referencedPathSource, jsonPath, value),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.useFirstNonNull(),
                 nodeBuilder,
-                "jsonb_set");
+                JSONB_SET_FUNCTION_NAME);
     }
 
     private static CastOperatorFunction generateCastedJsonPathToTextArray(NodeBuilder nodeBuilder, String jsonPath, HibernateContext hibernateContext) {

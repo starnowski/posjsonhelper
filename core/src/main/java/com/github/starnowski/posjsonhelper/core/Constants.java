@@ -63,6 +63,11 @@ public class Constants {
      */
     public static final String TO_TSVECTOR_FUNCTION_NAME = "to_tsvector";
     /**
+     * Name of the Postgres function 'jsonb_set' that replace json with new value.
+     * Please check <a href="https://www.postgresql.org/docs/9.5/functions-json.html">Postgres doc</a>
+     */
+    public static final String JSONB_SET_FUNCTION_NAME = "jsonb_set";
+    /**
      * Default value for property {@link Context#jsonbAllArrayStringsExistFunctionReference}
      */
     public static final String DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_all_array_strings_exist";
