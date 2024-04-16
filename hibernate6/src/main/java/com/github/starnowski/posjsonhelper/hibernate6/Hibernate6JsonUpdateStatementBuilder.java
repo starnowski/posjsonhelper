@@ -31,6 +31,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
         return this;
     }
 
+    //TODO set sort
+    //TODO set filter
+
     public Expression<? extends T> build() {
         JsonUpdateStatementConfiguration configuration = jsonUpdateStatementConfigurationBuilder.build();
         SqmTypedNode current = null;

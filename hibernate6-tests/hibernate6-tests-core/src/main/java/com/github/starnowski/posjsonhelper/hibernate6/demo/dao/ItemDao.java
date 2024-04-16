@@ -250,4 +250,7 @@ public class ItemDao {
         // Execute the update
         int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
+
+    // TODO Add HQL method for jsonb_set
+    // TODO Add HQL method for concate operator
 }
