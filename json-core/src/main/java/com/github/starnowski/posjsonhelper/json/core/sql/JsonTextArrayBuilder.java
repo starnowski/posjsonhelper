@@ -8,13 +8,17 @@ public class JsonTextArrayBuilder {
     private final List<Object> path = new ArrayList<>();
 
     public JsonTextArrayBuilder append(String node) {
-        //TODO no null
+        if (node == null) {
+            throw new IllegalArgumentException("Can not pass null as path value");
+        }
         path.add(node);
         return this;
     }
 
     public JsonTextArrayBuilder append(Integer node) {
-        //TODO no null
+        if (node == null) {
+            throw new IllegalArgumentException("Can not pass null as path value");
+        }
         path.add(node);
         return this;
     }

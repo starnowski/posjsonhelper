@@ -31,4 +31,32 @@ class JsonTextArrayBuilderTest extends Specification {
             asList(0, "b2")             || "{0,b2}"
             asList(0, "b2", "label")    || "{0,b2,label}"
     }
+
+    def "should thrown exception when passing null value as argument for method that pass integer value"(){
+        given:
+            def tested = new JsonTextArrayBuilder()
+
+        when:
+            tested.append((Integer) null)
+
+        then:
+            def ex = thrown(IllegalArgumentException)
+
+        and: "should have correct message"
+            ex.message == "Can not pass null as path value"
+    }
+
+    def "should thrown exception when passing null value as argument for method that pass string value"(){
+        given:
+            def tested = new JsonTextArrayBuilder()
+
+        when:
+            tested.append((String) null)
+
+        then:
+            def ex = thrown(IllegalArgumentException)
+
+        and: "should have correct message"
+            ex.message == "Can not pass null as path value"
+    }
 }
