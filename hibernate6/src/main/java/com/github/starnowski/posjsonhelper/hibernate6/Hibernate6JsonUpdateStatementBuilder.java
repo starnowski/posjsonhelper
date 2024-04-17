@@ -15,6 +15,11 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     private final Path<T> rootPath;
     private final NodeBuilder nodeBuilder;
     private final HibernateContext hibernateContext;
+
+    public JsonUpdateStatementConfigurationBuilder getJsonUpdateStatementConfigurationBuilder() {
+        return jsonUpdateStatementConfigurationBuilder;
+    }
+
     private final JsonUpdateStatementConfigurationBuilder jsonUpdateStatementConfigurationBuilder;
 
     public Hibernate6JsonUpdateStatementBuilder(Path<T> rootPath, NodeBuilder nodeBuilder, HibernateContext hibernateContext) {
@@ -31,8 +36,15 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
         return this;
     }
 
-    //TODO set sort
-    //TODO set filter
+    public Hibernate6JsonUpdateStatementBuilder withSort(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort sort) {
+        jsonUpdateStatementConfigurationBuilder.withSort(sort);
+        return this;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder withPostSortFilter(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter postSortFilter) {
+        jsonUpdateStatementConfigurationBuilder.withPostSortFilter(postSortFilter);
+        return this;
+    }
 
     public Expression<? extends T> build() {
         JsonUpdateStatementConfiguration configuration = jsonUpdateStatementConfigurationBuilder.build();

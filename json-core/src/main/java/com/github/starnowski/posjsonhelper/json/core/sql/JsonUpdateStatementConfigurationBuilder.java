@@ -16,6 +16,14 @@ public class JsonUpdateStatementConfigurationBuilder {
         return this;
     }
 
+    public JsonUpdateStatementOperationSort getSort() {
+        return sort;
+    }
+
+    public JsonUpdateStatementOperationFilter getPostSortFilter() {
+        return postSortFilter;
+    }
+
     public JsonUpdateStatementConfigurationBuilder withPostSortFilter(JsonUpdateStatementOperationFilter postSortFilter) {
         this.postSortFilter = postSortFilter;
         return this;
