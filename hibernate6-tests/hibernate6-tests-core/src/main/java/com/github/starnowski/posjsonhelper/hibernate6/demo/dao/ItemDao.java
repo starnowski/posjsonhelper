@@ -251,6 +251,24 @@ public class ItemDao {
         int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
 
+    @Transactional
+    public void updateJsonPropertyForItemByHQL(Long itemId, String property, String value) throws JSONException {
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("child", new JSONObject());
+        jsonObject.getJSONObject("child").put(property, value);
+        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
+
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getConcatenateJsonbOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery( hqlUpdate )
+                .setParameter("id", itemId)
+                .setParameter("json", jsonObject.toString())
+                .executeUpdate();
+    }
+
     // TODO Add HQL method for jsonb_set
-    // TODO Add HQL method for concate operator
 }

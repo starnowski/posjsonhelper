@@ -358,6 +358,24 @@ public abstract class AbstractItemDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element by hql")
+    @ParameterizedTest
+    @MethodSource("provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldReplaceJsonPropertyWithSpecificValueToInnerElementByHQL(Long itemId, String property, String value) throws JSONException {
+        // when
+        tested.updateJsonPropertyForItemByHQL(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject().put(property, value);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should add json property with specific value to inner element")
     @ParameterizedTest
     @MethodSource("provideShouldSetJsonPropertyWithSpecificValueToInnerElement")
