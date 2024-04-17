@@ -396,6 +396,24 @@ public abstract class AbstractItemDaoTest {
             executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should add json property with specific value to inner element")
     @ParameterizedTest
+    @MethodSource("provideShouldSetJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldSetJsonPropertyWithSpecificValueToInnerElementByHQL(Long itemId, String property, String value, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItemByHQL(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
     @MethodSource("provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement")
     public void shouldSetMultipleJsonPropertyWithSpecificValueToInnerElement(Long itemId, List<JsonBSetTestPair> pairs, String expectedJson) throws JSONException {
         // when

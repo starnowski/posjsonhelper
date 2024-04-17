@@ -253,16 +253,9 @@ public class ItemDao {
 
     @Transactional
     public void updateJsonPropertyForItemByHQL(Long itemId, String property, String value) throws JSONException {
-        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
-        Root<Item> root = criteriaUpdate.from(Item.class);
-
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("child", new JSONObject());
         jsonObject.getJSONObject("child").put(property, value);
-        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
-
-        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
-
         String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getConcatenateJsonbOperator(), hibernateContext.getCastFunctionOperator());
         int updatedEntities = entityManager.createQuery( hqlUpdate )
                 .setParameter("id", itemId)
@@ -270,5 +263,14 @@ public class ItemDao {
                 .executeUpdate();
     }
 
-    // TODO Add HQL method for jsonb_set
+    @Transactional
+    public void updateJsonBySettingPropertyForItemByHQL(Long itemId, String property, String value) {
+        // Execute the update
+        String hqlUpdate = "UPDATE Item SET jsonbContent = jsonb_set(jsonbContent, %s(:path, 'text[]'), %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getCastFunctionOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery( hqlUpdate )
+                .setParameter("id", itemId)
+                .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
+                .setParameter("json", JSONObject.quote(value))
+                .executeUpdate();
+    }
 }
