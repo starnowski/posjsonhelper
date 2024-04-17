@@ -46,17 +46,21 @@ class JsonTextArrayBuilderTest extends Specification {
             ex.message == "Can not pass null as path value"
     }
 
-    def "should thrown exception when passing null value as argument for method that pass string value"(){
+    @Unroll
+    def "should thrown exception when passing the (#value) value as argument for method that pass string value"(){
         given:
             def tested = new JsonTextArrayBuilder()
 
         when:
-            tested.append((String) null)
+            tested.append((String) value)
 
         then:
             def ex = thrown(IllegalArgumentException)
 
         and: "should have correct message"
-            ex.message == "Can not pass null as path value"
+            ex.message == "Can not pass null or empty string as path value"
+
+        where:
+            value << [null, "", "      "]
     }
 }
