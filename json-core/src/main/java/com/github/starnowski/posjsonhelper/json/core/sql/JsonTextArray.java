@@ -6,6 +6,34 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Component that create json array string based on list of objects.
+ *
+ * For example for below list :
+ *
+ * <pre>{@code
+ *     ["parent", "child", 3, "toy", 1 ]
+ * }</pre>
+ *
+ * component is going to generate:
+ *
+ * <pre>{@code
+ * "{parent,child,3,toy,1}"
+ * }</pre>
+ *
+ * for below list :
+ * <pre>{@code
+ *     ["payload", "address", "street" ]
+ * }</pre>
+ *
+ * component is going to generate:
+ *
+ * <pre>{@code
+ * "{payload,address,street}"
+ * }</pre>
+ *
+ * @see #toString()
+ */
 public class JsonTextArray {
 
     private final List<Object> path;
@@ -31,6 +59,13 @@ public class JsonTextArray {
         return path;
     }
 
+    /**
+     * Returns json array based on list of objects.
+     * The result string is going to have "{" bracket at the beginning.
+     * And "}" bracket at the end.
+     * The elements of array are going to be separated by "," character.
+     * @return json array string based on list of objects
+     */
     @Override
     public String toString() {
         return "{" + path.stream().map(String::valueOf).collect(Collectors.joining(",")) + "}";

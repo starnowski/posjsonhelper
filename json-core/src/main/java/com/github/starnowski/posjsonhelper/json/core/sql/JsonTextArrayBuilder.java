@@ -3,6 +3,9 @@ package com.github.starnowski.posjsonhelper.json.core.sql;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Builder component for {@link JsonTextArray}.
+ */
 public class JsonTextArrayBuilder {
 
     private final List<Object> path = new ArrayList<>();
@@ -23,10 +26,18 @@ public class JsonTextArrayBuilder {
         return this;
     }
 
+    /**
+     *
+     * @return object of type {@link JsonTextArray}
+     */
     public JsonTextArray build() {
         return new JsonTextArray(path);
     }
 
+    /**
+     *
+     * @return string based on created {@link JsonTextArray} object
+     */
     public String buildString() {
         return build().toString();
     }
