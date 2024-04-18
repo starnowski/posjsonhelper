@@ -17,16 +17,42 @@ import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_SET_FUNCTION_NAME;
 
+/**
+ * Implemented of HQL function defined by constant {@link com.github.starnowski.posjsonhelper.core.Constants#JSONB_SET_FUNCTION_NAME}
+ */
 public class JsonbSetFunction extends SelfRenderingSqmFunction<String> implements Serializable {
 
+    /**
+     *
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type. Property has to implement {@link SqmTypedNode}
+     * @param jsonPath value for a text array that represents the JSON path for an element that is supposed to be set. For example "{parent,child,property}"
+     * @param json json value that should be set
+     * @param hibernateContext object of type {@link HibernateContext}
+     */
     public JsonbSetFunction(NodeBuilder nodeBuilder, Path referencedPathSource, String jsonPath, String json, HibernateContext hibernateContext) {
         this(nodeBuilder, (SqmTypedNode) referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), new JsonbCastOperatorFunction(nodeBuilder, json, hibernateContext));
     }
 
+    /**
+     *
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type
+     * @param jsonPath value for a text array that represents the JSON path for an element that is supposed to be set. For example "{parent,child,property}"
+     * @param json json value that should be set
+     * @param hibernateContext object of type {@link HibernateContext}
+     */
     public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, String json, HibernateContext hibernateContext) {
         this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), new JsonbCastOperatorFunction(nodeBuilder, json, hibernateContext));
     }
 
+    /**
+     *
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type
+     * @param jsonPath value for a text array that represents the JSON path for an element that is supposed to be set. For example "{parent,child,property}"
+     * @param value son value that should be set
+     */
     public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, SqmTypedNode jsonPath, SqmTypedNode value) {
         super(
                 nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(JSONB_SET_FUNCTION_NAME),
