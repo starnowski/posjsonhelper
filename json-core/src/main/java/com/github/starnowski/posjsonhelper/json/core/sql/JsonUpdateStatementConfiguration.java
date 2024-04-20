@@ -7,6 +7,10 @@ import java.util.Objects;
 import static java.util.Collections.emptyList;
 import static java.util.Optional.ofNullable;
 
+/**
+ * Component that has aggregation of operations (object of type {@link JsonUpdateStatementOperation}).
+ * Operations should be performed in the order in which they are written in the @link #operations} list.
+ */
 public class JsonUpdateStatementConfiguration {
 
     private final List<JsonUpdateStatementOperation> operations;
@@ -19,9 +23,21 @@ public class JsonUpdateStatementConfiguration {
         return operations;
     }
 
+    /**
+     * An object representing the operation that should be performed on the JSON object.
+     */
     public static class JsonUpdateStatementOperation {
+        /**
+         * Path for the JSON property that should be changed.
+         */
         private final JsonTextArray jsonTextArray;
+        /**
+         * The type of operation to be used.
+         */
         private final JsonUpdateStatementOperationType operation;
+        /**
+         * The JSON value that should be set.
+         */
         private final String value;
 
         public JsonUpdateStatementOperation(JsonTextArray jsonTextArray, JsonUpdateStatementOperationType operation, String value) {
