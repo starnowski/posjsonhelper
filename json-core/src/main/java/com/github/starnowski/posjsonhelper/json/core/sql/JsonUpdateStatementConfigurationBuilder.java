@@ -6,7 +6,8 @@ import java.util.List;
 import static java.util.Collections.unmodifiableList;
 
 /**
- * Organizes a list of operations, so you can easily create a single SQL update statement that can add multiple changes to a JSON column.
+ * Organizes a list of operations, each of which modifies a JSON property,
+ * so you can easily create a single SQL update statement that can add multiple changes to a JSON column.
  * For example for below code:
  * <pre>{@code
  * given:
@@ -59,6 +60,8 @@ import static java.util.Collections.unmodifiableList;
  *
  * In such a prepared statement, the top operation would set the "parents" property with an empty array.
  * The next operation will set the "child, birthday" property to "2021-11-23" and so on.
+ *
+ * For more details please check {@link #build()} method.
  */
 public class JsonUpdateStatementConfigurationBuilder {
 
