@@ -28,7 +28,7 @@ import static java.util.Collections.unmodifiableList;
  *  result.operations
  *  System.out.println(result.operations)
  * }</pre>
- *
+ * <p>
  * It generates configuration with below operations:
  *
  * <pre>{@code
@@ -39,7 +39,7 @@ import static java.util.Collections.unmodifiableList;
  * JsonUpdateStatementOperation{jsonTextArray={parents,0}, operation=JSONB_SET, value='{"type":"mom", "name":"simone"}'}
  * ]
  * }</pre>
- *
+ * <p>
  * Assuming that we have database table "item" and column that stores json is called "jsonb_content" the update statement
  * would like as below example:
  *
@@ -58,18 +58,29 @@ import static java.util.Collections.unmodifiableList;
  * WHERE
  * id=?
  * }</pre>
- *
+ * <p>
  * In such a prepared statement, the top operation would set the "parents" property with an empty array.
  * The next operation will set the "child, birthday" property to "2021-11-23" and so on.
- *
+ * <p>
  * For more details please check {@link #build()} method.
  */
 public class JsonUpdateStatementConfigurationBuilder {
 
     private final List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations = new ArrayList<>();
+    /**
+     * Sorting component, by default property has null value
+     */
     private JsonUpdateStatementOperationSort sort;
+    /**
+     * Filtering component, by default property has null value
+     */
     private JsonUpdateStatementOperationFilter postSortFilter;
 
+    /**
+     * Setting the {@link #sort} property
+     * @param sort sorting component
+     * @return a reference to the constructor component for which the methods were executed
+     */
     public JsonUpdateStatementConfigurationBuilder withSort(JsonUpdateStatementOperationSort sort) {
         this.sort = sort;
         return this;
@@ -83,15 +94,32 @@ public class JsonUpdateStatementConfigurationBuilder {
         return postSortFilter;
     }
 
+    /**
+     * Setting the {@link #postSortFilter} property
+     * @param postSortFilter filtering component
+     * @return a reference to the constructor component for which the methods were executed
+     */
     public JsonUpdateStatementConfigurationBuilder withPostSortFilter(JsonUpdateStatementOperationFilter postSortFilter) {
         this.postSortFilter = postSortFilter;
         return this;
     }
 
+    /**
+     * Adds a json property change
+     * @param operation the type of operation that should be applied to the json property
+     * @param jsonTextArray the path of the property that should be added or changed
+     * @param value value that should be applied
+     * @return a reference to the constructor component for which the methods were executed
+     */
     public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementOperationType operation, JsonTextArray jsonTextArray, String value) {
         return append(new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation(jsonTextArray, operation, value));
     }
 
+    /**
+     * Adds a json property change
+     * @param operation operation to apply to the json property
+     * @return a reference to the constructor component for which the methods were executed
+     */
     public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation) {
         operations.add(operation);
         return this;
@@ -104,6 +132,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * After potential sorting, the next step is to filter the operations.
      * Which means that some operations ({@link #operations}) may be filtered out and not added to the final list of the configuration object.
      * In can when the {@link #postSortFilter} component is null, this step is also skipped.
+     *
      * @return configuration object with final operations list
      */
     public JsonUpdateStatementConfiguration build() {
@@ -117,13 +146,31 @@ public class JsonUpdateStatementConfigurationBuilder {
         return new JsonUpdateStatementConfiguration(operationsCopy);
     }
 
+    /**
+     * Component that sorts operation list
+     */
     public interface JsonUpdateStatementOperationSort {
 
+        /**
+         * Sort operations list
+         *
+         * @param operations list of operations that should be sorted
+         * @return new sorted list of operations
+         */
         List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations);
     }
 
+    /**
+     * Component that filters operation list
+     */
     public interface JsonUpdateStatementOperationFilter {
 
+        /**
+         * Filter operations list
+         *
+         * @param operations list of operations that should be filtered
+         * @return new filtered list of operations
+         */
         List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations);
     }
 }
