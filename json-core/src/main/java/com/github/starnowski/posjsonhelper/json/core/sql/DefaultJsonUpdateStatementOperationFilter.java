@@ -2,6 +2,8 @@ package com.github.starnowski.posjsonhelper.json.core.sql;
 
 import java.util.*;
 
+import static java.util.Optional.ofNullable;
+
 public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
     @Override
     public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
@@ -56,12 +58,12 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             JsonTextArrayJsonUpdateStatementOperationTypeKey that = (JsonTextArrayJsonUpdateStatementOperationTypeKey) o;
-            return Objects.equals(jsonTextArray, that.jsonTextArray) && type == that.type;
+            return Objects.equals(ofNullable(jsonTextArray).map(jta -> jta.toString()).orElse(null), ofNullable(that.jsonTextArray).map(jta -> jta.toString()).orElse(null)) && type == that.type;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(jsonTextArray, type);
+            return Objects.hash(ofNullable(jsonTextArray).map(jta -> jta.toString()).orElse(null), type);
         }
     }
 }
