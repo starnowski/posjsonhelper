@@ -32,11 +32,33 @@ import static java.util.Collections.unmodifiableList;
  * <pre>{@code
  * [
  * JsonUpdateStatementOperation{jsonTextArray={parents}, operation=JSONB_SET, value='[]'},
+ * JsonUpdateStatementOperation{jsonTextArray={child,birthday}, operation=JSONB_SET, value='"2021-11-23"'},
  * JsonUpdateStatementOperation{jsonTextArray={child,pets}, operation=JSONB_SET, value='["cat"]'},
  * JsonUpdateStatementOperation{jsonTextArray={parents,0}, operation=JSONB_SET, value='{"type":"mom", "name":"simone"}'}
  * ]
  * }</pre>
  *
+ * Assuming that we have database table "item" and column that stores json is called "jsonb_content" the update statement
+ * would like as below example:
+ *
+ * <pre>{@code
+ * UPDATE
+ * item
+ * SET
+ * jsonb_content=
+ *  jsonb_set(
+ *      jsonb_set(
+ *          jsonb_set(
+ *              jsonb_set(jsonb_content, ?::text[], ?::jsonb) -- top operation
+ *      , ?::text[], ?::jsonb)
+ *  , ?::text[], ?::jsonb)
+ * , ?::text[], ?::jsonb)
+ * WHERE
+ * id=?
+ * }</pre>
+ *
+ * In such a prepared statement, the top operation would set the "parents" property with an empty array.
+ * The next operation will set the "child, birthday" property to "2021-11-23" and so on.
  */
 public class JsonUpdateStatementConfigurationBuilder {
 

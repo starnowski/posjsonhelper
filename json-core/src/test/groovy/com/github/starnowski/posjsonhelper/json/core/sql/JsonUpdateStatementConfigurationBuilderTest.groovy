@@ -78,6 +78,7 @@ class JsonUpdateStatementConfigurationBuilderTest extends Specification {
             def tested = new JsonUpdateStatementConfigurationBuilder()
                     .withSort(new DefaultJsonUpdateStatementOperationSort())
                     .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter())
+                    .append(JSONB_SET, new JsonTextArrayBuilder().append("child").append("birthday").build(), "\"2021-11-23\"")
                     .append(JSONB_SET, new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]")
                     .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}")
                     .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").build(), "[]")
