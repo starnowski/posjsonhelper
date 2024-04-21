@@ -17,11 +17,9 @@ public class DefaultJsonUpdateStatementOperationSort implements JsonUpdateStatem
                     if (Objects.equals(ob1, ob2)) {
                         continue;
                     }
-                    if (ob1.getClass() == ob2.getClass()) {
-                        if (ob1 instanceof Comparable) {
-                            Comparable c1 = (Comparable) ob1;
-                            return c1.compareTo(ob2);
-                        }
+                    if (ob1.getClass() == ob2.getClass() && ob1 instanceof Comparable) {
+                        Comparable c1 = (Comparable) ob1;
+                        return c1.compareTo(ob2);
                     } else {
                         String ob1String = ob1.toString();
                         String ob2String = ob2.toString();

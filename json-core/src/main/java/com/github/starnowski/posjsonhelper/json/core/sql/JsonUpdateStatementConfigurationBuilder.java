@@ -148,6 +148,7 @@ public class JsonUpdateStatementConfigurationBuilder {
 
     /**
      * Component that sorts operation list
+     * @see DefaultJsonUpdateStatementOperationSort
      */
     public interface JsonUpdateStatementOperationSort {
 
@@ -162,6 +163,7 @@ public class JsonUpdateStatementConfigurationBuilder {
 
     /**
      * Component that filters operation list
+     * @see DefaultJsonUpdateStatementOperationFilter
      */
     public interface JsonUpdateStatementOperationFilter {
 
