@@ -4,6 +4,20 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Default implementation of {@link com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort}.
+ * Sorting of two operation based on below criteria:
+ * <li>
+ * <ul>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</ul>
+ * <ul>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</ul>
+ * <ul>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</ul>
+ * <ul>If the parts are equal then the next element is being checked</ul>
+ * <ul>If the parts are not equal then :</ul>
+ * <li>
+ *     <ul>If part elements are the same type and type is instance of {@link Comparable} interface then </ul>TODO
+ * </li>
+ * </li>
+ */
 public class DefaultJsonUpdateStatementOperationSort implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort {
     @Override
     public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
