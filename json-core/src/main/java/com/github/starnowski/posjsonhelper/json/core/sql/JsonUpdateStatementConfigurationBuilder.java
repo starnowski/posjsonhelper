@@ -5,6 +5,39 @@ import java.util.List;
 
 import static java.util.Collections.unmodifiableList;
 
+/**
+ * Organizes a list of operations, so you can easily create a single SQL update statement that can add multiple changes to a JSON column.
+ * For example for below code:
+ * <pre>{@code
+ * given:
+ *  def tested = new JsonUpdateStatementConfigurationBuilder()
+ *  .withSort(new DefaultJsonUpdateStatementOperationSort())
+ *  .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter())
+ *  .append(JSONB_SET, new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]")
+ *  .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}")
+ *  .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").build(), "[]")
+ *
+ *
+ * when:
+ *  def result = tested.build()
+ *
+ * then:
+ *  result
+ *  result.operations
+ *  System.out.println(result.operations)
+ * }</pre>
+ *
+ * It generates configuration with below operations:
+ *
+ * <pre>{@code
+ * [
+ * JsonUpdateStatementOperation{jsonTextArray={parents}, operation=JSONB_SET, value='[]'},
+ * JsonUpdateStatementOperation{jsonTextArray={child,pets}, operation=JSONB_SET, value='["cat"]'},
+ * JsonUpdateStatementOperation{jsonTextArray={parents,0}, operation=JSONB_SET, value='{"type":"mom", "name":"simone"}'}
+ * ]
+ * }</pre>
+ *
+ */
 public class JsonUpdateStatementConfigurationBuilder {
 
     private final List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations = new ArrayList<>();

@@ -3,6 +3,7 @@ package com.github.starnowski.posjsonhelper.json.core.sql
 import spock.lang.Specification
 
 import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET
+import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET
 
 class JsonUpdateStatementConfigurationBuilderTest extends Specification {
 
@@ -70,5 +71,24 @@ class JsonUpdateStatementConfigurationBuilderTest extends Specification {
         then:
             result
             result.getOperations() == [new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation((new JsonTextArrayBuilder()).append("parent").append("child1").build(), JSONB_SET, "some value1")]
+    }
+
+    def "should organize list"(){
+        given:
+            def tested = new JsonUpdateStatementConfigurationBuilder()
+                    .withSort(new DefaultJsonUpdateStatementOperationSort())
+                    .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter())
+                    .append(JSONB_SET, new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]")
+                    .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}")
+                    .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").build(), "[]")
+
+
+        when:
+            def result = tested.build()
+
+        then:
+            result
+            result.operations
+            System.out.println(result.operations)
     }
 }
