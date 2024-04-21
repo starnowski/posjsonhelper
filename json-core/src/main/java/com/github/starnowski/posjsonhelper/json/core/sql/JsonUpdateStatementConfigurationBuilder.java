@@ -14,6 +14,7 @@ import static java.util.Collections.unmodifiableList;
  *  def tested = new JsonUpdateStatementConfigurationBuilder()
  *  .withSort(new DefaultJsonUpdateStatementOperationSort())
  *  .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter())
+ *  .append(JSONB_SET, new JsonTextArrayBuilder().append("child").append("birthday").build(), "\"2021-11-23\"")
  *  .append(JSONB_SET, new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]")
  *  .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}")
  *  .append(JSONB_SET, new JsonTextArrayBuilder().append("parents").build(), "[]")
@@ -96,6 +97,15 @@ public class JsonUpdateStatementConfigurationBuilder {
         return this;
     }
 
+    /**
+     * Generate a configuration with a list of operations that need to be added in the correct order to apply all changes to the json column.
+     * First, the method uses a sorting component ({@link #sort}) to sort operations.
+     * If the {@link #sort} component is null, this step is skipped.
+     * After potential sorting, the next step is to filter the operations.
+     * Which means that some operations ({@link #operations}) may be filtered out and not added to the final list of the configuration object.
+     * In can when the {@link #postSortFilter} component is null, this step is also skipped.
+     * @return configuration object with final operations list
+     */
     public JsonUpdateStatementConfiguration build() {
         List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operationsCopy = unmodifiableList(operations);
         if (sort != null) {
