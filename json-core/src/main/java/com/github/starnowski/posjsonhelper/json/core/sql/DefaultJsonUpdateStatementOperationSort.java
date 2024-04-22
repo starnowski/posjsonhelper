@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
  * Sorting of two operation based on below criteria:
  * <ul>
  * <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
- * <ul>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
+ * <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
  * <li>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</li>
  * <li>If the parts are equal then the next element is being checked</li>
  * <li>If the parts are not equal then :</li>
