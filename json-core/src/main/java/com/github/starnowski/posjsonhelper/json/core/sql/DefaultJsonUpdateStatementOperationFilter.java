@@ -4,6 +4,9 @@ import java.util.*;
 
 import static java.util.Optional.ofNullable;
 
+/**
+ *
+ */
 public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
     @Override
     public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {

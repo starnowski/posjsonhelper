@@ -8,22 +8,23 @@ import java.util.stream.Collectors;
  * Default implementation of {@link com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort}.
  * Sorting of two operation based on below criteria:
  * <ul>
- * <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
- * <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
- * <li>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</li>
- * <li>If the parts are equal then the next element is being checked</li>
- * <li>If the parts are not equal then :</li>
- * <ul>
+ *  <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
+ *  <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
+ *  <li>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</li>
+ *  <li>If the parts are equal then the next element is being checked</li>
+ *  <li>If the parts are not equal then :</li>
+ *
+ *  <li><ul>
  *     <li>If part elements are the same type and type is instance of {@link Comparable} interface then the part paths are compare by {@link Comparable#compareTo(Object)} method</li>
  *     <li>If part elements are not the same type then the part paths are converted to string by executing {@link Object#toString()} and compare its values by {@link Comparable#compareTo(Object)} method</li>
  *     <li>Then the result of the {@link Comparable#compareTo(Object)} method for one of this case is examinated</li>
  *     <li>if the result is equal to zero then the next element from loop is being checked</li>
  *     <li>if the result is not equal to zero then:</li>
- *     <ul>
+ *     <li><ul>
  *         <li>if it is below zero, then the left element comes first</li>
  *         <li>if it is above zero, then right element comes first</li>
- *     </ul>
- * </ul>
+ *     </ul></li>
+ *  </ul></li>
  * </ul>
  */
 public class DefaultJsonUpdateStatementOperationSort implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort {
