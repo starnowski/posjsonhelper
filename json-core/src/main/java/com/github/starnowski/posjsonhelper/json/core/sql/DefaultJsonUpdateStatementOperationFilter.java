@@ -5,7 +5,9 @@ import java.util.*;
 import static java.util.Optional.ofNullable;
 
 /**
- *
+ * Default implementation of {@link com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter}.
+ * Removes operation for the same path. For example, if there are two operations for the same JSON path, the first operation will be removed.
+ * Because changes for this operation at the end are going to be overridden.
  */
 public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
     @Override
