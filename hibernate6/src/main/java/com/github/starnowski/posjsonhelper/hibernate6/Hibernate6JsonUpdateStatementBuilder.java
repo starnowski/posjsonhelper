@@ -14,6 +14,54 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  * Builder for SQL statement part that allows to set particular json properties.
  * The idea is to execute some kind of patch operation instead of full update operation for json column value.
  * To set correct order for operation it uses {@link #jsonUpdateStatementConfigurationBuilder} component.
+ * For example lets imagine that there is entity class Item that has jsonbContent that stores json.
+ * It is possible to update json we below code:
+ * <pre>{@code
+ *         // GIVEN
+ *         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+ *         Root<Item> root = criteriaUpdate.from(Item.class);
+ *
+ *         Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
+ *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("birthday").build(), quote("2021-11-23"));
+ *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]");
+ *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}");
+ *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").build(), "[]");
+ *
+ *         // Set the property you want to update and the new value
+ *         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
+ *
+ *         // Add any conditions to restrict which entities will be updated
+ *         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+ *
+ *         // WHEN
+ *         entityManager.createQuery(criteriaUpdate).executeUpdate();
+ *
+ *         // THEN
+ *         Item item = tested.findById(19L);
+ *         JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
+ *         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+ *         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+ * }</pre>
+ *
+ * The above code is going to execute below sql statement for update:
+ *
+ * <pre>{@code
+ * update
+ *         item
+ *     set
+ *         jsonb_content=
+ *          jsonb_set(
+ *              jsonb_set(
+ *                  jsonb_set(
+ *                      jsonb_set(
+ *                          jsonb_content, ?::text[], ?::jsonb)
+ *                      , ?::text[], ?::jsonb)
+ *                  , ?::text[], ?::jsonb)
+ *              ,?::text[], ?::jsonb
+ *          )
+ *     where
+ *         id=?
+ * }</pre>
  * TODO - Full code example
  * TODO - Java
  * TODO Generated SQL
