@@ -48,10 +48,10 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     }
 
     /**
-     * TODO
-     * @param jsonTextArray
-     * @param value
-     * @return
+     * Adding {@link JsonUpdateStatementOperationType#JSONB_SET} type operation that set value for specific json path
+     * @param jsonTextArray json array that specified path for property
+     * @param value json value that suppose to be set
+     * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder appendJsonbSet(JsonTextArray jsonTextArray, String value) {
         jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
@@ -59,9 +59,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     }
 
     /**
-     * TODO
-     * @param sort
-     * @return
+     * Setting the {@link JsonUpdateStatementConfigurationBuilder#sort} property for {@link #jsonUpdateStatementConfigurationBuilder} component
+     * @param sort sorting component
+     * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder withSort(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort sort) {
         jsonUpdateStatementConfigurationBuilder.withSort(sort);
@@ -69,9 +69,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     }
 
     /**
-     * TODO
-     * @param postSortFilter
-     * @return
+     * Setting the {@link JsonUpdateStatementConfigurationBuilder#postSortFilter} property for {@link #jsonUpdateStatementConfigurationBuilder} component
+     * @param postSortFilter postSortFilter filtering component
+     * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder withPostSortFilter(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter postSortFilter) {
         jsonUpdateStatementConfigurationBuilder.withPostSortFilter(postSortFilter);

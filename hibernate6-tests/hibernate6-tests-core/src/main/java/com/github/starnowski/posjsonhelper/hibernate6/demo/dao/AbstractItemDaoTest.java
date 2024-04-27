@@ -479,7 +479,7 @@ public abstract class AbstractItemDaoTest {
         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
 
         // WHEN
-        int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
 
         // THEN
         Item item = tested.findById(19L);
