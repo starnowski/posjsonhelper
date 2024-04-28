@@ -47,14 +47,14 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  *
  * <pre>{@code
  * update
- *         item
+ *     item
  *     set
  *         jsonb_content=
  *          jsonb_set(
  *              jsonb_set(
  *                  jsonb_set(
  *                      jsonb_set(
- *                          jsonb_content, ?::text[], ?::jsonb)
+ *                          jsonb_content, ?::text[], ?::jsonb) -- the most nested operation
  *                      , ?::text[], ?::jsonb)
  *                  , ?::text[], ?::jsonb)
  *              ,?::text[], ?::jsonb
@@ -62,9 +62,9 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  *     where
  *         id=?
  * }</pre>
- * TODO - Full code example
- * TODO - Java
- * TODO Generated SQL
+ *
+ * The most nested operation is going to set property "parents" with value "[]".
+ *
  * @param <T>
  * @see #build()
  */
@@ -127,9 +127,33 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     }
 
     /**
-     * TODO Example for operations list
-     * TODO Generated statement
-     * @return
+     * Build part of statement that set json property specified by {@link #rootPath}.
+     * Based on configuration produced by {@link #jsonUpdateStatementConfigurationBuilder} the method generates final expression.
+     * For example:
+     * Lest assume that method {@link  JsonUpdateStatementConfigurationBuilder#build()} returns configuration with below list:
+     *
+     * <pre>{@code
+     * [
+     * JsonUpdateStatementOperation{jsonTextArray={parents}, operation=JSONB_SET, value='[]'},
+     * JsonUpdateStatementOperation{jsonTextArray={child,birthday}, operation=JSONB_SET, value='"2021-11-23"'},
+     * JsonUpdateStatementOperation{jsonTextArray={child,pets}, operation=JSONB_SET, value='["cat"]'},
+     * JsonUpdateStatementOperation{jsonTextArray={parents,0}, operation=JSONB_SET, value='{"type":"mom", "name":"simone"}'}
+     * ]
+     * }</pre>
+     *
+     * The expression generated on such would be translated to below sql part:
+     *
+     * <pre>{@code
+     *  jsonb_set(
+     *      jsonb_set(
+     *          jsonb_set(
+     *              jsonb_set(jsonb_content, ?::text[], ?::jsonb) -- top operation
+     *      , ?::text[], ?::jsonb)
+     *  , ?::text[], ?::jsonb)
+     * , ?::text[], ?::jsonb)
+     * }</pre>
+     *
+     * @return expression object generated based on {@link #jsonUpdateStatementConfigurationBuilder} configuration
      */
     public Expression<? extends T> build() {
         JsonUpdateStatementConfiguration configuration = jsonUpdateStatementConfigurationBuilder.build();
