@@ -70,8 +70,17 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  */
 public class Hibernate6JsonUpdateStatementBuilder<T> {
 
+    /**
+     * path object that refers to json property that suppose to be modified
+     */
     private final Path<T> rootPath;
+    /**
+     * hibernate component used to create modification operations
+     */
     private final NodeBuilder nodeBuilder;
+    /**
+     * Hibernate context
+     */
     private final HibernateContext hibernateContext;
 
     public JsonUpdateStatementConfigurationBuilder getJsonUpdateStatementConfigurationBuilder() {
@@ -81,10 +90,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     private final JsonUpdateStatementConfigurationBuilder jsonUpdateStatementConfigurationBuilder;
 
     /**
-     * TODO Add note about default values for the sort and the filter components
-     * @param rootPath
-     * @param nodeBuilder
-     * @param hibernateContext
+     * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
+     * {@link DefaultJsonUpdateStatementOperationSort} as sort component ({@link JsonUpdateStatementConfigurationBuilder#sort}) and an instance
+     * of {@link DefaultJsonUpdateStatementOperationFilter} as filter component ({@link JsonUpdateStatementConfigurationBuilder#postSortFilter}).
+     * @param rootPath value for {@link #rootPath}
+     * @param nodeBuilder value for {@link #nodeBuilder}
+     * @param hibernateContext value for {@link #hibernateContext}
      */
     public Hibernate6JsonUpdateStatementBuilder(Path<T> rootPath, NodeBuilder nodeBuilder, HibernateContext hibernateContext) {
         this.rootPath = rootPath;
