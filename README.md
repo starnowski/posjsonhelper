@@ -527,8 +527,8 @@ The library contains several JSON functions and operators that allow for this ty
 ### jsonb_set function wrapper
 
 Wrapper for [jsonb_set](https://www.postgresql.org/docs/9.5/functions-json.html) function.
-Function sets or replace json property value based on json path.
-Please check below example how it can be used with CriteriaUpdate component:
+The function sets or replaces the value of the JSON property based on the JSON path. 
+Check out the following example of how it can be used with the CriteriaUpdate component:
 
 ```java
 // GIVEN
@@ -557,7 +557,7 @@ Please check below example how it can be used with CriteriaUpdate component:
         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
 ```
 
-It would generate below SQL update statement:
+This would generate the following SQL update statement:
 
 ```sql
 update
@@ -576,7 +576,7 @@ Hibernate:
         i1_0.id=?
 ```
 
-The function could be also used in HQL statement like in below example:
+The function can also be used in HQL statements, as in the following example:
 
 ```java
     @Transactional
