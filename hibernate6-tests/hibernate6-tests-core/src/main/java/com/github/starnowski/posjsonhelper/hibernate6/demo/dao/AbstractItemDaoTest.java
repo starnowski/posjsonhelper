@@ -3,6 +3,7 @@ package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
+import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
 import com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import com.jayway.jsonpath.DocumentContext;
@@ -394,6 +395,39 @@ public abstract class AbstractItemDaoTest {
     public void shouldSetJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value, String expectedJson) throws JSONException {
         // when
         tested.updateJsonBySettingPropertyForItem(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element - documentation demo")
+    @Test
+    @Transactional
+    public void shouldSetJsonPropertyWithSpecificValueToInnerElementForDemoPurpose() throws JSONException {
+        // GIVEN
+        Long itemId = 19L;
+        String property = "birthday";
+        String value = "1970-01-01";
+        String expectedJson = "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}";
+        // when
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append(property).build().toString(), JSONObject.quote(value), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
 
         // then
         Item item = tested.findById(itemId);
