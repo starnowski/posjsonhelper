@@ -20,6 +20,7 @@
     * [JsonbAnyArrayStringsExistPredicate](#jsonbanyarraystringsexistpredicate)
 * [Modify JSON](#modify-json)
   * [jsonb_set function wrapper](#jsonbset-function-wrapper)
+  * [Concatenation operator wrapper '||'](#concatenation-operator-wrapper--)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -587,6 +588,74 @@ The function can also be used in HQL statements, as in the following example:
                 .setParameter("id", itemId)
                 .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
                 .setParameter("json", JSONObject.quote(value))
+                .executeUpdate();
+    }
+```
+
+### Concatenation operator wrapper '||'
+
+Wrapper for [concatenation operator](https://www.postgresql.org/docs/9.5/functions-json.html) wrapper.
+The wrapper 	Concatenate two jsonb values into a new jsonb value.
+Check out the following example of how it can be used with the CriteriaUpdate component:
+
+```java
+        // GIVEN
+        Long itemId = 19l;
+        String property = "birthday";
+        String value = "1970-01-01";
+
+        // WHEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("child", new JSONObject());
+        jsonObject.getJSONObject("child").put(property, value);
+        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
+
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject expectedJsonObject = new JSONObject().put(property, value);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(expectedJsonObject.toString());
+```
+
+This would generate the following SQL update statement:
+
+```sql
+update
+        item 
+    set
+        jsonb_content=jsonb_content || ?::jsonb 
+    where
+        id=?
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.jsonb_content 
+    from
+        item i1_0 
+    where
+        i1_0.id=?
+```
+
+The function can also be used in HQL statements, as in the following example:
+
+```sql
+    @Transactional
+    public void updateJsonPropertyForItemByHQL(Long itemId, String property, String value) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("child", new JSONObject());
+        jsonObject.getJSONObject("child").put(property, value);
+        String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getConcatenateJsonbOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery( hqlUpdate )
+                .setParameter("id", itemId)
+                .setParameter("json", jsonObject.toString())
                 .executeUpdate();
     }
 ```

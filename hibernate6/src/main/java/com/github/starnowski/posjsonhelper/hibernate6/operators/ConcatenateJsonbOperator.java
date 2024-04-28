@@ -12,6 +12,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implemented of HQL function defined by property {@link HibernateContext#concatenateJsonbOperator}.
+ * It is wrapper for Concatenation operator.
+ */
 public class ConcatenateJsonbOperator extends SelfRenderingSqmFunction<String> implements Serializable {
     public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, Path referencedPathSource, String value, HibernateContext hibernateContext) {
         this(nodeBuilder, referencedPathSource, new JsonbCastOperatorFunction(nodeBuilder, value, hibernateContext), hibernateContext);
