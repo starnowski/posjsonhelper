@@ -21,6 +21,7 @@
 * [Modify JSON](#modify-json)
   * [jsonb_set function wrapper](#jsonb_set-function-wrapper)
   * [Concatenation operator wrapper '||'](#concatenation-operator-wrapper-)
+  * [Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?](#hibernate6jsonupdatestatementbuilder---how-to-combine-multiple-modification-operations-with-one-update-statement)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -659,6 +660,8 @@ The function can also be used in HQL statements, as in the following example:
                 .executeUpdate();
     }
 ```
+
+### Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?
 
 ### Properties
 
