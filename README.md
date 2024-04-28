@@ -19,6 +19,7 @@
     * [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate)
     * [JsonbAnyArrayStringsExistPredicate](#jsonbanyarraystringsexistpredicate)
 * [Modify JSON](#modify-json)
+  * [jsonb_set function wrapper](#jsonbset-function-wrapper)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -522,6 +523,73 @@ For more details and examples with the IN operator or how to use numeric values 
 The library can also be used for JSON modification operations. By default, in Hibernate, we can always update a column with JSON content by setting its entire value.
 The posjsonhelper library also allows you to modify JSON content by setting, replacing, or removing individual JSON properties without replacing its full content.
 The library contains several JSON functions and operators that allow for this type of operation.
+
+### jsonb_set function wrapper
+
+Wrapper for [jsonb_set](https://www.postgresql.org/docs/9.5/functions-json.html) function.
+Function sets or replace json property value based on json path.
+Please check below example how it can be used with CriteriaUpdate component:
+
+```java
+// GIVEN
+        Long itemId = 19L;
+        String property = "birthday";
+        String value = "1970-01-01";
+        String expectedJson = "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}";
+        // when
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append(property).build().toString(), JSONObject.quote(value), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+```
+
+It would generate below SQL update statement:
+
+```sql
+update
+        item 
+    set
+        jsonb_content=jsonb_set(jsonb_content, ?::text[], ?::jsonb) 
+    where
+        id=?
+Hibernate: 
+    select
+        i1_0.id,
+        i1_0.jsonb_content 
+    from
+        item i1_0 
+    where
+        i1_0.id=?
+```
+
+The function could be also used in HQL statement like in below example:
+
+```java
+    @Transactional
+    public void updateJsonBySettingPropertyForItemByHQL(Long itemId, String property, String value) {
+        // Execute the update
+        String hqlUpdate = "UPDATE Item SET jsonbContent = jsonb_set(jsonbContent, %s(:path, 'text[]'), %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getCastFunctionOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery( hqlUpdate )
+                .setParameter("id", itemId)
+                .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
+                .setParameter("json", JSONObject.quote(value))
+                .executeUpdate();
+    }
+```
 
 ### Properties
 
