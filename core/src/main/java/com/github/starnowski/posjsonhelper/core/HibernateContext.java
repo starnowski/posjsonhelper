@@ -53,18 +53,28 @@ public class HibernateContext {
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR} constant.
      */
     private final String castFunctionOperator;
+    /**
+     * Name of HQL function that wraps Postgres concatenate "||" operator.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR} constant.
+     */
+    private final String concatenateJsonbOperator;
 
     public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator,
-                            String textFunctionOperator, String castFunctionOperator) {
+                            String textFunctionOperator, String castFunctionOperator, String concatenateJsonbOperator) {
         this.jsonbAllArrayStringsExistOperator = jsonbAllArrayStringsExistOperator;
         this.jsonbAnyArrayStringsExistOperator = jsonbAnyArrayStringsExistOperator;
         this.jsonFunctionJsonArrayOperator = jsonFunctionJsonArrayOperator;
         this.textFunctionOperator = textFunctionOperator;
         this.castFunctionOperator = castFunctionOperator;
+        this.concatenateJsonbOperator = concatenateJsonbOperator;
     }
 
     public static ContextBuilder builder() {
         return new ContextBuilder();
+    }
+
+    public String getConcatenateJsonbOperator() {
+        return concatenateJsonbOperator;
     }
 
     public String getCastFunctionOperator() {
@@ -114,6 +124,12 @@ public class HibernateContext {
         private String jsonFunctionJsonArrayOperator = DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR;
         private String textFunctionOperator = DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR;
         private String castFunctionOperator = DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR;
+        private String concatenateJsonbOperator = DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR;
+
+        public ContextBuilder withConcatenateJsonbOperator(String concatenateJsonbOperator) {
+            this.concatenateJsonbOperator = concatenateJsonbOperator;
+            return this;
+        }
 
         public ContextBuilder withCastFunctionOperator(String castFunctionOperator) {
             this.castFunctionOperator = castFunctionOperator;
@@ -142,7 +158,7 @@ public class HibernateContext {
 
         public HibernateContext build() {
             return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, this.jsonFunctionJsonArrayOperator,
-                    this.textFunctionOperator, this.castFunctionOperator);
+                    this.textFunctionOperator, this.castFunctionOperator, concatenateJsonbOperator);
         }
 
         public ContextBuilder withHibernateContext(HibernateContext hibernateContext) {
@@ -150,7 +166,8 @@ public class HibernateContext {
                     .withJsonbAnyArrayStringsExistOperator(hibernateContext.getJsonbAnyArrayStringsExistOperator())
                     .withJsonFunctionJsonArrayOperator(hibernateContext.getJsonFunctionJsonArrayOperator())
                     .withTextFunctionOperator(hibernateContext.getTextFunctionOperator())
-                    .withCastFunctionOperator(hibernateContext.getCastFunctionOperator());
+                    .withCastFunctionOperator(hibernateContext.getCastFunctionOperator())
+                    .withConcatenateJsonbOperator(hibernateContext.getConcatenateJsonbOperator());
         }
     }
 }

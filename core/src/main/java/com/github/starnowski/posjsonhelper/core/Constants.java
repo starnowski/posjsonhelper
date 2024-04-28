@@ -63,6 +63,11 @@ public class Constants {
      */
     public static final String TO_TSVECTOR_FUNCTION_NAME = "to_tsvector";
     /**
+     * Name of the Postgres function 'jsonb_set' that replace json with new value.
+     * Please check <a href="https://www.postgresql.org/docs/9.5/functions-json.html">Postgres doc</a>
+     */
+    public static final String JSONB_SET_FUNCTION_NAME = "jsonb_set";
+    /**
      * Default value for property {@link Context#jsonbAllArrayStringsExistFunctionReference}
      */
     public static final String DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_all_array_strings_exist";
@@ -102,6 +107,10 @@ public class Constants {
      * 	The default name for the HQL function that wraps Postgres cast "::" operator.
      */
     public static final String DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR = "cast_operator_function";
+    /**
+     * 	The default name for the HQL function that wraps Postgres concatenate "||" operator.
+     */
+    public static final String DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR = "concatenate_jsonb_operator_function";
     /**
      * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
      */

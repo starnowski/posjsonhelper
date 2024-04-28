@@ -1,8 +1,23 @@
 package com.github.starnowski.posjsonhelper.hibernate6.demo.dao;
 
+import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
+import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
+import com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Root;
+import jakarta.transaction.Transactional;
+import org.hibernate.query.sqm.NodeBuilder;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -23,6 +38,7 @@ import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.CL
 import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.ITEMS_SCRIPT_PATH;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.json.JSONObject.quote;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
@@ -37,6 +53,12 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 public abstract class AbstractItemDaoTest {
 
     private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L));
+    @Autowired
+    private ItemDao tested;
+    @Autowired
+    private HibernateContext hibernateContext;
+    @Autowired
+    private EntityManager entityManager;
 
     private static Stream<Arguments> provideShouldReturnSingleCorrectIdExpectedIdWhenSearchingByAllMatchingTags() {
         return Stream.of(
@@ -46,9 +68,101 @@ public abstract class AbstractItemDaoTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(List.of(1L))),
+                Arguments.of(List.of("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
+        );
+    }
 
-    @Autowired
-    private ItemDao tested;
+    private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(List.of(1L))),
+                Arguments.of(List.of("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(asList(1L, 4L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
+        return Stream.of(
+                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(asList(1L, 3L))),
+                Arguments.of(List.of("TAG3"), new HashSet<>(asList(3L, 2L))),
+                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(asList(1L, 3L, 5L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
+        return Stream.of(
+                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(List.of(11L))),
+                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(List.of(10L))),
+                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(asList(10L, 11L, 12L))),
+                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(asList(10L, 12L))),
+                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(List.of(11L))),
+                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(List.of())),
+                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(asList(10L, 11L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
+        return Stream.of(
+                Arguments.of(asList("SUPER", "USER"), new HashSet<>(asList(14L, 13L))),
+                Arguments.of(List.of("SUPER"), new HashSet<>(List.of(13L))),
+                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(asList(13L, 15L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression() {
+        return Stream.of(
+                Arguments.of("this is full sentence", new HashSet<>(List.of(16L))),
+                Arguments.of("this is ", new HashSet<>(List.of())),
+                Arguments.of("this is %", new HashSet<>(asList(16L, 17L))),
+                Arguments.of("end of", new HashSet<>(List.of())),
+                Arguments.of("end of%", new HashSet<>(List.of())),
+                Arguments.of("%end of%", new HashSet<>(List.of(18L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements() {
+        return Stream.of(
+                Arguments.of(List.of("dog"), new HashSet<>(asList(19L, 21L))),
+                Arguments.of(List.of("cat"), new HashSet<>(asList(20L, 21L))),
+                Arguments.of(List.of("hamster"), new HashSet<>(List.of(22L))),
+                Arguments.of(asList("hamster", "cat"), new HashSet<>(asList(20L, 21L, 22L)))
+        );
+    }
+
+    private static Stream<Arguments> provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, "birthday", "1970-01-01")
+        );
+    }
+
+    private static Stream<Arguments> provideShouldSetJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, "birthday", "1970-01-01", "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}")
+        );
+    }
+
+    private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement() {
+        return Stream.of(
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
+                Arguments.of(20L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
+                        new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
+        );
+    }
+
+    private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElementWithNewFields() {
+        return Stream.of(
+                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
+                        new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]"),
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents").append(0), "{\"type\":\"mom\", \"name\":\"simone\"}")  ,
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents"), "[]")
+                                )
+                        , "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}")
+        );
+    }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
@@ -66,14 +180,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(results.get(0).getId()).isEqualTo(expectedId);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -88,14 +194,6 @@ public abstract class AbstractItemDaoTest {
         // then
         assertThat(results).hasSize(expectedIds.size());
         assertThat(results.stream().map(r -> r.getId()).collect(Collectors.toSet())).isEqualTo(expectedIds);
-    }
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExceptExpectedIdsWhenSearchingItemThatDoNotMatchByAllMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG21", "TAG22"), new HashSet<>(Arrays.asList(1L, 4L)))
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
@@ -134,14 +232,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByAnyMatchingTags() {
-        return Stream.of(
-                Arguments.of(asList("TAG1", "TAG2"), new HashSet<>(Arrays.asList(1L, 3L))),
-                Arguments.of(asList("TAG3"), new HashSet<>(Arrays.asList(3L, 2L))),
-                Arguments.of(asList("TAG1", "TAG32"), new HashSet<>(Arrays.asList(1L, 3L, 5L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -176,18 +266,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByOperatorToCompareDoubleValue() {
-        return Stream.of(
-                Arguments.of(NumericComparator.EQ, -1137.98, new HashSet<>(Arrays.asList(11L))),
-                Arguments.of(NumericComparator.EQ, 353.01, new HashSet<>(Arrays.asList(10L))),
-                Arguments.of(NumericComparator.GE, -1137.98, new HashSet<>(Arrays.asList(10L, 11L, 12L))),
-                Arguments.of(NumericComparator.GT, -1137.98, new HashSet<>(Arrays.asList(10L, 12L))),
-                Arguments.of(NumericComparator.LE, -1137.98, new HashSet<>(Arrays.asList(11L))),
-                Arguments.of(NumericComparator.LT, -1137.98, new HashSet<>(Arrays.asList())),
-                Arguments.of(NumericComparator.LT, 20490.04, new HashSet<>(Arrays.asList(10L, 11L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -205,14 +283,6 @@ public abstract class AbstractItemDaoTest {
         assertThat(ids).isEqualTo(expectedIds);
     }
 
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByInOperatorToCompareEnumValue() {
-        return Stream.of(
-                Arguments.of(asList("SUPER", "USER"), new HashSet<>(Arrays.asList(14L, 13L))),
-                Arguments.of(asList("SUPER"), new HashSet<>(Arrays.asList(13L))),
-                Arguments.of(asList("ANONYMOUS", "SUPER"), new HashSet<>(Arrays.asList(13L, 15L)))
-        );
-    }
-
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -228,17 +298,6 @@ public abstract class AbstractItemDaoTest {
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
         assertThat(ids).hasSize(expectedIds.size());
         assertThat(ids).isEqualTo(expectedIds);
-    }
-
-    private static Stream<Arguments> provideShouldReturnCorrectIdExpectedIdsWhenSearchingByLIKEOperatorWithExpression() {
-        return Stream.of(
-                Arguments.of("this is full sentence", new HashSet<>(Arrays.asList(16L))),
-                Arguments.of("this is ", new HashSet<>(Arrays.asList())),
-                Arguments.of("this is %", new HashSet<>(Arrays.asList(16L, 17L))),
-                Arguments.of("end of", new HashSet<>(Arrays.asList())),
-                Arguments.of("end of%", new HashSet<>(Arrays.asList())),
-                Arguments.of("%end of%", new HashSet<>(Arrays.asList(18L)))
-        );
     }
 
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
@@ -273,5 +332,253 @@ public abstract class AbstractItemDaoTest {
         Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
         assertThat(ids).hasSize(expectedIds.size());
         assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by any matching tags [#tags] in inner elements")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements")
+    public void shouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements(List<String> tags, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByAnyMatchingTagsInInnerElement(new HashSet<String>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldReplaceJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value) throws JSONException {
+        // when
+        tested.updateJsonPropertyForItem(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject().put(property, value);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element - demo documentation")
+    @Test
+    @Transactional
+    public void shouldReplaceJsonPropertyWithSpecificValueToInnerElementForDemoPurpose() throws JSONException {
+        // GIVEN
+        Long itemId = 19l;
+        String property = "birthday";
+        String value = "1970-01-01";
+
+        // WHEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("child", new JSONObject());
+        jsonObject.getJSONObject("child").put(property, value);
+        criteriaUpdate.set("jsonbContent", new ConcatenateJsonbOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), jsonObject.toString(), hibernateContext));
+
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject expectedJsonObject = new JSONObject().put(property, value);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(expectedJsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element by hql")
+    @ParameterizedTest
+    @MethodSource("provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldReplaceJsonPropertyWithSpecificValueToInnerElementByHQL(Long itemId, String property, String value) throws JSONException {
+        // when
+        tested.updateJsonPropertyForItemByHQL(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject().put(property, value);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$.child"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldSetJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldSetJsonPropertyWithSpecificValueToInnerElement(Long itemId, String property, String value, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItem(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element - documentation demo")
+    @Test
+    @Transactional
+    public void shouldSetJsonPropertyWithSpecificValueToInnerElementForDemoPurpose() throws JSONException {
+        // GIVEN
+        Long itemId = 19L;
+        String property = "birthday";
+        String value = "1970-01-01";
+        String expectedJson = "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}";
+        // when
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new JsonbSetFunction((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append(property).build().toString(), JSONObject.quote(value), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldSetJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldSetJsonPropertyWithSpecificValueToInnerElementByHQL(Long itemId, String property, String value, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItemByHQL(itemId, property, value);
+
+        // then
+        Item item = tested.findById(itemId);
+        assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement")
+    public void shouldSetMultipleJsonPropertyWithSpecificValueToInnerElement(Long itemId, List<JsonBSetTestPair> pairs, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItem(itemId, pairs);
+
+        // then
+        Item item = tested.findById(itemId);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should add json property with specific value to inner element by using Hibernate6JsonUpdateStatementBuilder")
+    @ParameterizedTest
+    @MethodSource({"provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement", "provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElementWithNewFields"})
+    public void shouldSetMultipleJsonPropertyWithSpecificValueToInnerElementByUsingHibernate6JsonUpdateStatementBuilder(Long itemId, List<JsonBSetTestPair> pairs, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonBySettingPropertyForItemWithHibernate6JsonUpdateStatementBuilder(itemId, pairs);
+
+        // then
+        Item item = tested.findById(itemId);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @Test
+    @Transactional
+    @DisplayName("should add json property with specific value to inner element by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
+    public void shouldSetMultipleJsonPropertiesByUsingHibernate6JsonUpdateStatementBuilder() throws JSONException {
+        // GIVEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("birthday").build(), quote("2021-11-23"));
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]");
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}");
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").build(), "[]");
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+
+        // WHEN
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        Item item = tested.findById(19L);
+        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    public static class JsonBSetTestPair {
+        private final JsonTextArrayBuilder jsonTextArrayBuilder;
+        private final String jsonValue;
+
+        public JsonBSetTestPair(JsonTextArrayBuilder jsonTextArrayBuilder, String jsonValue) {
+            this.jsonTextArrayBuilder = jsonTextArrayBuilder;
+            this.jsonValue = jsonValue;
+        }
+
+        public JsonTextArrayBuilder getJsonbSetFunctionJsonPathBuilder() {
+            return jsonTextArrayBuilder;
+        }
+
+        @Override
+        public String toString() {
+            return "JsonBSetTestPair{" +
+                    "jsonTextArrayBuilder=" + jsonTextArrayBuilder.buildString() +
+                    ", jsonValue='" + jsonValue + '\'' +
+                    '}';
+        }
+
+        public String getJsonValue() {
+            return jsonValue;
+        }
     }
 }
