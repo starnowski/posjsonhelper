@@ -18,6 +18,7 @@
     * [JsonBExtractPathText - jsonb_extract_path_text](#jsonbextractpathtext---jsonb_extract_path_text)
     * [JsonbAllArrayStringsExistPredicate](#jsonballarraystringsexistpredicate)
     * [JsonbAnyArrayStringsExistPredicate](#jsonbanyarraystringsexistpredicate)
+* [Modify JSON](#modify-json)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -515,6 +516,12 @@ public List<Item> findAllByAnyMatchingTags(HashSet<String> tags) {
 ```
 
 For more details and examples with the IN operator or how to use numeric values please check the [DAO](/hibernate5/src/test/java/com/github/starnowski/posjsonhelper/hibernate5/demo/dao/ItemDao.java) used in tests.
+
+## Modify JSON
+
+The library can also be used for JSON modification operations. By default, in Hibernate, we can always update a column with JSON content by setting its entire value.
+The posjsonhelper library also allows you to modify JSON content by setting, replacing, or removing individual JSON properties without replacing its full content.
+The library contains several JSON functions and operators that allow for this type of operation.
 
 ### Properties
 
