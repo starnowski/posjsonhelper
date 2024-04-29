@@ -146,8 +146,8 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement() {
         return Stream.of(
-                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
-                Arguments.of(20L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
+                Arguments.of(19L, List.of(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
+                Arguments.of(20L, List.of(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
                 Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
                         new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
         );
@@ -156,11 +156,17 @@ public abstract class AbstractItemDaoTest {
     private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElementWithNewFields() {
         return Stream.of(
                 Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
-                        new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]"),
-                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents").append(0), "{\"type\":\"mom\", \"name\":\"simone\"}")  ,
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]"),
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents").append(0), "{\"type\":\"mom\", \"name\":\"simone\"}"),
                                 new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents"), "[]")
-                                )
+                        )
                         , "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}")
+        );
+    }
+
+    private static Stream<Arguments> provideShouldDeleteJsonPropertyForSpecificPath() {
+        return Stream.of(
+                Arguments.of(19L, "pets", "{\"child\": {}}")
         );
     }
 
@@ -377,7 +383,7 @@ public abstract class AbstractItemDaoTest {
     @Transactional
     public void shouldReplaceJsonPropertyWithSpecificValueToInnerElementForDemoPurpose() throws JSONException {
         // GIVEN
-        Long itemId = 19l;
+        Long itemId = 19L;
         String property = "birthday";
         String value = "1970-01-01";
 
@@ -466,6 +472,23 @@ public abstract class AbstractItemDaoTest {
         // then
         Item item = tested.findById(itemId);
         assertThat((String) JsonPath.read(item.getJsonbContent(), "$.child." + property)).isEqualTo(value);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should delete json property for specific path to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldDeleteJsonPropertyForSpecificPath")
+    public void shouldDeleteJsonPropertyForSpecificPathToInnerElement(Long itemId, String property, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonByDeletingSpecificPropertyForItem(itemId, property);
+
+        // then
+        Item item = tested.findById(itemId);
         JSONObject jsonObject = new JSONObject(expectedJson);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());

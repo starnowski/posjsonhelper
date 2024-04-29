@@ -7,6 +7,7 @@ import com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText;
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAllArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.hibernate6.predicates.JsonbAnyArrayStringsExistPredicate;
 import com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder;
@@ -151,17 +152,15 @@ public class ItemDao {
         return entityManager.createQuery(query).getResultList();
     }
 
-    public Item findById(Long id)
-    {
+    public Item findById(Long id) {
         return entityManager.find(Item.class, id);
     }
 
-    protected String generateParameters(String prefix, int index, int parametersNum)
-    {
+    protected String generateParameters(String prefix, int index, int parametersNum) {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         int to = index + parametersNum;
-        for (;index < to; index++) {
+        for (; index < to; index++) {
             if (!first) {
                 sb.append(" , ");
             }
@@ -254,7 +253,7 @@ public class ItemDao {
         jsonObject.put("child", new JSONObject());
         jsonObject.getJSONObject("child").put(property, value);
         String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getConcatenateJsonbOperator(), hibernateContext.getCastFunctionOperator());
-        int updatedEntities = entityManager.createQuery( hqlUpdate )
+        int updatedEntities = entityManager.createQuery(hqlUpdate)
                 .setParameter("id", itemId)
                 .setParameter("json", jsonObject.toString())
                 .executeUpdate();
@@ -264,10 +263,25 @@ public class ItemDao {
     public void updateJsonBySettingPropertyForItemByHQL(Long itemId, String property, String value) {
         // Execute the update
         String hqlUpdate = "UPDATE Item SET jsonbContent = jsonb_set(jsonbContent, %s(:path, 'text[]'), %s(:json, 'jsonb' ) ) WHERE id = :id".formatted(hibernateContext.getCastFunctionOperator(), hibernateContext.getCastFunctionOperator());
-        int updatedEntities = entityManager.createQuery( hqlUpdate )
+        int updatedEntities = entityManager.createQuery(hqlUpdate)
                 .setParameter("id", itemId)
                 .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
                 .setParameter("json", JSONObject.quote(value))
                 .executeUpdate();
+    }
+
+    @Transactional
+    public void updateJsonByDeletingSpecificPropertyForItem(Long itemId, String property) {
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new DeleteJsonbBySpecifiedPathOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append(property).build().toString(), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), itemId));
+
+        // Execute the update
+        int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
 }

@@ -111,6 +111,7 @@ public class Constants {
      * 	The default name for the HQL function that wraps Postgres concatenate "||" operator.
      */
     public static final String DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR = "concatenate_jsonb_operator_function";
+    public static final String DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR = "delete_jsonb_by_specific_path_hibernate_operator";
     /**
      * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
      */
