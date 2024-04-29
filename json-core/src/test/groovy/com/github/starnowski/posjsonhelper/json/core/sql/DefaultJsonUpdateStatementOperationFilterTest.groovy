@@ -19,7 +19,9 @@ class DefaultJsonUpdateStatementOperationFilterTest extends Specification {
         where:
         operations  ||  expected    |   message
         [jsonbSet((new JsonTextArrayBuilder()).append("a").build(), "b1"), jsonbSet((new JsonTextArrayBuilder()).append("a").build(), "c1")] || [jsonbSet((new JsonTextArrayBuilder()).append("a").build(), "c1")] | "filter redundant operation that is going to override by next operation"
-        [jsonbSet((new JsonTextArrayBuilder()).append("a").append("0").build(), "b1"), jsonbSet((new JsonTextArrayBuilder()).append("a").append(0).build(), "c1")] || [jsonbSet((new JsonTextArrayBuilder()).append("a").append(0).build(), "c1")] | "filter redundant operation which will be replaced by next operation even if one operation has integer and other has string but in context json paths are same"
+        [delSpecPath((new JsonTextArrayBuilder()).append("a").append("a").build()), delSpecPath((new JsonTextArrayBuilder()).append("a").build())] || [delSpecPath((new JsonTextArrayBuilder()).append("a").build())] | "filter redundant operation that is going to override by operation for higher element"
+        [jsonbSet((new JsonTextArrayBuilder()).append("a").append("0").build(), "b1"), jsonbSet((new JsonTextArrayBuilder()).append("a").append(0).build(), "c1")] || [jsonbSet((new JsonTextArrayBuilder()).append("a").append(0).build(), "c1")] | "for jsonb_set operation filter redundant operation which will be replaced by next operation even if one operation has integer and other has string but in context json paths are same"
+        [delSpecPath((new JsonTextArrayBuilder()).append("a").append("0").build()), delSpecPath((new JsonTextArrayBuilder()).append("a").append(0).build())] || [delSpecPath((new JsonTextArrayBuilder()).append("a").append("0").build())] | "for deleting for specific path operations filter redundant operation which will be replaced by first operation even if one operation has integer and other has string but in context json paths are same"
     }
 
     @Unroll
@@ -40,5 +42,10 @@ class DefaultJsonUpdateStatementOperationFilterTest extends Specification {
     private static JsonUpdateStatementConfiguration.JsonUpdateStatementOperation jsonbSet(JsonTextArray jsonTextArray, String json)
     {
         new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation(jsonTextArray, JsonUpdateStatementOperationType.JSONB_SET, json)
+    }
+
+    private static JsonUpdateStatementConfiguration.JsonUpdateStatementOperation delSpecPath(JsonTextArray jsonTextArray)
+    {
+        new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation(jsonTextArray, JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH, "XX1")
     }
 }
