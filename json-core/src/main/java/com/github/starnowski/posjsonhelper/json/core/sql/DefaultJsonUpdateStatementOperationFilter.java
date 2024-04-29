@@ -20,6 +20,7 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
         Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> it = results.iterator();
         while (it.hasNext()) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = it.next();
+            mainswitch:
             switch (op.getOperation()) {
                 case JSONB_SET:
                     JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
@@ -31,12 +32,23 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
                     }
                     break;
                 case DELETE_BY_SPECIFIC_PATH:
+                    String opJsonTextArrayString = op.getJsonTextArray().toString();
                     Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> tmpIt = operations.iterator();
                     for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation current = tmpIt.next(); current != op && tmpIt.hasNext(); current = tmpIt.next()) {
-                        String parentKey = current.getJsonTextArray().toString();
-                        if (parentKey.equals(op.getJsonTextArray().toString()) || op.getJsonTextArray().toString().startsWith(parentKey + ",")) {
+                        String currentKey = current.getJsonTextArray().toString();
+                        if (currentKey.equals(opJsonTextArrayString)) {
                             it.remove();
-                            break;
+                            break mainswitch;
+                        }
+                    }
+                    for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation current : operations) {
+                        if (current == op) {
+                            continue;
+                        }
+                        String currentKeyKey = current.getJsonTextArray().toString();
+                        if (opJsonTextArrayString.startsWith(currentKeyKey.replace("}",","))) {
+                            it.remove();
+                            break mainswitch;
                         }
                     }
             }
