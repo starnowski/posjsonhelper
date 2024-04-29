@@ -4,7 +4,7 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class DefaultJsonUpdateStatementOperationSortTest extends Specification {
-
+//TODO
     @Unroll
     def "should sort correctly json path (current #operations) (expected #expected) : #message"() {
         given:
