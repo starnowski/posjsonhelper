@@ -8,11 +8,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 /**
  * Default implementation of {@link com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort}.
  * Sorting of two operation based on below criteria:
- * TODO
+ *
  * <ul>
+ *  <li>At the beginning, operations are compared based on the result for {@link JsonUpdateStatementConfiguration.JsonUpdateStatementOperation#getOperation()} method.
+ *  Each type of operation has its weight. If the weight for two operations is not the same then:
+ *  <ul>
+ *      <li>If weight has a lower value for one operation, then the operation should be first in order.</li>
+ *      <li>If weight has a higher value for one operation, then the operation should be second in order.</li>
+ *  </ul>
+ *  <li>When weights are the same then process is continued</<li>
+ *  <ul>
+ *     <li> {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} has value 9 </li>
+ *     <li> {@link JsonUpdateStatementOperationType#JSONB_SET} has value 10 </li>
+ *  </ul>
+ *  </li>
  *  <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
  *  <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
  *  <li>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</li>
@@ -71,6 +85,6 @@ public class DefaultJsonUpdateStatementOperationSort implements JsonUpdateStatem
             } else {
                 return size1 < size2 ? -1 : 1;
             }
-        }).collect(Collectors.toList());
+        }).collect(toList());
     }
 }
