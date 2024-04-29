@@ -52,7 +52,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
         executionPhase = AFTER_TEST_METHOD)
 public abstract class AbstractItemDaoTest {
 
-    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L));
+    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L, 23L));
     @Autowired
     private ItemDao tested;
     @Autowired
@@ -125,7 +125,7 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements() {
         return Stream.of(
-                Arguments.of(List.of("dog"), new HashSet<>(asList(19L, 21L))),
+                Arguments.of(List.of("dog"), new HashSet<>(asList(19L, 21L, 23L))),
                 Arguments.of(List.of("cat"), new HashSet<>(asList(20L, 21L))),
                 Arguments.of(List.of("hamster"), new HashSet<>(List.of(22L))),
                 Arguments.of(asList("hamster", "cat"), new HashSet<>(asList(20L, 21L, 22L)))

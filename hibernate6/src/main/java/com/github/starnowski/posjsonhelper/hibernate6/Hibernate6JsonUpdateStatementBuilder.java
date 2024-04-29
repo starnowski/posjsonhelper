@@ -8,6 +8,7 @@ import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 
+import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH;
 import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET;
 
 /**
@@ -114,6 +115,16 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      */
     public Hibernate6JsonUpdateStatementBuilder appendJsonbSet(JsonTextArray jsonTextArray, String value) {
         jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
+        return this;
+    }
+
+    /**
+     * Adding {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} type operation that deletes property for specific json path
+     * @param jsonTextArray json array that specified path for property
+     * @return a reference to the constructor component for which the methods were executed
+     */
+    public Hibernate6JsonUpdateStatementBuilder appendDeleteBySpecificPath(JsonTextArray jsonTextArray) {
+        jsonUpdateStatementConfigurationBuilder.append(DELETE_BY_SPECIFIC_PATH, jsonTextArray, null);
         return this;
     }
 
