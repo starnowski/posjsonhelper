@@ -21,7 +21,7 @@
 * [Modify JSON](#modify-json)
   * [jsonb_set function wrapper](#jsonb_set-function-wrapper)
   * [Concatenation operator wrapper '||'](#concatenation-operator-wrapper-)
-  * [Deletes the field or array element at the specified path '#-'](#deletes-the-field-or-array-element-at-the-specified-path---)
+  * [Deletes the field or array element at the specified path '#-'](#deletes-the-field-or-array-element-at-the-specified-path--)
   * [Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?](#hibernate6jsonupdatestatementbuilder---how-to-combine-multiple-modification-operations-with-one-update-statement)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
