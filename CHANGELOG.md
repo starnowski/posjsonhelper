@@ -29,6 +29,9 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR constant [121](https://github.com/starnowski/posjsonhelper/issues/121)
   - Added com.github.starnowski.posjsonhelper.core.HibernateContext.deleteJsonBySpecificPathOperator property and its setter and getter [121](https://github.com/starnowski/posjsonhelper/issues/121)
   - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.DeleteJsonbBySpecifiedPathOperatorDescriptor type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.DeleteJsonbBySpecifiedPathOperatorDescriptorRegister type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.DeleteJsonbBySpecifiedPathOperatorDescriptorRegisterFactory type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator type [121](https://github.com/starnowski/posjsonhelper/issues/121)
 
 - Added support for "||" operator and jsonb_set function to be able to use them in UPDATE statement operation [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.core.Constants#JSONB_SET_FUNCTION_NAME constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
