@@ -45,6 +45,7 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder type [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration type [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType type [120](https://github.com/starnowski/posjsonhelper/issues/120)
 
 
 ## [0.3.1] - 2024-03-11
