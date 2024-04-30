@@ -22,70 +22,46 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
-import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
+import jakarta.persistence.criteria.Path;
 import org.hibernate.query.ReturnableType;
 import org.hibernate.query.spi.QueryEngine;
 import org.hibernate.query.sqm.function.AbstractSqmSelfRenderingFunctionDescriptor;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
-import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.hibernate.sql.ast.SqlAstNodeRenderingMode;
 import org.hibernate.sql.ast.SqlAstTranslator;
 import org.hibernate.sql.ast.spi.SqlAppender;
 import org.hibernate.sql.ast.tree.SqlAstNode;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * Function descriptor for <a href="https://www.postgresql.org/docs/12/functions-array.html">ARRAY</a> postgres operator.
- * Generally it renders passed arguments into array instance.
- * For example:
- * For two arguments, the component is going to render as below:
- * SQL
- * <pre>{@code
- *  array[?,?]
- * }</pre>
- *
- * In case of five arguments, the component is going to render as below:
- * SQL
- * <pre>{@code
- *  array[?,?,?,?,?]
- * }</pre>
- */
-public class JsonArrayFunctionDescriptor extends AbstractSqmSelfRenderingFunctionDescriptor {
-
+public class DeleteJsonbBySpecifiedPathOperatorDescriptor extends AbstractSqmSelfRenderingFunctionDescriptor {
     protected final HibernateContext hibernateContext;
 
-    public JsonArrayFunctionDescriptor(HibernateContext hibernateContext) {
-        super("array", null, null, null);
+    public DeleteJsonbBySpecifiedPathOperatorDescriptor(HibernateContext hibernateContext) {
+        super(hibernateContext.getConcatenateJsonbOperator(), null, null, null);
         this.hibernateContext = hibernateContext;
     }
 
     @Override
     public void render(SqlAppender sqlAppender, List<? extends SqlAstNode> sqlAstArguments, ReturnableType<?> returnableType, SqlAstTranslator<?> translator) {
-        sqlAppender.appendSql(this.getName());
-        sqlAppender.appendSql("[");
-
         boolean firstPass = true;
-
+        sqlAppender.appendSql("(");
         for (Iterator var11 = sqlAstArguments.iterator(); var11.hasNext(); firstPass = false) {
             SqlAstNode arg = (SqlAstNode) var11.next();
             if (!firstPass) {
-                sqlAppender.appendSql(",");
+                sqlAppender.appendSql(" #- ");
             }
             translator.render(arg, SqlAstNodeRenderingMode.DEFAULT);
         }
-        sqlAppender.appendSql("]");
+        sqlAppender.appendSql(")");
     }
 
     @Override
     protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine) {
-        List<SqmExpression<String>> args = new ArrayList<>();
-        for (int i = 0; i < arguments.size(); i++) {
-            args.add((SqmExpression<String>) arguments.get(i));
-        }
-        return (SelfRenderingSqmFunction<T>) new JsonArrayFunction(queryEngine.getCriteriaBuilder(), args, hibernateContext);
+        return (SelfRenderingSqmFunction<T>) new DeleteJsonbBySpecifiedPathOperator(queryEngine.getCriteriaBuilder(), arguments.get(0), arguments.get(1), hibernateContext);
     }
 }
