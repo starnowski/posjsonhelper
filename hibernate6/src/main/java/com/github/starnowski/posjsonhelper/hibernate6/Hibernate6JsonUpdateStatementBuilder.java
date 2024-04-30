@@ -2,12 +2,14 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
 import com.github.starnowski.posjsonhelper.json.core.sql.*;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 
+import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH;
 import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET;
 
 /**
@@ -18,52 +20,60 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  * It is possible to update json we below code:
  * <pre>{@code
  *         // GIVEN
+ *         Item item = tested.findById(23L);
+ *         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+ *         assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"dog\"]},\"inventory\":[\"mask\",\"fins\"],\"nicknames\":{\"school\":\"bambo\",\"childhood\":\"bob\"}}");
  *         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
  *         Root<Item> root = criteriaUpdate.from(Item.class);
  *
  *         Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
  *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("birthday").build(), quote("2021-11-23"));
  *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]");
+ *         hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("inventory").append("0").build());
  *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}");
  *         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").build(), "[]");
+ *         hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("nicknames").append("childhood").build());
  *
  *         // Set the property you want to update and the new value
  *         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
  *
  *         // Add any conditions to restrict which entities will be updated
- *         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+ *         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 23L));
  *
  *         // WHEN
  *         entityManager.createQuery(criteriaUpdate).executeUpdate();
  *
  *         // THEN
- *         Item item = tested.findById(19L);
- *         JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
- *         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
- *         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+ *         entityManager.refresh(item);
+ *         document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+ *         assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\"],\"birthday\":\"2021-11-23\"},\"parents\":[{\"name\":\"simone\",\"type\":\"mom\"}],\"inventory\":[\"fins\"],\"nicknames\":{\"school\":\"bambo\"}}");
  * }</pre>
- *
+ * <p>
  * The above code is going to execute below sql statement for update:
  *
  * <pre>{@code
  * update
- *     item
+ *         item
  *     set
  *         jsonb_content=
  *          jsonb_set(
  *              jsonb_set(
  *                  jsonb_set(
  *                      jsonb_set(
- *                          jsonb_content, ?::text[], ?::jsonb) -- the most nested operation
- *                      , ?::text[], ?::jsonb)
+ *                          (
+ *                              (jsonb_content #- ?::text[]) -- the most nested #- operator
+ *                          #- ?::text[])
+ *                      , ?::text[], ?::jsonb) -- the most nested jsonb_set operation
  *                  , ?::text[], ?::jsonb)
- *              ,?::text[], ?::jsonb
- *          )
+ *              , ?::text[], ?::jsonb)
+ *          , ?::text[], ?::jsonb)
  *     where
  *         id=?
  * }</pre>
- *
- * The most nested operation is going to set property "parents" with value "[]".
+ * <p>
+ * <p>
+ * As it can be observed based on generated SQL, by default, the first operation is going to be an operation that deletes JSON content.
+ * The most nested jsonb_set operation is going to set property "parents" with value "[]".
  *
  * @param <T>
  * @see #build()
@@ -82,19 +92,15 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * Hibernate context
      */
     private final HibernateContext hibernateContext;
-
-    public JsonUpdateStatementConfigurationBuilder getJsonUpdateStatementConfigurationBuilder() {
-        return jsonUpdateStatementConfigurationBuilder;
-    }
-
     private final JsonUpdateStatementConfigurationBuilder jsonUpdateStatementConfigurationBuilder;
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
      * {@link DefaultJsonUpdateStatementOperationSort} as sort component ({@link JsonUpdateStatementConfigurationBuilder#sort}) and an instance
      * of {@link DefaultJsonUpdateStatementOperationFilter} as filter component ({@link JsonUpdateStatementConfigurationBuilder#postSortFilter}).
-     * @param rootPath value for {@link #rootPath}
-     * @param nodeBuilder value for {@link #nodeBuilder}
+     *
+     * @param rootPath         value for {@link #rootPath}
+     * @param nodeBuilder      value for {@link #nodeBuilder}
      * @param hibernateContext value for {@link #hibernateContext}
      */
     public Hibernate6JsonUpdateStatementBuilder(Path<T> rootPath, NodeBuilder nodeBuilder, HibernateContext hibernateContext) {
@@ -106,10 +112,15 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
                 .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter());
     }
 
+    public JsonUpdateStatementConfigurationBuilder getJsonUpdateStatementConfigurationBuilder() {
+        return jsonUpdateStatementConfigurationBuilder;
+    }
+
     /**
      * Adding {@link JsonUpdateStatementOperationType#JSONB_SET} type operation that set value for specific json path
+     *
      * @param jsonTextArray json array that specified path for property
-     * @param value json value that suppose to be set
+     * @param value         json value that suppose to be set
      * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder appendJsonbSet(JsonTextArray jsonTextArray, String value) {
@@ -118,7 +129,19 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
     }
 
     /**
+     * Adding {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} type operation that deletes property for specific json path
+     *
+     * @param jsonTextArray json array that specified path for property
+     * @return a reference to the constructor component for which the methods were executed
+     */
+    public Hibernate6JsonUpdateStatementBuilder appendDeleteBySpecificPath(JsonTextArray jsonTextArray) {
+        jsonUpdateStatementConfigurationBuilder.append(DELETE_BY_SPECIFIC_PATH, jsonTextArray, null);
+        return this;
+    }
+
+    /**
      * Setting the {@link JsonUpdateStatementConfigurationBuilder#sort} property for {@link #jsonUpdateStatementConfigurationBuilder} component
+     *
      * @param sort sorting component
      * @return a reference to the constructor component for which the methods were executed
      */
@@ -129,6 +152,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
 
     /**
      * Setting the {@link JsonUpdateStatementConfigurationBuilder#postSortFilter} property for {@link #jsonUpdateStatementConfigurationBuilder} component
+     *
      * @param postSortFilter postSortFilter filtering component
      * @return a reference to the constructor component for which the methods were executed
      */
@@ -151,7 +175,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * JsonUpdateStatementOperation{jsonTextArray={parents,0}, operation=JSONB_SET, value='{"type":"mom", "name":"simone"}'}
      * ]
      * }</pre>
-     *
+     * <p>
      * The expression generated on such would be translated to below sql part:
      *
      * <pre>{@code
@@ -170,10 +194,20 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
         JsonUpdateStatementConfiguration configuration = jsonUpdateStatementConfigurationBuilder.build();
         SqmTypedNode current = null;
         for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation : configuration.getOperations()) {
-            if (current == null) {
-                current = new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
-            } else {
-                current = new JsonbSetFunction(nodeBuilder, current, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+            switch (operation.getOperation()) {
+                case DELETE_BY_SPECIFIC_PATH:
+                    if (current == null) {
+                        current = new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
+                    } else {
+                        current = new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, current, operation.getJsonTextArray().toString(), hibernateContext);
+                    }
+                    break;
+                case JSONB_SET:
+                    if (current == null) {
+                        current = new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                    } else {
+                        current = new JsonbSetFunction(nodeBuilder, current, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                    }
             }
         }
         return (Expression<? extends T>) current;

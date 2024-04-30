@@ -6,8 +6,28 @@ import static java.util.Optional.ofNullable;
 
 /**
  * Default implementation of {@link com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter}.
+ * The filtering logic depends on type of operation {@link JsonUpdateStatementConfiguration.JsonUpdateStatementOperation#operation}.
+ *
+ * For <b>{@link JsonUpdateStatementOperationType#JSONB_SET}</b> operations:
+ *
  * Removes operation for the same path. For example, if there are two operations for the same JSON path, the first operation will be removed.
  * Because changes for this operation at the end are going to be overridden.
+ *
+ * For <b>{@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH}</b> operations:
+ *
+ * Removes operation for the same path. For example, if there are two operations for the same JSON path, the second operation will be removed.
+ *
+ * If for particular operation there is another operation in collection that has path that point to property that is parent for this child element then
+ * operation with path that points to child element is going to be removed.
+ * Because changes for this operation was already made.
+ * For example, if we have to delete operations with below paths:
+ *
+ * <pre>{@code
+ * [{parent,child1, child11}, {parent}]
+ * }</pre>
+ *
+ * then the element with '{parent,child1, child11}' is going to be removed.
+ *
  */
 public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
     @Override
@@ -19,12 +39,37 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
         Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> it = results.iterator();
         while (it.hasNext()) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = it.next();
-            JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
-            if (context.numberOfOperations.get(key) > 1) {
-                int lastIndex = context.lastIndexOperations.get(key);
-                if (lastIndex != i) {
-                    it.remove();
-                }
+            mainswitch:
+            switch (op.getOperation()) {
+                case JSONB_SET:
+                    JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
+                    if (context.jsonbSetOperationNumberOfOperations.get(key) > 1) {
+                        int lastIndex = context.jsonbSetOperationLastIndexOperations.get(key);
+                        if (lastIndex != i) {
+                            it.remove();
+                        }
+                    }
+                    break;
+                case DELETE_BY_SPECIFIC_PATH:
+                    String opJsonTextArrayString = op.getJsonTextArray().toString();
+                    Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> tmpIt = operations.iterator();
+                    for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation current = tmpIt.next(); current != op && tmpIt.hasNext(); current = tmpIt.next()) {
+                        String currentKey = current.getJsonTextArray().toString();
+                        if (currentKey.equals(opJsonTextArrayString)) {
+                            it.remove();
+                            break mainswitch;
+                        }
+                    }
+                    for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation current : operations) {
+                        if (current == op) {
+                            continue;
+                        }
+                        String currentKeyKey = current.getJsonTextArray().toString();
+                        if (opJsonTextArrayString.startsWith(currentKeyKey.replace("}",","))) {
+                            it.remove();
+                            break mainswitch;
+                        }
+                    }
             }
             i++;
         }
@@ -37,16 +82,16 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
         for (int i = 0; i < operations.size(); i++) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = operations.get(i);
             JsonTextArrayJsonUpdateStatementOperationTypeKey key = new JsonTextArrayJsonUpdateStatementOperationTypeKey(op.getJsonTextArray(), op.getOperation());
-            context.numberOfOperations.merge(key, 1, (integer, integer2) -> integer + (integer2 == null ? 0 : integer2));
-            context.lastIndexOperations.put(key, i);
+            context.jsonbSetOperationNumberOfOperations.merge(key, 1, (integer, integer2) -> integer + (integer2 == null ? 0 : integer2));
+            context.jsonbSetOperationLastIndexOperations.put(key, i);
         }
         return context;
     }
 
     private class OperationFilterContext {
 
-        Map<JsonTextArrayJsonUpdateStatementOperationTypeKey, Integer> numberOfOperations = new HashMap<>();
-        Map<JsonTextArrayJsonUpdateStatementOperationTypeKey, Integer> lastIndexOperations = new HashMap<>();
+        Map<JsonTextArrayJsonUpdateStatementOperationTypeKey, Integer> jsonbSetOperationNumberOfOperations = new HashMap<>();
+        Map<JsonTextArrayJsonUpdateStatementOperationTypeKey, Integer> jsonbSetOperationLastIndexOperations = new HashMap<>();
     }
 
     private class JsonTextArrayJsonUpdateStatementOperationTypeKey {

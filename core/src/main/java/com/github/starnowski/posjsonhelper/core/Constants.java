@@ -112,6 +112,10 @@ public class Constants {
      */
     public static final String DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR = "concatenate_jsonb_operator_function";
     /**
+     * 	The default name for the HQL function that wraps Postgres "#-" operator that deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
+     */
+    public static final String DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR = "delete_jsonb_by_specific_path_hibernate_operator";
+    /**
      * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
      */
     public static final String JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.jsonb_all_array_strings_exist";

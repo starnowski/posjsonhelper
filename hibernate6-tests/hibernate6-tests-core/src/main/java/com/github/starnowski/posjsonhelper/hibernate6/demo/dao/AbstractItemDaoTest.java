@@ -5,6 +5,7 @@ import com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatem
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
 import com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import com.jayway.jsonpath.DocumentContext;
@@ -52,7 +53,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
         executionPhase = AFTER_TEST_METHOD)
 public abstract class AbstractItemDaoTest {
 
-    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L));
+    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L, 23L));
     @Autowired
     private ItemDao tested;
     @Autowired
@@ -125,7 +126,7 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements() {
         return Stream.of(
-                Arguments.of(List.of("dog"), new HashSet<>(asList(19L, 21L))),
+                Arguments.of(List.of("dog"), new HashSet<>(asList(19L, 21L, 23L))),
                 Arguments.of(List.of("cat"), new HashSet<>(asList(20L, 21L))),
                 Arguments.of(List.of("hamster"), new HashSet<>(List.of(22L))),
                 Arguments.of(asList("hamster", "cat"), new HashSet<>(asList(20L, 21L, 22L)))
@@ -146,8 +147,8 @@ public abstract class AbstractItemDaoTest {
 
     private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElement() {
         return Stream.of(
-                Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
-                Arguments.of(20L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
+                Arguments.of(19L, List.of(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("1970-01-01"))), "{\"child\": {\"pets\" : [\"dog\"], \"birthday\": \"1970-01-01\"}}"),
+                Arguments.of(20L, List.of(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets").append(1), quote("monkey"))), "{\"child\": {\"pets\" : [\"cat\", \"monkey\"]}}"),
                 Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
                         new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]")), "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}}")
         );
@@ -156,11 +157,17 @@ public abstract class AbstractItemDaoTest {
     private static Stream<Arguments> provideShouldSetMultipleJsonPropertyWithSpecificValueToInnerElementWithNewFields() {
         return Stream.of(
                 Arguments.of(19L, Arrays.asList(new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("birthday"), quote("2021-11-23")),
-                        new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]"),
-                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents").append(0), "{\"type\":\"mom\", \"name\":\"simone\"}")  ,
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("child").append("pets"), "[\"cat\"]"),
+                                new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents").append(0), "{\"type\":\"mom\", \"name\":\"simone\"}"),
                                 new JsonBSetTestPair(new JsonTextArrayBuilder().append("parents"), "[]")
-                                )
+                        )
                         , "{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}")
+        );
+    }
+
+    private static Stream<Arguments> provideShouldDeleteJsonPropertyForSpecificPath() {
+        return Stream.of(
+                Arguments.of(19L, "pets", "{\"child\": {}}")
         );
     }
 
@@ -377,7 +384,7 @@ public abstract class AbstractItemDaoTest {
     @Transactional
     public void shouldReplaceJsonPropertyWithSpecificValueToInnerElementForDemoPurpose() throws JSONException {
         // GIVEN
-        Long itemId = 19l;
+        Long itemId = 19L;
         String property = "birthday";
         String value = "1970-01-01";
 
@@ -474,6 +481,73 @@ public abstract class AbstractItemDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should delete json property for specific path to inner element")
+    @ParameterizedTest
+    @MethodSource("provideShouldDeleteJsonPropertyForSpecificPath")
+    public void shouldDeleteJsonPropertyForSpecificPathToInnerElement(Long itemId, String property, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonByDeletingSpecificPropertyForItem(itemId, property);
+
+        // then
+        Item item = tested.findById(itemId);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should delete json property for specific path to inner element by hql")
+    @ParameterizedTest
+    @MethodSource("provideShouldDeleteJsonPropertyForSpecificPath")
+    public void shouldDeleteJsonPropertyForSpecificPathToInnerElementByHql(Long itemId, String property, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonByDeletingSpecificPropertyForItemByHql(itemId, property);
+
+        // then
+        Item item = tested.findById(itemId);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should delete json property for specific path to inner element - for demo purpose")
+    @Test
+    @Transactional
+    public void shouldDeleteJsonPropertyForSpecificPathToInnerElementForDemoPurpose() throws JSONException {
+        // GIVEN
+        Item item = tested.findById(19L);
+        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"dog\"]}}");
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+
+        // WHEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new DeleteJsonbBySpecifiedPathOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append("pets").build().toString(), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        entityManager.refresh(item);
+        jsonObject = new JSONObject("{\"child\": {}}");
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should add json property with specific value to inner element")
     @ParameterizedTest
     @MethodSource("provideShouldSetJsonPropertyWithSpecificValueToInnerElement")
@@ -531,29 +605,33 @@ public abstract class AbstractItemDaoTest {
     @DisplayName("should add json property with specific value to inner element by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
     public void shouldSetMultipleJsonPropertiesByUsingHibernate6JsonUpdateStatementBuilder() throws JSONException {
         // GIVEN
+        Item item = tested.findById(23L);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"dog\"]},\"inventory\":[\"mask\",\"fins\"],\"nicknames\":{\"school\":\"bambo\",\"childhood\":\"bob\"}}");
         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
         Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("birthday").build(), quote("2021-11-23"));
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]");
+        hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("inventory").append("0").build());
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}");
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").build(), "[]");
+        hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("nicknames").append("childhood").build());
 
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
-        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 23L));
 
         // WHEN
         entityManager.createQuery(criteriaUpdate).executeUpdate();
 
         // THEN
-        Item item = tested.findById(19L);
-        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
-        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
-        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+        entityManager.refresh(item);
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\"],\"birthday\":\"2021-11-23\"},\"parents\":[{\"name\":\"simone\",\"type\":\"mom\"}],\"inventory\":[\"fins\"],\"nicknames\":{\"school\":\"bambo\"}}");
     }
 
     public static class JsonBSetTestPair {

@@ -21,6 +21,7 @@
 * [Modify JSON](#modify-json)
   * [jsonb_set function wrapper](#jsonb_set-function-wrapper)
   * [Concatenation operator wrapper '||'](#concatenation-operator-wrapper-)
+  * [Deletes the field or array element at the specified path '#-'](#deletes-the-field-or-array-element-at-the-specified-path--)
   * [Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?](#hibernate6jsonupdatestatementbuilder---how-to-combine-multiple-modification-operations-with-one-update-statement)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
@@ -595,8 +596,8 @@ The function can also be used in HQL statements, as in the following example:
 
 ### Concatenation operator wrapper '||'
 
-Wrapper for [concatenation operator](https://www.postgresql.org/docs/9.5/functions-json.html) wrapper.
-The wrapper 	Concatenate two jsonb values into a new jsonb value.
+Wrapper for [concatenation operator](https://www.postgresql.org/docs/9.5/functions-json.html).
+The wrapper concatenate two jsonb values into a new jsonb value.
 Check out the following example of how it can be used with the CriteriaUpdate component:
 
 ```java
@@ -647,7 +648,7 @@ Hibernate:
 
 The function can also be used in HQL statements, as in the following example:
 
-```sql
+```java
     @Transactional
     public void updateJsonPropertyForItemByHQL(Long itemId, String property, String value) throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -661,6 +662,64 @@ The function can also be used in HQL statements, as in the following example:
     }
 ```
 
+### Deletes the field or array element at the specified path '#-'
+
+Wrapper for [deletes operator '#-'](https://www.postgresql.org/docs/9.5/functions-json.html).
+The wrapper Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
+Check out the following example of how it can be used with the CriteriaUpdate component:
+
+```java
+        // GIVEN
+        Item item = tested.findById(19L);
+        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"dog\"]}}");
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+
+        // WHEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new DeleteJsonbBySpecifiedPathOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append("pets").build().toString(), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        entityManager.refresh(item);
+        jsonObject = new JSONObject("{\"child\": {}}");
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+```
+
+This would generate the following SQL update statement:
+
+```sql
+update
+        item 
+    set
+        jsonb_content=(jsonb_content #- ?::text[]) 
+    where
+        id=?
+```
+
+The function can also be used in HQL statements, as in the following example:
+
+```java
+    @Transactional
+    public void updateJsonByDeletingSpecificPropertyForItemByHql(Long itemId, String property) {
+        // Execute the update
+        String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:path, 'text[]') ) WHERE id = :id".formatted(hibernateContext.getDeleteJsonBySpecificPathOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery(hqlUpdate)
+                .setParameter("id", itemId)
+                .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
+                .executeUpdate();
+    }
+```
+
 ### Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?
 
 Using a single jsonb_set function to set a single property for JSON with a single update statement can be useful,
@@ -670,32 +729,36 @@ Lest check below code example:
 
 ```java
         // GIVEN
-        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Item item = tested.findById(23L);
+                DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+                assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"dog\"]},\"inventory\":[\"mask\",\"fins\"],\"nicknames\":{\"school\":\"bambo\",\"childhood\":\"bob\"}}");
+                CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
         Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("birthday").build(), quote("2021-11-23"));
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]");
+        hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("inventory").append("0").build());
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}");
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").build(), "[]");
+        hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("nicknames").append("childhood").build());
 
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
-        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 23L));
 
         // WHEN
         entityManager.createQuery(criteriaUpdate).executeUpdate();
 
         // THEN
-        Item item = tested.findById(19L);
-        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
-        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
-        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+        entityManager.refresh(item);
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\"],\"birthday\":\"2021-11-23\"},\"parents\":[{\"name\":\"simone\",\"type\":\"mom\"}],\"inventory\":[\"fins\"],\"nicknames\":{\"school\":\"bambo\"}}");
 ```
 
-In above, we want to set three json properties "child.birthday", "child.pets" and "parents".
+In the above code, we want to set three JSON properties "child.birthday", "child.pets" and "parents" and delete two others, "inventory.0" and "nicknames.childhood".
 The "parents" property is new property that suppose to be an array.
 Although the setting new array property with some values could be done with single operation, however for demonstration purpose we use two operations.
 One is for setting new property called "parents" with empty json array as value.
@@ -703,6 +766,7 @@ And another operation that set element of an array at specific index.
 **If higher property does not exist then it has to be created before inner properties.**
 Fortunately, the default instance of the Hibernate6JsonUpdateStatementBuilder type has appropriate sorting and filtering components to help you set the right order of operations.
 So it doesn't matter whether we add the add-array-element operation before or after adding the create-array operation.
+By default, operations that delete content will be added before those which add or replace content.
 Of course, it is possible to disable this behavior by setting these components to null.
 For more details please check javadoc for Hibernate6JsonUpdateStatementBuilder type.
 
@@ -716,20 +780,16 @@ update
         jsonb_set(
           jsonb_set(
             jsonb_set(
-              jsonb_set(jsonb_content, ?::text[], ?::jsonb)
-              , ?::text[], ?::jsonb)
+              jsonb_set(
+                (
+                  (jsonb_content #- ?::text[]) -- the most nested #- operator
+                 #- ?::text[])
+              , ?::text[], ?::jsonb) -- the most nested jsonb_set operation
             , ?::text[], ?::jsonb)
-          , ?::text[], ?::jsonb) 
+          , ?::text[], ?::jsonb)
+        , ?::text[], ?::jsonb) 
     where
         id=?
-Hibernate: 
-    select
-        i1_0.id,
-        i1_0.jsonb_content 
-    from
-        item i1_0 
-    where
-        i1_0.id=?
 ```
 
 The most inner jsonb_set function execution for this prepared statement is going to set an empty array for the "parents" property.
