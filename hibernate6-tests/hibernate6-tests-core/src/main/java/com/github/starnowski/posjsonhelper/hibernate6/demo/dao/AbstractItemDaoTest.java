@@ -5,6 +5,7 @@ import com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatem
 import com.github.starnowski.posjsonhelper.hibernate6.demo.model.Item;
 import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
 import com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder;
 import com.github.starnowski.posjsonhelper.test.utils.NumericComparator;
 import com.jayway.jsonpath.DocumentContext;
@@ -491,6 +492,39 @@ public abstract class AbstractItemDaoTest {
         Item item = tested.findById(itemId);
         JSONObject jsonObject = new JSONObject(expectedJson);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should delete json property for specific path to inner element - for demo purpose")
+    @Test
+    @Transactional
+    public void shouldDeleteJsonPropertyForSpecificPathToInnerElementForDemoPurpose() throws JSONException {
+        // GIVEN
+        Item item = tested.findById(19L);
+        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"dog\"]}}");
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+
+        // WHEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new DeleteJsonbBySpecifiedPathOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append("pets").build().toString(), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        entityManager.refresh(item);
+        jsonObject = new JSONObject("{\"child\": {}}");
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
         assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
     }
 
