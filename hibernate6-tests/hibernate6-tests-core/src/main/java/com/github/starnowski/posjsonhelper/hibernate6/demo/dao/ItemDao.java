@@ -284,4 +284,14 @@ public class ItemDao {
         // Execute the update
         int updatedEntities = entityManager.createQuery(criteriaUpdate).executeUpdate();
     }
+
+    @Transactional
+    public void updateJsonByDeletingSpecificPropertyForItemByHql(Long itemId, String property) {
+        // Execute the update
+        String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:path, 'text[]') ) WHERE id = :id".formatted(hibernateContext.getDeleteJsonBySpecificPathOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery(hqlUpdate)
+                .setParameter("id", itemId)
+                .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
+                .executeUpdate();
+    }
 }

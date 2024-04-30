@@ -21,7 +21,7 @@ import static java.util.stream.Collectors.toList;
  *      <li>If weight has a lower value for one operation, then the operation should be first in order.</li>
  *      <li>If weight has a higher value for one operation, then the operation should be second in order.</li>
  *  </ul>
- *  <li>When weights are the same then process is continued</<li>
+ *  <li>When weights are the same then process is continued</li>
  *  <ul>
  *     <li> {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} has value 9 </li>
  *     <li> {@link JsonUpdateStatementOperationType#JSONB_SET} has value 10 </li>

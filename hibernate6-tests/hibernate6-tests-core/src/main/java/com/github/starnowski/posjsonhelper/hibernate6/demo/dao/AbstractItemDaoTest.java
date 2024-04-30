@@ -498,6 +498,23 @@ public abstract class AbstractItemDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should delete json property for specific path to inner element by hql")
+    @ParameterizedTest
+    @MethodSource("provideShouldDeleteJsonPropertyForSpecificPath")
+    public void shouldDeleteJsonPropertyForSpecificPathToInnerElementByHql(Long itemId, String property, String expectedJson) throws JSONException {
+        // when
+        tested.updateJsonByDeletingSpecificPropertyForItemByHql(itemId, property);
+
+        // then
+        Item item = tested.findById(itemId);
+        JSONObject jsonObject = new JSONObject(expectedJson);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should delete json property for specific path to inner element - for demo purpose")
     @Test
     @Transactional
