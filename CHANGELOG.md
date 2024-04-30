@@ -33,6 +33,11 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptor type [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptorRegister type [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptor type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptorRegister type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunctionDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator type [120](https://github.com/starnowski/posjsonhelper/issues/120)
 
 
 ## [0.3.1] - 2024-03-11
