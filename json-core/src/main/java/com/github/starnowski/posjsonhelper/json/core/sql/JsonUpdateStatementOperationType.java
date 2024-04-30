@@ -19,14 +19,10 @@
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
  *     USA
  */
-package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
+package com.github.starnowski.posjsonhelper.json.core.sql;
 
-import com.github.starnowski.posjsonhelper.core.Context;
-import com.github.starnowski.posjsonhelper.core.HibernateContext;
+public enum JsonUpdateStatementOperationType {
 
-public class JsonBExtractPathDescriptorRegisterFactory implements FunctionDescriptorRegisterFactory{
-    @Override
-    public FunctionDescriptorRegister get(Context context, HibernateContext hibernateContext) {
-        return new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathDescriptor(), true);
-    }
+    JSONB_SET,
+    DELETE_BY_SPECIFIC_PATH
 }

@@ -21,12 +21,26 @@
  */
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
-import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import org.hibernate.query.sqm.function.SqmFunctionDescriptor;
+import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 
-public class JsonBExtractPathDescriptorRegisterFactory implements FunctionDescriptorRegisterFactory{
+import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_SET_FUNCTION_NAME;
+
+public class JsonbSetFunctionDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
+
+    public JsonbSetFunctionDescriptorRegister(HibernateContext hibernateContext, boolean shouldTryToRegisterFunction) {
+        super(shouldTryToRegisterFunction);
+    }
+
     @Override
-    public FunctionDescriptorRegister get(Context context, HibernateContext hibernateContext) {
-        return new AbstractJsonBExtractPathDescriptorRegister(new JsonBExtractPathDescriptor(), true);
+    protected SqmFunctionDescriptor register(SqmFunctionRegistry registry) {
+        return registry.register(getHqlFunctionName(),
+                new JsonbSetFunctionDescriptor());
+    }
+
+    @Override
+    protected String getHqlFunctionName() {
+        return JSONB_SET_FUNCTION_NAME;
     }
 }
