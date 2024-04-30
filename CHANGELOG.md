@@ -38,6 +38,9 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunctionDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.JsonbCastOperatorFunction type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationFilter type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationSort type [120](https://github.com/starnowski/posjsonhelper/issues/120)
 
 
 ## [0.3.1] - 2024-03-11
