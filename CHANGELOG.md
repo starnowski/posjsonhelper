@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.3.2](#032---2024-05-01)
 * [0.3.1](#031---2024-03-11)
 * [0.3.0](#030---2024-01-03)
 * [0.2.1](#021---2023-06-20)
@@ -19,6 +20,40 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.3.2] - 2024-05-01
+
+### Added
+
+- Added support for "#-" operator to be able to use them in UPDATE statement operation [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR constant [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.deleteJsonBySpecificPathOperator property and its setter and getter [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.DeleteJsonbBySpecifiedPathOperatorDescriptor type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.DeleteJsonbBySpecifiedPathOperatorDescriptorRegister type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.DeleteJsonbBySpecifiedPathOperatorDescriptorRegisterFactory type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator type [121](https://github.com/starnowski/posjsonhelper/issues/121)
+
+- Added support for "||" operator and jsonb_set function to be able to use them in UPDATE statement operation [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#JSONB_SET_FUNCTION_NAME constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.concatenateJsonbOperator property and its setter and getter [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptor type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptorRegister type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptor type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptorRegister type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonbSetFunctionDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunctionDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.JsonbCastOperatorFunction type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationFilter type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationSort type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArrayBuilder type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType type [120](https://github.com/starnowski/posjsonhelper/issues/120)
 
 ## [0.3.1] - 2024-03-11
 
