@@ -729,32 +729,36 @@ Lest check below code example:
 
 ```java
         // GIVEN
-        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Item item = tested.findById(23L);
+                DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+                assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"dog\"]},\"inventory\":[\"mask\",\"fins\"],\"nicknames\":{\"school\":\"bambo\",\"childhood\":\"bob\"}}");
+                CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
         Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("birthday").build(), quote("2021-11-23"));
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), "[\"cat\"]");
+        hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("inventory").append("0").build());
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").append(0).build(), "{\"type\":\"mom\", \"name\":\"simone\"}");
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("parents").build(), "[]");
+        hibernate6JsonUpdateStatementBuilder.appendDeleteBySpecificPath(new JsonTextArrayBuilder().append("nicknames").append("childhood").build());
 
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
-        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 23L));
 
         // WHEN
         entityManager.createQuery(criteriaUpdate).executeUpdate();
 
         // THEN
-        Item item = tested.findById(19L);
-        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
-        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
-        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+        entityManager.refresh(item);
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\"],\"birthday\":\"2021-11-23\"},\"parents\":[{\"name\":\"simone\",\"type\":\"mom\"}],\"inventory\":[\"fins\"],\"nicknames\":{\"school\":\"bambo\"}}");
 ```
 
-In above, we want to set three json properties "child.birthday", "child.pets" and "parents".
+In the above code, we want to set three JSON properties "child.birthday", "child.pets" and "parents" and delete two others, "inventory.0" and "nicknames.childhood".
 The "parents" property is new property that suppose to be an array.
 Although the setting new array property with some values could be done with single operation, however for demonstration purpose we use two operations.
 One is for setting new property called "parents" with empty json array as value.
@@ -762,6 +766,7 @@ And another operation that set element of an array at specific index.
 **If higher property does not exist then it has to be created before inner properties.**
 Fortunately, the default instance of the Hibernate6JsonUpdateStatementBuilder type has appropriate sorting and filtering components to help you set the right order of operations.
 So it doesn't matter whether we add the add-array-element operation before or after adding the create-array operation.
+By default, operations that delete content will be added before those which add or replace content.
 Of course, it is possible to disable this behavior by setting these components to null.
 For more details please check javadoc for Hibernate6JsonUpdateStatementBuilder type.
 
@@ -775,20 +780,16 @@ update
         jsonb_set(
           jsonb_set(
             jsonb_set(
-              jsonb_set(jsonb_content, ?::text[], ?::jsonb)
-              , ?::text[], ?::jsonb)
+              jsonb_set(
+                (
+                  (jsonb_content #- ?::text[]) -- the most nested #- operator
+                 #- ?::text[])
+              , ?::text[], ?::jsonb) -- the most nested jsonb_set operation
             , ?::text[], ?::jsonb)
-          , ?::text[], ?::jsonb) 
+          , ?::text[], ?::jsonb)
+        , ?::text[], ?::jsonb) 
     where
         id=?
-Hibernate: 
-    select
-        i1_0.id,
-        i1_0.jsonb_content 
-    from
-        item i1_0 
-    where
-        i1_0.id=?
 ```
 
 The most inner jsonb_set function execution for this prepared statement is going to set an empty array for the "parents" property.
