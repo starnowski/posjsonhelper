@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+/**
+ * Implemented of HQL function defined by property {@link HibernateContext#deleteJsonBySpecificPathOperator}.
+ * It is wrapper for Concatenation operator.
+ */
 public class DeleteJsonbBySpecifiedPathOperator extends SelfRenderingSqmFunction<String> implements Serializable {
 
     public DeleteJsonbBySpecifiedPathOperator(NodeBuilder nodeBuilder, Path referencedPathSource, String jsonPath, HibernateContext hibernateContext) {
