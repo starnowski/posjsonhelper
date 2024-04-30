@@ -605,6 +605,9 @@ public abstract class AbstractItemDaoTest {
     @DisplayName("should add json property with specific value to inner element by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
     public void shouldSetMultipleJsonPropertiesByUsingHibernate6JsonUpdateStatementBuilder() throws JSONException {
         // GIVEN
+        Item item = tested.findById(23L);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"dog\"]},\"inventory\":[\"mask\",\"fins\"],\"nicknames\":{\"school\":\"bambo\",\"childhood\":\"bob\"}}");
         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
@@ -618,16 +621,15 @@ public abstract class AbstractItemDaoTest {
         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
-        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 23L));
 
         // WHEN
         entityManager.createQuery(criteriaUpdate).executeUpdate();
 
         // THEN
-        Item item = tested.findById(19L);
-        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"cat\"], \"birthday\": \"2021-11-23\"}, \"parents\": [{\"type\":\"mom\", \"name\":\"simone\"}]}");
-        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
-        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+        entityManager.refresh(item);
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\"],\"birthday\":\"2021-11-23\"},\"parents\":[{\"name\":\"simone\",\"type\":\"mom\"}],\"inventory\":[\"mask\",\"fins\"],\"nicknames\":{\"school\":\"bambo\",\"childhood\":\"bob\"}}");
     }
 
     public static class JsonBSetTestPair {
