@@ -20,7 +20,7 @@ public class DeleteJsonbBySpecifiedPathOperator extends SelfRenderingSqmFunction
         this(nodeBuilder, (SqmTypedNode) referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), hibernateContext);
     }
 
-    public DeleteJsonbBySpecifiedPathOperator(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, String json, HibernateContext hibernateContext) {
+    public DeleteJsonbBySpecifiedPathOperator(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, HibernateContext hibernateContext) {
         this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), hibernateContext);
     }
 
