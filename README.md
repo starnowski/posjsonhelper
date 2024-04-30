@@ -21,6 +21,7 @@
 * [Modify JSON](#modify-json)
   * [jsonb_set function wrapper](#jsonb_set-function-wrapper)
   * [Concatenation operator wrapper '||'](#concatenation-operator-wrapper-)
+  * [Deletes the field or array element at the specified path '#-'](#deletes-the-field-or-array-element-at-the-specified-path---)
   * [Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?](#hibernate6jsonupdatestatementbuilder---how-to-combine-multiple-modification-operations-with-one-update-statement)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
@@ -595,8 +596,8 @@ The function can also be used in HQL statements, as in the following example:
 
 ### Concatenation operator wrapper '||'
 
-Wrapper for [concatenation operator](https://www.postgresql.org/docs/9.5/functions-json.html) wrapper.
-The wrapper 	Concatenate two jsonb values into a new jsonb value.
+Wrapper for [concatenation operator](https://www.postgresql.org/docs/9.5/functions-json.html).
+The wrapper concatenate two jsonb values into a new jsonb value.
 Check out the following example of how it can be used with the CriteriaUpdate component:
 
 ```java
@@ -647,7 +648,7 @@ Hibernate:
 
 The function can also be used in HQL statements, as in the following example:
 
-```sql
+```java
     @Transactional
     public void updateJsonPropertyForItemByHQL(Long itemId, String property, String value) throws JSONException {
         JSONObject jsonObject = new JSONObject();
@@ -657,6 +658,64 @@ The function can also be used in HQL statements, as in the following example:
         int updatedEntities = entityManager.createQuery( hqlUpdate )
                 .setParameter("id", itemId)
                 .setParameter("json", jsonObject.toString())
+                .executeUpdate();
+    }
+```
+
+### Deletes the field or array element at the specified path '#-'
+
+Wrapper for [deletes operator '#-'](https://www.postgresql.org/docs/9.5/functions-json.html).
+The wrapper Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
+Check out the following example of how it can be used with the CriteriaUpdate component:
+
+```java
+        // GIVEN
+        Item item = tested.findById(19L);
+        JSONObject jsonObject = new JSONObject("{\"child\": {\"pets\" : [\"dog\"]}}");
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+
+        // WHEN
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", new DeleteJsonbBySpecifiedPathOperator((NodeBuilder) entityManager.getCriteriaBuilder(), root.get("jsonbContent"), new JsonTextArrayBuilder().append("child").append("pets").build().toString(), hibernateContext));
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 19L));
+
+        // Execute the update
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        entityManager.refresh(item);
+        jsonObject = new JSONObject("{\"child\": {}}");
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo(jsonObject.toString());
+```
+
+This would generate the following SQL update statement:
+
+```sql
+update
+        item 
+    set
+        jsonb_content=(jsonb_content #- ?::text[]) 
+    where
+        id=?
+```
+
+The function can also be used in HQL statements, as in the following example:
+
+```java
+    @Transactional
+    public void updateJsonByDeletingSpecificPropertyForItemByHql(Long itemId, String property) {
+        // Execute the update
+        String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:path, 'text[]') ) WHERE id = :id".formatted(hibernateContext.getDeleteJsonBySpecificPathOperator(), hibernateContext.getCastFunctionOperator());
+        int updatedEntities = entityManager.createQuery(hqlUpdate)
+                .setParameter("id", itemId)
+                .setParameter("path", new JsonTextArrayBuilder().append("child").append(property).build().toString())
                 .executeUpdate();
     }
 ```
