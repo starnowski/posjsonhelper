@@ -59,7 +59,7 @@ public class HibernateContext {
      */
     private final String concatenateJsonbOperator;
     /**
-     * Name of HQL function that wraps Postgres "#-" operator that deletes the field or array element at the specified path, where path elements can be either field keys or array indexes..
+     * Name of HQL function that wraps Postgres "#-" operator that deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR} constant.
      */
     private final String deleteJsonBySpecificPathOperator;

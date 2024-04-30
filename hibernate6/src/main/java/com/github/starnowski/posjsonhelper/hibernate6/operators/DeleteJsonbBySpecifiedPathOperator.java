@@ -16,18 +16,36 @@ import java.util.List;
 
 /**
  * Implemented of HQL function defined by property {@link HibernateContext#deleteJsonBySpecificPathOperator}.
- * It is wrapper for Concatenation operator.
+ * It is wrapper for operator that deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
  */
 public class DeleteJsonbBySpecifiedPathOperator extends SelfRenderingSqmFunction<String> implements Serializable {
 
+    /**
+     * @param nodeBuilder          component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type. Property has to implement {@link SqmTypedNode}
+     * @param jsonPath             value for a text array that represents the JSON path for an element that is supposed to be deleted. For example "{parent,child,property}"
+     * @param hibernateContext     object of type {@link HibernateContext}
+     */
     public DeleteJsonbBySpecifiedPathOperator(NodeBuilder nodeBuilder, Path referencedPathSource, String jsonPath, HibernateContext hibernateContext) {
         this(nodeBuilder, (SqmTypedNode) referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), hibernateContext);
     }
 
+    /**
+     * @param nodeBuilder          component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type
+     * @param jsonPath             value for a text array that represents the JSON path for an element that is supposed to be deleted. For example "{parent,child,property}"
+     * @param hibernateContext     object of type {@link HibernateContext}
+     */
     public DeleteJsonbBySpecifiedPathOperator(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, HibernateContext hibernateContext) {
         this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), hibernateContext);
     }
 
+    /**
+     * @param nodeBuilder          component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type
+     * @param jsonPath             value for a text array that represents the JSON path for an element that is supposed to be deleted. For example "{parent,child,property}"
+     * @param hibernateContext     object of type {@link HibernateContext}
+     */
     public DeleteJsonbBySpecifiedPathOperator(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, SqmTypedNode jsonPath, HibernateContext hibernateContext) {
         super(
                 nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getDeleteJsonBySpecificPathOperator()),
