@@ -29,7 +29,12 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.core.Constants#JSONB_SET_FUNCTION_NAME constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
   - Added com.github.starnowski.posjsonhelper.core.HibernateContext.concatenateJsonbOperator property and its setter and getter [120](https://github.com/starnowski/posjsonhelper/issues/120)
-  - 
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptor type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptorRegister type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ConcatenateJsonbOperatorDescriptorRegisterFactory type [120](https://github.com/starnowski/posjsonhelper/issues/120)
+
+
 ## [0.3.1] - 2024-03-11
 
 ### Added
