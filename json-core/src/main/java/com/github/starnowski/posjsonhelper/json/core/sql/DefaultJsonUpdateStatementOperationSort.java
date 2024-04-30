@@ -16,17 +16,12 @@ import static java.util.stream.Collectors.toList;
  *
  * <ul>
  *  <li>At the beginning, operations are compared based on the result for {@link JsonUpdateStatementConfiguration.JsonUpdateStatementOperation#getOperation()} method.
- *  Each type of operation has its weight. If the weight for two operations is not the same then:
- *  <ul>
- *      <li>If weight has a lower value for one operation, then the operation should be first in order.</li>
- *      <li>If weight has a higher value for one operation, then the operation should be second in order.</li>
- *  </ul>
+ *  Each type of operation has its weight. If the weight for two operations is not the same then:</li>
+ *  <li>If weight has a lower value for one operation, then the operation should be first in order.</li>
+ *  <li>If weight has a higher value for one operation, then the operation should be second in order.</li>
  *  <li>When weights are the same then process is continued</li>
- *  <ul>
- *     <li> {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} has value 9 </li>
- *     <li> {@link JsonUpdateStatementOperationType#JSONB_SET} has value 10 </li>
- *  </ul>
- *  </li>
+ *  <li> {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} has value 9 </li>
+ *  <li> {@link JsonUpdateStatementOperationType#JSONB_SET} has value 10 </li>
  *  <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
  *  <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
  *  <li>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</li>
