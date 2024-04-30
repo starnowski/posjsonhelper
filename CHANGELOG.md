@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.3.2](#032---2024-05-01)
 * [0.3.1](#031---2024-03-11)
 * [0.3.0](#030---2024-01-03)
 * [0.2.1](#021---2023-06-20)
@@ -20,6 +21,15 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+## [0.3.2] - 2024-05-01
+
+### Added
+
+- Added support for "||" operator and jsonb_set function to be able to use them in UPDATE statement operation [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#JSONB_SET_FUNCTION_NAME constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR constant [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.concatenateJsonbOperator property and its setter and getter [120](https://github.com/starnowski/posjsonhelper/issues/120)
+  - 
 ## [0.3.1] - 2024-03-11
 
 ### Added
