@@ -6,7 +6,7 @@
 
     <groupId>com.github.starnowski.posjsonhelper</groupId>
     <artifactId>parent</artifactId>
-    <version>0.3.2</version>
+    <version>0.4.0-SNAPSHOT</version>
     <modules>
         <module>poc</module>
         <module>core</module>
@@ -29,7 +29,7 @@
         <org.codehaus.groovy.groovy-all.version>2.4.12</org.codehaus.groovy.groovy-all.version>
         <spock.core.version>1.1-groovy-2.4</spock.core.version>
         <org.springframework.boot.version>2.5.12</org.springframework.boot.version>
-        <org.postgresql.postgresql.version>42.4.3</org.postgresql.postgresql.version>
+        <org.postgresql.postgresql.version>42.4.4</org.postgresql.postgresql.version>
         <easy.random.core.org.jeasy.version>4.2.0</easy.random.core.org.jeasy.version>
         <license.dir>${basedir}</license.dir>
     </properties>
