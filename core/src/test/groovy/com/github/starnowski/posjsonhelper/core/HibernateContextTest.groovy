@@ -36,6 +36,8 @@ class HibernateContextTest extends Specification {
                     .withJsonbAllArrayStringsExistOperator(randomObject1.getJsonbAllArrayStringsExistOperator())
                     .withTextFunctionOperator(randomObject1.getTextFunctionOperator())
                     .withCastFunctionOperator(randomObject1.getCastFunctionOperator())
+                    .withConcatenateJsonbOperator(randomObject1.getConcatenateJsonbOperator())
+                    .withDeleteJsonBySpecificPathOperator(randomObject1.getDeleteJsonBySpecificPathOperator())
                     .build()
 
 

@@ -19,7 +19,10 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
                                                                                                     JsonbAnyArrayStringsExistPredicateDescriptorRegisterFactory.class,
                                                                                                     JsonBExtractPathDescriptorRegisterFactory.class,
                                                                                                     JsonBExtractPathTextDescriptorRegisterFactory.class,
-                                                                                                    CastOperatorFunctionDescriptorRegisterFactory.class])
+                                                                                                    CastOperatorFunctionDescriptorRegisterFactory.class,
+                                                                                                    JsonbSetFunctionDescriptorRegisterFactory.class,
+                                                                                                    ConcatenateJsonbOperatorDescriptorRegisterFactory.class,
+                                                                                                    DeleteJsonbBySpecifiedPathOperatorDescriptorRegisterFactory.class])
     }
 
 }

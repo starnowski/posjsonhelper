@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 @Configuration
-@Profile("!different-schema")
+@Profile("default-schema")
 public class FunctionDescriptorConfiguration implements
         ApplicationListener<ContextRefreshedEvent> {
 
