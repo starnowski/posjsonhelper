@@ -51,4 +51,16 @@ public class TweetWithLocalDao {
         query.where(cb.and(textQueryPredicate, localePredicate));
         return entityManager.createQuery(query).getResultList();
     }
+
+    public List<TweetWithLocale> findCorrectTweetsByWebSearchToTSQueryForConcatenatedString(String phrase, String configuration) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        NodeBuilder nb = (NodeBuilder) entityManager.getCriteriaBuilder();
+        CriteriaQuery<TweetWithLocale> query = cb.createQuery(TweetWithLocale.class);
+        Root<TweetWithLocale> root = query.from(TweetWithLocale.class);
+        query.select(root);
+        TextOperatorFunction textQueryPredicate = new TextOperatorFunction(nb, new TSVectorFunction(nb.concat(nb.concat(root.get("shortContent"), " "), root.get("title")), configuration, nb), new WebsearchToTSQueryFunction(nb, configuration, phrase), hibernateContext);
+        Predicate localePredicate = cb.equal(root.get("locale"), configurationLocaleMap.get(configuration));
+        query.where(cb.and(textQueryPredicate, localePredicate));
+        return entityManager.createQuery(query).getResultList();
+    }
 }

@@ -98,6 +98,20 @@ public class TextIndexTest extends AbstractItTest {
         assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
     }
 
+    @DisplayName("should return all ids when searching by query for specific configuration' for websearch_to_tsquery function with concatenated argument for TSVectorFunction function")
+    @ParameterizedTest
+    @MethodSource({"provideShouldFindCorrectTweetsBySinglePlainQueryInDescription", "provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription"})
+    public void shouldFindCorrectTweetsByWebSearchToTSQueryForConcatenatedString(String phrase, String configuration, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
+        // when
+        List<TweetWithLocale> results = tested.findCorrectTweetsByWebSearchToTSQueryForConcatenatedString(phrase, configuration);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(TweetWithLocale::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
     @DisplayName("should return all ids when searching by query with word that has letters and digits for specific configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescriptionWithNumWord")
