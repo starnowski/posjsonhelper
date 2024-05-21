@@ -88,6 +88,13 @@ public class TweetDaoTest extends AbstractItTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByTitleAndShortContent() {
+        return Stream.of(
+                Arguments.of("Feature", asList(4L)),
+                Arguments.of("feature existed", asList(4L))
+        );
+    }
+
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
@@ -386,14 +393,14 @@ public class TweetDaoTest extends AbstractItTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
-    @DisplayName("should return all ids when searching by query for english configuration' for websearch_to_tsquery function with native SQL")
+    @DisplayName("should return all ids when searching by query for default configuration for concatenated argument")
     @ParameterizedTest
-    @MethodSource("provideShouldFindCorrectTweetsByWebSearchToTSQueryInDescription")
+    @MethodSource("provideShouldFindCorrectTweetsByTitleAndShortContent")
     public void shouldFindCorrectTweetsByWebSearchToTSQueryInDescriptionWithNativeSQL(String phrase, List<Long> expectedIds) {
         assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // when
-        List<Tweet> results = tested.findCorrectTweetsByWebSearchToTSQueryInDescriptionWithNativeSQL(phrase, ENGLISH_CONFIGURATION);
+        List<Tweet> results = tested.findByWebSearchForConcatenatedFieldsForDefaultConfiguration(phrase);
 
         // then
         assertThat(results).hasSize(expectedIds.size());

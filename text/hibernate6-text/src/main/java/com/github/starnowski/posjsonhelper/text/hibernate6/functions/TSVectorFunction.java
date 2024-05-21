@@ -21,6 +21,7 @@
  */
 package com.github.starnowski.posjsonhelper.text.hibernate6.functions;
 
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderer;
