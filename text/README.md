@@ -32,7 +32,7 @@ You can use it just by adding it as a dependency in the project descriptor file 
         <dependency>
             <groupId>com.github.starnowski.posjsonhelper.text</groupId>
             <artifactId>hibernate6-text</artifactId>
-            <version>0.3.2</version>
+            <version>0.3.3</version>
         </dependency>
 ```
 
