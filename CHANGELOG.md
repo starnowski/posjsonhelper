@@ -23,7 +23,7 @@ https://www.markdownguide.org/basic-syntax/
 ## [Unreleased]
 
 ## [0.3.3] - 2024-05-22
-
+ 
 ### Added
 
 - Added constructor to com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction with org.hibernate.query.sqm.tree.SqmTypedNode parameter [135](https://github.com/starnowski/posjsonhelper/issues/135)
