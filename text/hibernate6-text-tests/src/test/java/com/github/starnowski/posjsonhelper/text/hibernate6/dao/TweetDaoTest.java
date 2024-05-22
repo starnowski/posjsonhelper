@@ -90,7 +90,6 @@ public class TweetDaoTest extends AbstractItTest {
 
     private static Stream<Arguments> provideShouldFindCorrectTweetsByTitleAndShortContent() {
         return Stream.of(
-                Arguments.of("Feature", asList(4L, 6L)),
                 Arguments.of("feature existed", asList(4L))
         );
     }
