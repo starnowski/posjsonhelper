@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.3.3](#033---2024-05-22)
 * [0.3.2](#032---2024-05-01)
 * [0.3.1](#031---2024-03-11)
 * [0.3.0](#030---2024-01-03)
@@ -20,6 +21,15 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.3.3] - 2024-05-22
+
+### Added
+
+- Added constructor to com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction with org.hibernate.query.sqm.tree.SqmTypedNode parameter [135](https://github.com/starnowski/posjsonhelper/issues/135)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder) constructor [135](https://github.com/starnowski/posjsonhelper/issues/135)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction(org.hibernate.query.sqm.tree.SqmTypedNode, java.lang.String, org.hibernate.query.sqm.NodeBuilder) constructor [135](https://github.com/starnowski/posjsonhelper/issues/135)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.tree.expression.SqmExpression, org.hibernate.query.sqm.NodeBuilder) constructor [135](https://github.com/starnowski/posjsonhelper/issues/135)
 
 ## [0.3.2] - 2024-05-01
 

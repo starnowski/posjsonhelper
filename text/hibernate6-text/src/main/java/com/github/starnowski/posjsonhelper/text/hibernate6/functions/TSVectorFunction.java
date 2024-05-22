@@ -21,6 +21,7 @@
  */
 package com.github.starnowski.posjsonhelper.text.hibernate6.functions;
 
+import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderer;
@@ -52,6 +53,14 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
     }
 
     /**
+     * @param node        node that represent text.
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     */
+    public TSVectorFunction(SqmTypedNode node, NodeBuilder nodeBuilder) {
+        this(node, (String) null, nodeBuilder);
+    }
+
+    /**
      * @param referencedPathSource path for property that represent text. Property has to implement {@link SqmTypedNode}
      * @param configuration        text search configuration name
      * @param nodeBuilder          component of type {@link NodeBuilder}
@@ -60,6 +69,22 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
                 contactParameters(referencedPathSource, configuration, nodeBuilder),
+                null,
+                null,
+                StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
+                nodeBuilder,
+                TO_TSVECTOR_FUNCTION_NAME);
+    }
+
+    /**
+     * @param node          node that represent text.
+     * @param configuration text search configuration name
+     * @param nodeBuilder   component of type {@link NodeBuilder}
+     */
+    public TSVectorFunction(SqmTypedNode node, String configuration, NodeBuilder nodeBuilder) {
+        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
+                contactParametersForNode(node, configuration, nodeBuilder),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
@@ -83,6 +108,22 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
                 TO_TSVECTOR_FUNCTION_NAME);
     }
 
+    /**
+     * @param node          node that represent text.
+     * @param configuration expression that represents text search configuration name
+     * @param nodeBuilder   component of type {@link NodeBuilder}
+     */
+    public TSVectorFunction(SqmTypedNode node, SqmExpression<?> configuration, NodeBuilder nodeBuilder) {
+        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(TO_TSVECTOR_FUNCTION_NAME),
+                contactParametersForNode(node, configuration),
+                null,
+                null,
+                StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
+                nodeBuilder,
+                TO_TSVECTOR_FUNCTION_NAME);
+    }
+
     private static List<? extends SqmTypedNode<?>> contactParameters(Path referencedPathSource, String configuration, NodeBuilder nodeBuilder) {
         if (referencedPathSource == null) {
             throw new IllegalArgumentException("ReferencedPathSource argument can not be null");
@@ -95,6 +136,19 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
         return result;
     }
 
+    private static List<? extends SqmTypedNode<?>> contactParametersForNode(SqmTypedNode node, String configuration, NodeBuilder nodeBuilder) {
+        if (node == null) {
+            throw new IllegalArgumentException("Node argument can not be null");
+        }
+        List<SqmTypedNode<?>> result = new ArrayList<>();
+        if (configuration != null) {
+            result.add(nodeBuilder.literal(configuration));
+        }
+        result.add(node);
+        return result;
+    }
+
+
     private static List<? extends SqmTypedNode<?>> contactParameters(Path referencedPathSource, SqmExpression<?> configuration) {
         if (referencedPathSource == null) {
             throw new IllegalArgumentException("ReferencedPathSource argument can not be null");
@@ -104,6 +158,18 @@ public class TSVectorFunction extends SelfRenderingSqmFunction<String> implement
             result.add(configuration);
         }
         result.add((SqmTypedNode<?>) referencedPathSource);
+        return result;
+    }
+
+    private static List<? extends SqmTypedNode<?>> contactParametersForNode(SqmTypedNode node, SqmExpression<?> configuration) {
+        if (node == null) {
+            throw new IllegalArgumentException("Node argument can not be null");
+        }
+        List<SqmTypedNode<?>> result = new ArrayList<>();
+        if (configuration != null) {
+            result.add(configuration);
+        }
+        result.add(node);
         return result;
     }
 }

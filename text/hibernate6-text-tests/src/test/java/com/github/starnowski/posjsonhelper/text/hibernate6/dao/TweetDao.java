@@ -182,4 +182,14 @@ public class TweetDao {
     public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionWithNativeSQL(String textQuery, String configuration) {
         return entityManager.createNativeQuery(String.format("select * from tweet t1_0 where to_tsvector('%1$s', t1_0.short_content) @@ websearch_to_tsquery('%1$s', :textQuery)", configuration), Tweet.class).setParameter("textQuery", textQuery).getResultList();
     }
+
+    public List<Tweet> findByWebSearchForConcatenatedFieldsForDefaultConfiguration(String phrase) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        NodeBuilder nb = (NodeBuilder) cb;
+        CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+        Root<Tweet> root = query.from(Tweet.class);
+        query.select(root);
+        query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction(nb.concat(nb.concat(root.get("shortContent"), " "), root.get("title")), nb), new WebsearchToTSQueryFunction(nb, (String) null, phrase), hibernateContext));
+        return entityManager.createQuery(query).getResultList();
+    }
 }
