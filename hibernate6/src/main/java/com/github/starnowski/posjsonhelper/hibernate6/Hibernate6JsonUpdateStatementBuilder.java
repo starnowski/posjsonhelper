@@ -1,23 +1,23 @@
 /**
- *     Posjsonhelper library is an open-source project that adds support of
- *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
- *     Copyright (C) 2023  Szymon Tarnowski
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 package com.github.starnowski.posjsonhelper.hibernate6;
 
@@ -99,7 +99,7 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  * @param <T>
  * @see #build()
  */
-public class Hibernate6JsonUpdateStatementBuilder<T> {
+public class Hibernate6JsonUpdateStatementBuilder<T, C> {
 
     /**
      * path object that refers to json property that suppose to be modified
@@ -113,7 +113,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * Hibernate context
      */
     private final HibernateContext hibernateContext;
-    private final JsonUpdateStatementConfigurationBuilder<T> jsonUpdateStatementConfigurationBuilder;
+    private final JsonUpdateStatementConfigurationBuilder<C> jsonUpdateStatementConfigurationBuilder;
+
+    private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new JsonbSetFunctionFactory<T, C>() {};
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -128,12 +130,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
         this.rootPath = rootPath;
         this.nodeBuilder = nodeBuilder;
         this.hibernateContext = hibernateContext;
-        jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<T>()
-                .withSort(new DefaultJsonUpdateStatementOperationSort<T>())
-                .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<T>());
+        jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<C>()
+                .withSort(new DefaultJsonUpdateStatementOperationSort<C>())
+                .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<C>());
     }
 
-    public JsonUpdateStatementConfigurationBuilder<T> getJsonUpdateStatementConfigurationBuilder() {
+    public JsonUpdateStatementConfigurationBuilder<C> getJsonUpdateStatementConfigurationBuilder() {
         return jsonUpdateStatementConfigurationBuilder;
     }
 
@@ -144,12 +146,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param value         json value that suppose to be set
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder<T> appendJsonbSet(JsonTextArray jsonTextArray, String value) {
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendJsonbSet(JsonTextArray jsonTextArray, String value) {
         jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
         return this;
     }
 
-    public Hibernate6JsonUpdateStatementBuilder<T> appendJsonbSet(JsonTextArray jsonTextArray, String value, T customValue) {
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendJsonbSet(JsonTextArray jsonTextArray, String value, C customValue) {
         jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
         return this;
     }
@@ -161,7 +163,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param jsonTextArray json array that specified path for property
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder<T> appendDeleteBySpecificPath(JsonTextArray jsonTextArray) {
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendDeleteBySpecificPath(JsonTextArray jsonTextArray) {
         jsonUpdateStatementConfigurationBuilder.append(DELETE_BY_SPECIFIC_PATH, jsonTextArray, null);
         return this;
     }
@@ -172,7 +174,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param sort sorting component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder<T> withSort(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort<T> sort) {
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withSort(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort<C> sort) {
         jsonUpdateStatementConfigurationBuilder.withSort(sort);
         return this;
     }
@@ -183,7 +185,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param postSortFilter postSortFilter filtering component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder<T> withPostSortFilter(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter<T> postSortFilter) {
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withPostSortFilter(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter<C> postSortFilter) {
         jsonUpdateStatementConfigurationBuilder.withPostSortFilter(postSortFilter);
         return this;
     }
@@ -218,9 +220,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @return expression object generated based on {@link #jsonUpdateStatementConfigurationBuilder} configuration
      */
     public Expression<? extends T> build() {
-        JsonUpdateStatementConfiguration<T> configuration = jsonUpdateStatementConfigurationBuilder.build();
+        JsonUpdateStatementConfiguration<C> configuration = jsonUpdateStatementConfigurationBuilder.build();
         SqmTypedNode current = null;
-        for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T> operation : configuration.getOperations()) {
+        for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation : configuration.getOperations()) {
             switch (operation.getOperation()) {
                 case DELETE_BY_SPECIFIC_PATH:
                     if (current == null) {
@@ -231,12 +233,23 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
                     break;
                 case JSONB_SET:
                     if (current == null) {
-                        current = new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                        current = jsonbSetFunctionFactory.build(nodeBuilder, rootPath, operation, hibernateContext);
                     } else {
-                        current = new JsonbSetFunction(nodeBuilder, current, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                        current = jsonbSetFunctionFactory.build(nodeBuilder, current, operation, hibernateContext);
                     }
             }
         }
         return (Expression<? extends T>) current;
+    }
+
+    interface JsonbSetFunctionFactory<T, C> {
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            return new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+        }
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+        }
     }
 }
