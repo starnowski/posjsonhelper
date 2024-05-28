@@ -85,9 +85,9 @@ import static java.util.Collections.unmodifiableList;
  * <p>
  * For more details please check {@link #build()} method.
  */
-public class JsonUpdateStatementConfigurationBuilder {
+public class JsonUpdateStatementConfigurationBuilder<T> {
 
-    private final List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations = new ArrayList<>();
+    private final List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations = new ArrayList<>();
     /**
      * Sorting component, by default property has null value
      */
@@ -102,7 +102,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param sort sorting component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder withSort(JsonUpdateStatementOperationSort sort) {
+    public JsonUpdateStatementConfigurationBuilder<T> withSort(JsonUpdateStatementOperationSort sort) {
         this.sort = sort;
         return this;
     }
@@ -120,7 +120,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param postSortFilter filtering component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder withPostSortFilter(JsonUpdateStatementOperationFilter postSortFilter) {
+    public JsonUpdateStatementConfigurationBuilder<T> withPostSortFilter(JsonUpdateStatementOperationFilter postSortFilter) {
         this.postSortFilter = postSortFilter;
         return this;
     }
@@ -132,7 +132,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param value value that should be applied
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementOperationType operation, JsonTextArray jsonTextArray, String value) {
+    public JsonUpdateStatementConfigurationBuilder<T> append(JsonUpdateStatementOperationType operation, JsonTextArray jsonTextArray, String value) {
         return append(new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation(jsonTextArray, operation, value));
     }
 
@@ -141,7 +141,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param operation operation to apply to the json property
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation) {
+    public JsonUpdateStatementConfigurationBuilder<T> append(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation) {
         operations.add(operation);
         return this;
     }
@@ -156,7 +156,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      *
      * @return configuration object with final operations list
      */
-    public JsonUpdateStatementConfiguration build() {
+    public JsonUpdateStatementConfiguration<T> build() {
         List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operationsCopy = unmodifiableList(operations);
         if (sort != null) {
             operationsCopy = sort.sort(operationsCopy);
@@ -164,7 +164,7 @@ public class JsonUpdateStatementConfigurationBuilder {
         if (postSortFilter != null) {
             operationsCopy = postSortFilter.filter(operationsCopy);
         }
-        return new JsonUpdateStatementConfiguration(operationsCopy);
+        return new JsonUpdateStatementConfiguration<T>(operationsCopy);
     }
 
     /**
