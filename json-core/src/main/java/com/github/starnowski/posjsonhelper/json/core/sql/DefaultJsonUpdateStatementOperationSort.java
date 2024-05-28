@@ -62,13 +62,13 @@ import static java.util.stream.Collectors.toList;
  * </ul></li>
  * </ul>
  */
-public class DefaultJsonUpdateStatementOperationSort implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort {
+public class DefaultJsonUpdateStatementOperationSort<T> implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort<T> {
 
     private static final Map<JsonUpdateStatementOperationType, Integer> operationTypesOrderWeight = Arrays.asList(new Pair<>(JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH, 9),
             new Pair<>(JsonUpdateStatementOperationType.JSONB_SET, 10)).stream().collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 
     @Override
-    public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
+    public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations) {
         return operations.stream().sorted((o1, o2) -> {
             int operation1Weight = operationTypesOrderWeight.get(o1.getOperation());
             int operation2Weight = operationTypesOrderWeight.get(o2.getOperation());

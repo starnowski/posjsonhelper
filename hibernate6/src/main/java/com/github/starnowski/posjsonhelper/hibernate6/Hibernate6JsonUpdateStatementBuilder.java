@@ -113,7 +113,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * Hibernate context
      */
     private final HibernateContext hibernateContext;
-    private final JsonUpdateStatementConfigurationBuilder jsonUpdateStatementConfigurationBuilder;
+    private final JsonUpdateStatementConfigurationBuilder<T> jsonUpdateStatementConfigurationBuilder;
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -128,12 +128,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
         this.rootPath = rootPath;
         this.nodeBuilder = nodeBuilder;
         this.hibernateContext = hibernateContext;
-        jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder()
-                .withSort(new DefaultJsonUpdateStatementOperationSort())
-                .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter());
+        jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<T>()
+                .withSort(new DefaultJsonUpdateStatementOperationSort<T>())
+                .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<T>());
     }
 
-    public JsonUpdateStatementConfigurationBuilder getJsonUpdateStatementConfigurationBuilder() {
+    public JsonUpdateStatementConfigurationBuilder<T> getJsonUpdateStatementConfigurationBuilder() {
         return jsonUpdateStatementConfigurationBuilder;
     }
 
@@ -144,10 +144,16 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param value         json value that suppose to be set
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder appendJsonbSet(JsonTextArray jsonTextArray, String value) {
+    public Hibernate6JsonUpdateStatementBuilder<T> appendJsonbSet(JsonTextArray jsonTextArray, String value) {
         jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
         return this;
     }
+
+    public Hibernate6JsonUpdateStatementBuilder<T> appendJsonbSet(JsonTextArray jsonTextArray, String value, T customValue) {
+        jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
+        return this;
+    }
+
 
     /**
      * Adding {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} type operation that deletes property for specific json path
@@ -155,7 +161,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param jsonTextArray json array that specified path for property
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder appendDeleteBySpecificPath(JsonTextArray jsonTextArray) {
+    public Hibernate6JsonUpdateStatementBuilder<T> appendDeleteBySpecificPath(JsonTextArray jsonTextArray) {
         jsonUpdateStatementConfigurationBuilder.append(DELETE_BY_SPECIFIC_PATH, jsonTextArray, null);
         return this;
     }
@@ -166,7 +172,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param sort sorting component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder withSort(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort sort) {
+    public Hibernate6JsonUpdateStatementBuilder<T> withSort(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort<T> sort) {
         jsonUpdateStatementConfigurationBuilder.withSort(sort);
         return this;
     }
@@ -177,7 +183,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @param postSortFilter postSortFilter filtering component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public Hibernate6JsonUpdateStatementBuilder withPostSortFilter(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter postSortFilter) {
+    public Hibernate6JsonUpdateStatementBuilder<T> withPostSortFilter(JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter<T> postSortFilter) {
         jsonUpdateStatementConfigurationBuilder.withPostSortFilter(postSortFilter);
         return this;
     }
@@ -212,9 +218,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T> {
      * @return expression object generated based on {@link #jsonUpdateStatementConfigurationBuilder} configuration
      */
     public Expression<? extends T> build() {
-        JsonUpdateStatementConfiguration configuration = jsonUpdateStatementConfigurationBuilder.build();
+        JsonUpdateStatementConfiguration<T> configuration = jsonUpdateStatementConfigurationBuilder.build();
         SqmTypedNode current = null;
-        for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation : configuration.getOperations()) {
+        for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T> operation : configuration.getOperations()) {
             switch (operation.getOperation()) {
                 case DELETE_BY_SPECIFIC_PATH:
                     if (current == null) {
