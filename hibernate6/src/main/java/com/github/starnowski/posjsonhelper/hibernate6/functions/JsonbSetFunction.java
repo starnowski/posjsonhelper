@@ -68,6 +68,13 @@ public class JsonbSetFunction extends SelfRenderingSqmFunction<String> implement
     }
 
     /**
+     * TODO
+     */
+    public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, SqmTypedNode value, HibernateContext hibernateContext) {
+        this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), value);
+    }
+
+    /**
      *
      * @param nodeBuilder component of type {@link NodeBuilder}
      * @param referencedPathSource path for property that represent JSON or String type
