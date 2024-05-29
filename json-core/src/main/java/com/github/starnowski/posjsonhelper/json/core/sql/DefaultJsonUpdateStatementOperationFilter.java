@@ -50,14 +50,14 @@ import static java.util.Optional.ofNullable;
  * then the element with '{parent,child1, child11}' is going to be removed.
  *
  */
-public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter {
+public class DefaultJsonUpdateStatementOperationFilter<T> implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter<T> {
     @Override
-    public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
+    public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations) {
         // Process/Gather information about operations objects
         OperationFilterContext context = buildOperationFilterContext(operations);
         int i = 0;
-        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> results = new ArrayList<>(operations);
-        Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> it = results.iterator();
+        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> results = new ArrayList<>(operations);
+        Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> it = results.iterator();
         while (it.hasNext()) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = it.next();
             mainswitch:
@@ -73,7 +73,7 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
                     break;
                 case DELETE_BY_SPECIFIC_PATH:
                     String opJsonTextArrayString = op.getJsonTextArray().toString();
-                    Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> tmpIt = operations.iterator();
+                    Iterator<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> tmpIt = operations.iterator();
                     for (JsonUpdateStatementConfiguration.JsonUpdateStatementOperation current = tmpIt.next(); current != op && tmpIt.hasNext(); current = tmpIt.next()) {
                         String currentKey = current.getJsonTextArray().toString();
                         if (currentKey.equals(opJsonTextArrayString)) {
@@ -98,7 +98,7 @@ public class DefaultJsonUpdateStatementOperationFilter implements JsonUpdateStat
         return results;
     }
 
-    private OperationFilterContext buildOperationFilterContext(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations) {
+    private OperationFilterContext buildOperationFilterContext(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations) {
         final OperationFilterContext context = new OperationFilterContext();
         for (int i = 0; i < operations.size(); i++) {
             JsonUpdateStatementConfiguration.JsonUpdateStatementOperation op = operations.get(i);

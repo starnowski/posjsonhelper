@@ -72,7 +72,19 @@ public class JsonbSetFunction extends SelfRenderingSqmFunction<String> implement
      * @param nodeBuilder component of type {@link NodeBuilder}
      * @param referencedPathSource path for property that represent JSON or String type
      * @param jsonPath value for a text array that represents the JSON path for an element that is supposed to be set. For example "{parent,child,property}"
-     * @param value son value that should be set
+     * @param value json value that should be set
+     * @param hibernateContext object of type {@link HibernateContext}
+     */
+    public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, String jsonPath, SqmTypedNode value, HibernateContext hibernateContext) {
+        this(nodeBuilder, referencedPathSource, generateCastedJsonPathToTextArray(nodeBuilder, jsonPath, hibernateContext), value);
+    }
+
+    /**
+     *
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param referencedPathSource path for property that represent JSON or String type
+     * @param jsonPath value for a text array that represents the JSON path for an element that is supposed to be set. For example "{parent,child,property}"
+     * @param value json value that should be set
      */
     public JsonbSetFunction(NodeBuilder nodeBuilder, SqmTypedNode referencedPathSource, SqmTypedNode jsonPath, SqmTypedNode value) {
         super(

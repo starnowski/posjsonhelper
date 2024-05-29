@@ -1,23 +1,23 @@
 /**
- *     Posjsonhelper library is an open-source project that adds support of
- *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
- *     Copyright (C) 2023  Szymon Tarnowski
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
@@ -85,33 +85,33 @@ import static java.util.Collections.unmodifiableList;
  * <p>
  * For more details please check {@link #build()} method.
  */
-public class JsonUpdateStatementConfigurationBuilder {
+public class JsonUpdateStatementConfigurationBuilder<T> {
 
-    private final List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations = new ArrayList<>();
+    private final List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations = new ArrayList<>();
     /**
      * Sorting component, by default property has null value
      */
-    private JsonUpdateStatementOperationSort sort;
+    private JsonUpdateStatementOperationSort<T> sort;
     /**
      * Filtering component, by default property has null value
      */
-    private JsonUpdateStatementOperationFilter postSortFilter;
+    private JsonUpdateStatementOperationFilter<T> postSortFilter;
 
     /**
      * Setting the {@link #sort} property
      * @param sort sorting component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder withSort(JsonUpdateStatementOperationSort sort) {
+    public JsonUpdateStatementConfigurationBuilder<T> withSort(JsonUpdateStatementOperationSort<T> sort) {
         this.sort = sort;
         return this;
     }
 
-    public JsonUpdateStatementOperationSort getSort() {
+    public JsonUpdateStatementOperationSort<T> getSort() {
         return sort;
     }
 
-    public JsonUpdateStatementOperationFilter getPostSortFilter() {
+    public JsonUpdateStatementOperationFilter<T> getPostSortFilter() {
         return postSortFilter;
     }
 
@@ -120,7 +120,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param postSortFilter filtering component
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder withPostSortFilter(JsonUpdateStatementOperationFilter postSortFilter) {
+    public JsonUpdateStatementConfigurationBuilder<T> withPostSortFilter(JsonUpdateStatementOperationFilter<T> postSortFilter) {
         this.postSortFilter = postSortFilter;
         return this;
     }
@@ -132,8 +132,12 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param value value that should be applied
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementOperationType operation, JsonTextArray jsonTextArray, String value) {
-        return append(new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation(jsonTextArray, operation, value));
+    public JsonUpdateStatementConfigurationBuilder<T> append(JsonUpdateStatementOperationType operation, JsonTextArray jsonTextArray, String value) {
+        return append(operation, jsonTextArray, value, null);
+    }
+
+    public JsonUpdateStatementConfigurationBuilder<T> append(JsonUpdateStatementOperationType operation, JsonTextArray jsonTextArray, String value, T customValue) {
+        return append(new JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>(jsonTextArray, operation, value, customValue));
     }
 
     /**
@@ -141,7 +145,7 @@ public class JsonUpdateStatementConfigurationBuilder {
      * @param operation operation to apply to the json property
      * @return a reference to the constructor component for which the methods were executed
      */
-    public JsonUpdateStatementConfigurationBuilder append(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation operation) {
+    public JsonUpdateStatementConfigurationBuilder<T> append(JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T> operation) {
         operations.add(operation);
         return this;
     }
@@ -156,22 +160,23 @@ public class JsonUpdateStatementConfigurationBuilder {
      *
      * @return configuration object with final operations list
      */
-    public JsonUpdateStatementConfiguration build() {
-        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operationsCopy = unmodifiableList(operations);
+    public JsonUpdateStatementConfiguration<T> build() {
+        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operationsCopy = unmodifiableList(operations);
         if (sort != null) {
             operationsCopy = sort.sort(operationsCopy);
         }
         if (postSortFilter != null) {
             operationsCopy = postSortFilter.filter(operationsCopy);
         }
-        return new JsonUpdateStatementConfiguration(operationsCopy);
+
+        return new JsonUpdateStatementConfiguration<T>(operationsCopy);
     }
 
     /**
      * Component that sorts operation list
      * @see DefaultJsonUpdateStatementOperationSort
      */
-    public interface JsonUpdateStatementOperationSort {
+    public interface JsonUpdateStatementOperationSort<T> {
 
         /**
          * Sort operations list
@@ -179,14 +184,14 @@ public class JsonUpdateStatementConfigurationBuilder {
          * @param operations list of operations that should be sorted
          * @return new sorted list of operations
          */
-        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations);
+        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations);
     }
 
     /**
      * Component that filters operation list
      * @see DefaultJsonUpdateStatementOperationFilter
      */
-    public interface JsonUpdateStatementOperationFilter {
+    public interface JsonUpdateStatementOperationFilter<T> {
 
         /**
          * Filter operations list
@@ -194,6 +199,6 @@ public class JsonUpdateStatementConfigurationBuilder {
          * @param operations list of operations that should be filtered
          * @return new filtered list of operations
          */
-        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation> operations);
+        List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> filter(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations);
     }
 }
