@@ -114,8 +114,10 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
      */
     private final HibernateContext hibernateContext;
     private final JsonUpdateStatementConfigurationBuilder<C> jsonUpdateStatementConfigurationBuilder;
-
-    private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new JsonbSetFunctionFactory<T, C>() {};
+    private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new JsonbSetFunctionFactory<T, C>() {
+    };
+    private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DeleteJsonbBySpecifiedPathOperatorFactory<T, C>() {
+    };
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -133,6 +135,16 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<C>()
                 .withSort(new DefaultJsonUpdateStatementOperationSort<C>())
                 .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<C>());
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withJsonbSetFunctionFactory(JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory) {
+        this.jsonbSetFunctionFactory = jsonbSetFunctionFactory;
+        return this;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withDeleteJsonbBySpecifiedPathOperatorFactory(DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory) {
+        this.deleteJsonbBySpecifiedPathOperatorFactory = deleteJsonbBySpecifiedPathOperatorFactory;
+        return this;
     }
 
     public JsonUpdateStatementConfigurationBuilder<C> getJsonUpdateStatementConfigurationBuilder() {
@@ -226,9 +238,9 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
             switch (operation.getOperation()) {
                 case DELETE_BY_SPECIFIC_PATH:
                     if (current == null) {
-                        current = new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
+                        current = deleteJsonbBySpecifiedPathOperatorFactory.build(nodeBuilder, rootPath, operation, hibernateContext);
                     } else {
-                        current = new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, current, operation.getJsonTextArray().toString(), hibernateContext);
+                        current = deleteJsonbBySpecifiedPathOperatorFactory.build(nodeBuilder, current, operation, hibernateContext);
                     }
                     break;
                 case JSONB_SET:
@@ -250,6 +262,16 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
 
         default JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+        }
+    }
+
+    interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
+        default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
+        }
+
+        default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), hibernateContext);
         }
     }
 }
