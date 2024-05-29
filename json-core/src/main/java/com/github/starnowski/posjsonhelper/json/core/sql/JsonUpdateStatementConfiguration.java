@@ -37,17 +37,25 @@ public class JsonUpdateStatementConfiguration<T> {
 
     private final List<JsonUpdateStatementOperation<T>> operations;
 
+    /**
+     * Constructor with list of operations
+     * @param operations list of operations
+     */
     public JsonUpdateStatementConfiguration(List<JsonUpdateStatementOperation<T>> operations) {
         this.operations = ofNullable(operations).map(Collections::unmodifiableList).orElse(emptyList());
     }
 
+    /**
+     * Return list of operations
+     * @return list of operations
+     */
     public List<JsonUpdateStatementOperation<T>> getOperations() {
         return operations;
     }
 
     /**
-     * TODO
      * An object representing the operation that should be performed on the JSON object.
+     * @param <T> generic type for custom value, please check {@link #customValue}
      */
     public static class JsonUpdateStatementOperation<T> {
         /**
@@ -62,6 +70,9 @@ public class JsonUpdateStatementConfiguration<T> {
          * The JSON value that should be set.
          */
         private final String value;
+        /**
+         * The JSON custom value that should be set.
+         */
         private final T customValue;
 
         public JsonUpdateStatementOperation(JsonTextArray jsonTextArray, JsonUpdateStatementOperationType operation, String value) {

@@ -97,6 +97,7 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  * The most nested jsonb_set operation is going to set property "parents" with value "[]".
  *
  * @param <T>
+ * @param <C>
  * @see #build()
  */
 public class Hibernate6JsonUpdateStatementBuilder<T, C> {
