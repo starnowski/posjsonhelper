@@ -1,7 +1,4 @@
-CREATE OR REPLACE FUNCTION {{function_reference}}(
-    input_json jsonb,
-    values_to_remove jsonb
-) RETURNS jsonb AS $$
+CREATE OR REPLACE FUNCTION {{function_reference}}(input_json jsonb, values_to_remove jsonb) RETURNS jsonb AS $$
 DECLARE
     result jsonb;
 BEGIN

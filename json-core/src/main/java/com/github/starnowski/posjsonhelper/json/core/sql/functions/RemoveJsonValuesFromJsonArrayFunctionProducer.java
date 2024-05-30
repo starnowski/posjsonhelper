@@ -45,4 +45,9 @@ public class RemoveJsonValuesFromJsonArrayFunctionProducer extends AbstractDefau
     protected String prepareReturnType(DefaultFunctionFactoryParameters parameters) {
         return "jsonb";
     }
+
+    @Override
+    protected String returnFunctionLanguage(DefaultFunctionFactoryParameters parameters) {
+        return "plpgsql";
+    }
 }
