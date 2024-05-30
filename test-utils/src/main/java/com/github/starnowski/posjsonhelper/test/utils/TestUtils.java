@@ -83,6 +83,10 @@ public class TestUtils {
         return new HashSet<>(jdbcTemplate.queryForList(sql, Long.class));
     }
 
+    public static String selectAndReturnFirstRecordAsString(JdbcTemplate jdbcTemplate, final String sql) throws SQLException {
+        return jdbcTemplate.queryForObject(sql, String.class);
+    }
+
     public static String functionReference(String functionName, String schema) {
         return (schema == null ? "" : schema + ".") + functionName;
     }

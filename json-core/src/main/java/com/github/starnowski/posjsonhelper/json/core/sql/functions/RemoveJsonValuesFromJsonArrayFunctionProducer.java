@@ -4,9 +4,7 @@ import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFun
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
 import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +17,7 @@ public class RemoveJsonValuesFromJsonArrayFunctionProducer extends AbstractDefau
 
     private final String removeJsonValuesFromJsonArrayFunctionBody;
 
-    public RemoveJsonValuesFromJsonArrayFunctionProducer(){
+    public RemoveJsonValuesFromJsonArrayFunctionProducer() {
         URI uri;
         byte[] fileBytes;
         try {
