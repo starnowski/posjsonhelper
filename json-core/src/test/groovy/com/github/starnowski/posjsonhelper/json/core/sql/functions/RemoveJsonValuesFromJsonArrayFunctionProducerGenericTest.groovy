@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Paths
 
+import static com.github.starnowski.posjsonhelper.test.utils.TestUtils.normalizeLineEndings
+
 class RemoveJsonValuesFromJsonArrayFunctionProducerGenericTest extends AbstractDefaultFunctionDefinitionFactoryGenericTest<RemoveJsonValuesFromJsonArrayFunctionProducer, DefaultFunctionFactoryParameters> {
 
     private static final String REMOVE_JSON_VALUES_FUNCTION_CREATE_DEF_TEMPLATE;
@@ -18,8 +20,11 @@ class RemoveJsonValuesFromJsonArrayFunctionProducerGenericTest extends AbstractD
 
     @Unroll
     def "should generate statement that creates function '#testFunctionName' for schema '#testSchema'" () {
-        expect:
-            returnTestedObject().produce(new DefaultFunctionFactoryParameters(testFunctionName, testSchema)).getCreateScript() == expectedStatement
+        when:
+            def result = returnTestedObject().produce(new DefaultFunctionFactoryParameters(testFunctionName, testSchema)).getCreateScript()
+
+        then:
+            normalizeLineEndings(result) == normalizeLineEndings(expectedStatement)
 
         where:
         testSchema              |   testFunctionName                        || expectedStatement

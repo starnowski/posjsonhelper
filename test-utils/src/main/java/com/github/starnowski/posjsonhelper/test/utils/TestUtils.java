@@ -111,4 +111,8 @@ public class TestUtils {
             return minor;
         }
     }
+
+    public static String normalizeLineEndings(String str) {
+        return str.replaceAll("\r\n", "\n").replaceAll("\r", "\n");
+    }
 }
