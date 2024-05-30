@@ -12,8 +12,8 @@ class RemoveJsonValuesFromJsonArrayFunctionProducerGenericTest extends AbstractD
     private static final String REMOVE_JSON_VALUES_FUNCTION_CREATE_DEF_TEMPLATE;
     static {
         def uri = RemoveJsonValuesFromJsonArrayFunctionProducerGenericTest.class.getClassLoader().getResource("remove_json_values_template.sql").toURI()
-        byte[] fileBytes = Files.readAllBytes(Paths.get(uri));
-        REMOVE_JSON_VALUES_FUNCTION_CREATE_DEF_TEMPLATE = new String(fileBytes, StandardCharsets.UTF_8);
+        byte[] fileBytes = Files.readAllBytes(Paths.get(uri))
+        REMOVE_JSON_VALUES_FUNCTION_CREATE_DEF_TEMPLATE = new String(fileBytes, StandardCharsets.UTF_8)
     }
 
     @Unroll
