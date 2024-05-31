@@ -75,6 +75,8 @@ public class Constants {
      * Default value for property {@link Context#jsonbAnyArrayStringsExistFunctionReference}
      */
     public static final String DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_any_array_strings_exist";
+
+    public static final String DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME = "remove_values_from_json_array";
     /**
      * System property that is being used to set the name of SQL function that checks if all passed elements as the text[] exist in the JSON array property.
      */
