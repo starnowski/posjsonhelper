@@ -60,6 +60,6 @@ public class ConcatenateJsonbOperatorDescriptor extends AbstractSqmSelfRendering
 
     @Override
     protected <T> SelfRenderingSqmFunction<T> generateSqmFunctionExpression(List<? extends SqmTypedNode<?>> arguments, ReturnableType<T> impliedResultType, QueryEngine queryEngine) {
-        return (SelfRenderingSqmFunction<T>) new ConcatenateJsonbOperator(queryEngine.getCriteriaBuilder(), (Path) arguments.get(0), arguments.get(1), hibernateContext);
+        return (SelfRenderingSqmFunction<T>) new ConcatenateJsonbOperator(queryEngine.getCriteriaBuilder(), arguments.get(0), arguments.get(1), hibernateContext);
     }
 }

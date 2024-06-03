@@ -43,6 +43,10 @@ public class ConcatenateJsonbOperator extends SelfRenderingSqmFunction<String> i
     }
 
     public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, Path referencedPathSource, SqmTypedNode value, HibernateContext hibernateContext) {
+        this(nodeBuilder, (SqmTypedNode<?>)referencedPathSource, value, hibernateContext);
+    }
+
+    public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, SqmTypedNode<?> referencedPathSource, SqmTypedNode value, HibernateContext hibernateContext) {
         super(
                 nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getConcatenateJsonbOperator()),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getConcatenateJsonbOperator()),
@@ -54,9 +58,9 @@ public class ConcatenateJsonbOperator extends SelfRenderingSqmFunction<String> i
                 hibernateContext.getConcatenateJsonbOperator());
     }
 
-    private static List<? extends SqmTypedNode<?>> mapParameters(NodeBuilder nodeBuilder, Path referencedPathSource, SqmTypedNode value) {
+    private static List<? extends SqmTypedNode<?>> mapParameters(NodeBuilder nodeBuilder, SqmTypedNode<?> referencedPathSource, SqmTypedNode value) {
         List<SqmTypedNode<?>> result = new ArrayList<>();
-        result.add((SqmTypedNode<?>) referencedPathSource);
+        result.add(referencedPathSource);
         result.add((SqmTypedNode<String>) nodeBuilder.value(value));
         return result;
     }
