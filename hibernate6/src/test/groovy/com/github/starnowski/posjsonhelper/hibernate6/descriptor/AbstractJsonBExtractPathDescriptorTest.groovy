@@ -1,6 +1,5 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor
 
-import com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath
 import jakarta.persistence.criteria.Path
 import org.hibernate.query.spi.QueryEngine
 import org.hibernate.query.sqm.function.SqmFunctionRegistry
