@@ -46,6 +46,10 @@ public class ConcatenateJsonbOperator extends SelfRenderingSqmFunction<String> i
         this(nodeBuilder, (SqmTypedNode<?>)referencedPathSource, value, hibernateContext);
     }
 
+    public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, SqmTypedNode<?> referencedPathSource, String value, HibernateContext hibernateContext) {
+        this(nodeBuilder, referencedPathSource, new JsonbCastOperatorFunction(nodeBuilder, value, hibernateContext), hibernateContext);
+    }
+
     public ConcatenateJsonbOperator(NodeBuilder nodeBuilder, SqmTypedNode<?> referencedPathSource, SqmTypedNode value, HibernateContext hibernateContext) {
         super(
                 nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getConcatenateJsonbOperator()),

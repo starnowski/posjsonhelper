@@ -31,6 +31,7 @@ import static java.util.Optional.ofNullable;
 /**
  * Component that has aggregation of operations (object of type {@link JsonUpdateStatementOperation}).
  * Operations should be performed in the order in which they are written in the @link #operations} list.
+ *
  * @param <T>
  */
 public class JsonUpdateStatementConfiguration<T> {
@@ -39,6 +40,7 @@ public class JsonUpdateStatementConfiguration<T> {
 
     /**
      * Constructor with list of operations
+     *
      * @param operations list of operations
      */
     public JsonUpdateStatementConfiguration(List<JsonUpdateStatementOperation<T>> operations) {
@@ -47,6 +49,7 @@ public class JsonUpdateStatementConfiguration<T> {
 
     /**
      * Return list of operations
+     *
      * @return list of operations
      */
     public List<JsonUpdateStatementOperation<T>> getOperations() {
@@ -55,6 +58,7 @@ public class JsonUpdateStatementConfiguration<T> {
 
     /**
      * An object representing the operation that should be performed on the JSON object.
+     *
      * @param <T> generic type for custom value, please check {@link #customValue}
      */
     public static class JsonUpdateStatementOperation<T> {
@@ -84,6 +88,10 @@ public class JsonUpdateStatementConfiguration<T> {
             this.operation = operation;
             this.value = value;
             this.customValue = customValue;
+        }
+
+        public T getCustomValue() {
+            return customValue;
         }
 
         @Override

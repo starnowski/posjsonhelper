@@ -22,6 +22,10 @@ public class RemoveJsonValuesFromJsonArrayFunction extends SelfRenderingSqmFunct
         this(nodeBuilder, (SqmTypedNode<?>)referencedPathSource, value, hibernateContext);
     }
 
+    public RemoveJsonValuesFromJsonArrayFunction(NodeBuilder nodeBuilder, SqmTypedNode<?> referencedPathSource, String value, HibernateContext hibernateContext) {
+        this(nodeBuilder, referencedPathSource, new JsonbCastOperatorFunction(nodeBuilder, value, hibernateContext), hibernateContext);
+    }
+
     public RemoveJsonValuesFromJsonArrayFunction(NodeBuilder nodeBuilder, SqmTypedNode<?> referencedPathSource, SqmTypedNode value, HibernateContext hibernateContext) {
         super(
                 nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getRemoveJsonValuesFromJsonArrayFunction()),

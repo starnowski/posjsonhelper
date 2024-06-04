@@ -160,12 +160,11 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
      * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendJsonbSet(JsonTextArray jsonTextArray, String value) {
-        jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
-        return this;
+        return appendJsonbSet(jsonTextArray, value, null);
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendJsonbSet(JsonTextArray jsonTextArray, String value, C customValue) {
-        jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value);
+        jsonUpdateStatementConfigurationBuilder.append(JSONB_SET, jsonTextArray, value, customValue);
         return this;
     }
 
@@ -255,7 +254,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         return (Expression<? extends T>) current;
     }
 
-    interface JsonbSetFunctionFactory<T, C> {
+    public interface JsonbSetFunctionFactory<T, C> {
 
         default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             return new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
@@ -266,7 +265,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
-    interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
+    public interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
         default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
         }
