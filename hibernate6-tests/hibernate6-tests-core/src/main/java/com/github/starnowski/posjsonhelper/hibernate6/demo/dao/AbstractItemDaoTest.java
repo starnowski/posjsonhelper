@@ -59,7 +59,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
         executionPhase = AFTER_TEST_METHOD)
 public abstract class AbstractItemDaoTest {
 
-    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L, 23L));
+    private static final Set<Long> ALL_ITEMS_IDS = new HashSet<>(asList(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 10L, 11L, 12L, 13L, 14L, 15L, 16L, 17L, 18L, 19L, 20L, 21L, 22L, 23L, 24L));
     @Autowired
     private ItemDao tested;
     @Autowired
@@ -648,30 +648,48 @@ public abstract class AbstractItemDaoTest {
     @DisplayName("should add json property with specific value to inner element by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
     public void shouldSetJsonArrayWithNewValueWithUpdateStatementForDemo() throws JSONException {
         // GIVEN
-        Item item = tested.findById(21L);
+        Item item = tested.findById(24L);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
-        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"dog\",\"cat\"]}}");
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"crab\",\"chameleon\"]},\"inventory\":[\"mask\",\"fins\",\"compass\"]}");
         CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
         Root<Item> root = criteriaUpdate.from(Item.class);
 
         Hibernate6JsonUpdateStatementBuilder<Object, JsonArrayOperations> hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
-        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), null, new JsonArrayOperations(Arrays.asList("dog", "ant"), Arrays.asList("lion", "dolphin")));
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), null, new JsonArrayOperations(Arrays.asList("crab", "ant"), Arrays.asList("lion", "dolphin")));
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("name").build(), JSONObject.quote("Simon"));
+        hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("inventory").build(), null, new JsonArrayOperations(Arrays.asList("compass", "mask"), Arrays.asList("knife")));
         hibernate6JsonUpdateStatementBuilder.withJsonbSetFunctionFactory(new Hibernate6JsonUpdateStatementBuilder.JsonbSetFunctionFactory<Object, JsonArrayOperations>() {
 
             public JsonbSetFunction build(NodeBuilder nodeBuilder, Path<Object> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<JsonArrayOperations> operation, HibernateContext hibernateContext) {
-//                new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
-                JSONArray toAddJSONArray = new JSONArray(operation.getCustomValue().getToAdd());
-                ConcatenateJsonbOperator concatenateOperator = new ConcatenateJsonbOperator(nodeBuilder, new JsonBExtractPath(rootPath, nodeBuilder, operation.getJsonTextArray().getPath().stream().map(ob -> ob.toString()).collect(Collectors.toList())), toAddJSONArray.toString(), hibernateContext);
-                JSONArray toRemoveJSONArray = new JSONArray(operation.getCustomValue().getToDelete());
-                RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, concatenateOperator, toRemoveJSONArray.toString(), hibernateContext);
-                return new JsonbSetFunction(nodeBuilder, (SqmTypedNode) rootPath, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
+                if (operation.getCustomValue() != null) {
+                    JSONArray toAddJSONArray = new JSONArray(operation.getCustomValue().getToAdd());
+                    ConcatenateJsonbOperator concatenateOperator = new ConcatenateJsonbOperator(nodeBuilder, new JsonBExtractPath(rootPath, nodeBuilder, operation.getJsonTextArray().getPath().stream().map(ob -> ob.toString()).collect(Collectors.toList())), toAddJSONArray.toString(), hibernateContext);
+                    JSONArray toRemoveJSONArray = new JSONArray(operation.getCustomValue().getToDelete());
+                    RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, concatenateOperator, toRemoveJSONArray.toString(), hibernateContext);
+                    return new JsonbSetFunction(nodeBuilder, (SqmTypedNode) rootPath, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
+                } else {
+                    return new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                }
+            }
+
+            @Override
+            public JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<JsonArrayOperations> operation, HibernateContext hibernateContext) {
+                if (operation.getCustomValue() != null) {
+                    JSONArray toAddJSONArray = new JSONArray(operation.getCustomValue().getToAdd());
+                    ConcatenateJsonbOperator concatenateOperator = new ConcatenateJsonbOperator(nodeBuilder, new JsonBExtractPath(root.get("jsonbContent"), nodeBuilder, operation.getJsonTextArray().getPath().stream().map(ob -> ob.toString()).collect(Collectors.toList())), toAddJSONArray.toString(), hibernateContext);
+                    JSONArray toRemoveJSONArray = new JSONArray(operation.getCustomValue().getToDelete());
+                    RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, concatenateOperator, toRemoveJSONArray.toString(), hibernateContext);
+                    return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
+                } else {
+                    return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                }
             }
         });
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
-        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 21L));
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 24L));
 
         // WHEN
         entityManager.createQuery(criteriaUpdate).executeUpdate();
@@ -679,7 +697,7 @@ public abstract class AbstractItemDaoTest {
         // THEN
         entityManager.refresh(item);
         document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
-        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\",\"lion\",\"dolphin\"]}}");
+        assertThat(document.jsonString()).isEqualTo("{\"name\":\"Simon\",\"child\":{\"pets\":[\"chameleon\",\"lion\",\"dolphin\"]},\"inventory\":[\"fins\",\"knife\"]}");
     }
 
     private static class JsonArrayOperations {

@@ -34,3 +34,4 @@ INSERT INTO item (id, jsonb_content) VALUES (20, '{"child": {"pets" : ["cat"]}}'
 INSERT INTO item (id, jsonb_content) VALUES (21, '{"child": {"pets" : ["dog", "cat"]}}');
 INSERT INTO item (id, jsonb_content) VALUES (22, '{"child": {"pets" : ["hamster"]}}');
 INSERT INTO item (id, jsonb_content) VALUES (23, '{"child": {"pets" : ["dog"]}, "inventory": ["mask", "fins"], "nicknames": {"school": "bambo", "childhood": "bob"} }');
+INSERT INTO item (id, jsonb_content) VALUES (24, '{"child": {"pets" : ["crab", "chameleon"]}, "inventory": ["mask", "fins", "compass"]}');
