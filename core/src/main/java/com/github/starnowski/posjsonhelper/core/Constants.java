@@ -75,7 +75,9 @@ public class Constants {
      * Default value for property {@link Context#jsonbAnyArrayStringsExistFunctionReference}
      */
     public static final String DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME = "jsonb_any_array_strings_exist";
-
+    /**
+     * Default value for property {@link Context#removeValuesFromJsonArrayFunctionReference}
+     */
     public static final String DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME = "remove_values_from_json_array";
     /**
      * System property that is being used to set the name of SQL function that checks if all passed elements as the text[] exist in the JSON array property.
@@ -85,6 +87,10 @@ public class Constants {
      * System property that is being used to set the name of SQL function that checks if any passed elements as the text[] exist in the JSON array property.
      */
     public static final String JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY = "com.github.starnowski.posjsonhelper.core.functions.jsonb_any_array_strings_exist";
+    /**
+     * System property that is being used to set the name of SQL function that return jsonb array by deleting elements from jsonb array passed as input for function.
+     */
+    public static final String REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME_PROPERTY = "com.github.starnowski.posjsonhelper.core.functions.remove_values_from_json_array";
     /**
      * 	System property that is being used to set the name of database schema where the SQL functions should be created
      */

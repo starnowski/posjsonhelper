@@ -8,7 +8,11 @@ import org.hibernate.query.sqm.function.SqmFunctionRegistry;
 public class RemoveJsonValuesFromJsonArrayFunctionDescriptorRegister extends AbstractConditionalFunctionDescriptorRegister {
     private final HibernateContext hibernateContext;
     private final Context context;
+
     /**
+     *
+     * @param hibernateContext posjsonhelper hibernate core context
+     * @param context posjsonhelper core context
      * @param shouldOverrideFunctionIfAlreadyRegistered value of property {@link #shouldOverrideFunctionIfAlreadyRegistered}
      */
     protected RemoveJsonValuesFromJsonArrayFunctionDescriptorRegister(HibernateContext hibernateContext, Context context, boolean shouldOverrideFunctionIfAlreadyRegistered) {
