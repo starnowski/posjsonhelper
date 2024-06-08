@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_SET_FUNCTION_NAME;
 import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.CLEAR_DATABASE_SCRIPT_PATH;
 import static com.github.starnowski.posjsonhelper.hibernate6.demo.Application.ITEMS_SCRIPT_PATH;
 import static java.util.Arrays.asList;
@@ -706,7 +707,7 @@ public abstract class AbstractItemDaoTest {
     @Test
     @Transactional
     @DisplayName("should remove json array elements with the update statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
-    public void shouldRemoveJsonArrayElementseWithUpdateStatementForDemo() throws JSONException {
+    public void shouldRemoveJsonArrayElementseWithUpdateStatementForDemo() {
         // GIVEN
         Item item = tested.findById(24L);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
@@ -726,6 +727,36 @@ public abstract class AbstractItemDaoTest {
 
         // WHEN
         entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        entityManager.refresh(item);
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"crab\",\"chameleon\"]},\"inventory\":[\"fins\"]}");
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @Test
+    @Transactional
+    @DisplayName("should remove json array elements with the HQL update statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
+    public void shouldRemoveJsonArrayElementsWithHQLUpdateStatementForDemo() {
+        // GIVEN
+        Item item = tested.findById(24L);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"crab\",\"chameleon\"]},\"inventory\":[\"mask\",\"fins\",\"compass\"]}");
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        JSONArray toRemoveJSONArray = new JSONArray(Arrays.asList("mask", "compass"));
+        String hqlUpdate = "UPDATE Item SET jsonbContent = %s(jsonbContent, %s(:path, 'text[]'), %s(jsonb_extract_path( jsonbContent , 'inventory' ), %s(:to_remove, 'jsonb')) ) WHERE id = :id".formatted(JSONB_SET_FUNCTION_NAME, hibernateContext.getCastFunctionOperator(), hibernateContext.getRemoveJsonValuesFromJsonArrayFunction(), hibernateContext.getCastFunctionOperator());
+
+        // WHEN
+        entityManager.createQuery(hqlUpdate)
+                .setParameter("id", 24L)
+                .setParameter("path", new JsonTextArrayBuilder().append("inventory").build().toString())
+                .setParameter("to_remove", toRemoveJSONArray.toString())
+                .executeUpdate();
 
         // THEN
         entityManager.refresh(item);
