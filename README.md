@@ -21,7 +21,7 @@
 * [Modify JSON](#modify-json)
   * [jsonb_set function wrapper](#jsonb_set-function-wrapper)
   * [Concatenation operator wrapper '||'](#concatenation-operator-wrapper-)
-  * [Deletes the field or array element at the specified path '#-'](#deletes-the-field-or-array-element-at-the-specified-path--)
+  * [Deletes the field or array element based on the index at the specified path '#-'](#deletes-the-field-or-array-element-based-on-the-index-at-the-specified-path---)
   * [Hibernate6JsonUpdateStatementBuilder - How to combine multiple modification operations with one update statement?](#hibernate6jsonupdatestatementbuilder---how-to-combine-multiple-modification-operations-with-one-update-statement)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
@@ -662,10 +662,10 @@ The function can also be used in HQL statements, as in the following example:
     }
 ```
 
-### Deletes the field or array element at the specified path '#-'
+### Deletes the field or array element based on the index at the specified path '#-'
 
 Wrapper for [deletes operator '#-'](https://www.postgresql.org/docs/9.5/functions-json.html).
-The wrapper Deletes the field or array element at the specified path, where path elements can be either field keys or array indexes.
+The wrapper deletes the field or array element based on the index at the specified path, where path elements can be either field keys or array indexes.
 Check out the following example of how it can be used with the CriteriaUpdate component:
 
 ```java
