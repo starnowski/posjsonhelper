@@ -36,6 +36,9 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withDeleteJsonbBySpecifiedPathOperatorFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DeleteJsonbBySpecifiedPathOperatorFactory) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendJsonbSet(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.lang.String, <C>) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added JsonbSetFunction(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.SqmTypedNode, java.lang.String, org.hibernate.query.sqm.tree.SqmTypedNode, com.github.starnowski.posjsonhelper.core.HibernateContext) constructor [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationFilter type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationSort type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration type [138](https://github.com/starnowski/posjsonhelper/issues/138)
 
 ## [0.3.3] - 2024-05-22
  
