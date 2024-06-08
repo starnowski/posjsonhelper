@@ -27,11 +27,15 @@ https://www.markdownguide.org/basic-syntax/
 ### Added
 
 - Added custom generic (java generic type) value to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration.JsonUpdateStatementOperation type [138](https://github.com/starnowski/posjsonhelper/issues/138)
-  - Added generic type declaration to com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic C type declaration to com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#JsonbSetFunctionFactory interface [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DefaultJsonbSetFunctionFactory type [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DeleteJsonbBySpecifiedPathOperatorFactory interface [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DefaultDeleteJsonbBySpecifiedPathOperatorFactory type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withJsonbSetFunctionFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#JsonbSetFunctionFactory) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withDeleteJsonbBySpecifiedPathOperatorFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DeleteJsonbBySpecifiedPathOperatorFactory) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendJsonbSet(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.lang.String, <C>) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added JsonbSetFunction(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.SqmTypedNode, java.lang.String, org.hibernate.query.sqm.tree.SqmTypedNode, com.github.starnowski.posjsonhelper.core.HibernateContext) constructor [138](https://github.com/starnowski/posjsonhelper/issues/138)
 
 ## [0.3.3] - 2024-05-22
  
