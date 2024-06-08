@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.4.0](#040---2024-06-08)
 * [0.3.3](#033---2024-05-22)
 * [0.3.2](#032---2024-05-01)
 * [0.3.1](#031---2024-03-11)
@@ -58,7 +59,8 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.hibernate6.functions.RemoveJsonValuesFromJsonArrayFunction type [140](https://github.com/starnowski/posjsonhelper/issues/140)
   - Added com.github.starnowski.posjsonhelper.hibernate6.functions.ConcatenateJsonbOperator#ConcatenateJsonbOperator(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.tree.SqmTypedNode, com.github.starnowski.posjsonhelper.core.HibernateContext)  constructor [140](https://github.com/starnowski/posjsonhelper/issues/140)
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration.JsonUpdateStatementOperation#getCustomValue() method [140](https://github.com/starnowski/posjsonhelper/issues/140)
-
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.RemoveJsonValuesFromJsonArrayFunctionContextFactory type [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.functions.RemoveJsonValuesFromJsonArrayFunctionProducer type [140](https://github.com/starnowski/posjsonhelper/issues/140)
 
 ## [0.3.3] - 2024-05-22
  
