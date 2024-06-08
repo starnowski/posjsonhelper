@@ -42,6 +42,11 @@ https://www.markdownguide.org/basic-syntax/
   - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder#append(com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType, com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.lang.String, <T>) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
 
+- Added SQL functions that adds items to jsonb array and another that removes it [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME_PROPERTY constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#REMOVE_VALUES_FROM_JSON_ARRAY_HIBERNATE_FUNCTION_PROPERTY constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
+
 ## [0.3.3] - 2024-05-22
  
 ### Added
