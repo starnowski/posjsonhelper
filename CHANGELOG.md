@@ -48,6 +48,11 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.core.Constants#REMOVE_VALUES_FROM_JSON_ARRAY_HIBERNATE_FUNCTION_PROPERTY constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
   - Added com.github.starnowski.posjsonhelper.core.Context#removeValuesFromJsonArrayFunctionReference property and getter method [140](https://github.com/starnowski/posjsonhelper/issues/140)
   - Added com.github.starnowski.posjsonhelper.core.Context.ContextBuilder#withRemoveValuesFromJsonArrayFunctionReference(java.lang.String) method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext#removeJsonValuesFromJsonArrayFunction property and getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.ContextBuilder#withHibernateContext(java.lang.String) method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionArgument#name property and getter method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument#getName() method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+
 
 ## [0.3.3] - 2024-05-22
  
