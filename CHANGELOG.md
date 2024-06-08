@@ -39,6 +39,8 @@ https://www.markdownguide.org/basic-syntax/
   - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationFilter type [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationSort type [138](https://github.com/starnowski/posjsonhelper/issues/138)
   - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder#append(com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType, com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.lang.String, <T>) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
 
 ## [0.3.3] - 2024-05-22
  
