@@ -22,6 +22,17 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+## [0.4.0] - 2024-06-08
+
+### Added
+
+- Added custom generic (java generic type) value to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration.JsonUpdateStatementOperation type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic type declaration to com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#JsonbSetFunctionFactory interface [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DefaultJsonbSetFunctionFactory type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DeleteJsonbBySpecifiedPathOperatorFactory interface [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DefaultDeleteJsonbBySpecifiedPathOperatorFactory type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+
 ## [0.3.3] - 2024-05-22
  
 ### Added
