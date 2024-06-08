@@ -21,9 +21,7 @@
  */
 package com.github.starnowski.posjsonhelper.core;
 
-import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY;
-import static com.github.starnowski.posjsonhelper.core.Constants.JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY;
-import static com.github.starnowski.posjsonhelper.core.Constants.SCHEMA_PROPERTY;
+import static com.github.starnowski.posjsonhelper.core.Constants.*;
 
 /**
  * Supplier of  {@link Context} based on system properties.
@@ -45,6 +43,7 @@ public class CoreContextPropertiesSupplier {
      * Component sets below properties:
      * {@link Context#jsonbAllArrayStringsExistFunctionReference} based on {@link Constants#JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY}
      * {@link Context#jsonbAnyArrayStringsExistFunctionReference} based on {@link Constants#JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY}
+     * {@link Context#removeValuesFromJsonArrayFunctionReference} based on {@link Constants#REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME_PROPERTY}
      * {@link Context#schema} based on {@link Constants#SCHEMA_PROPERTY}
      * @return core context
      */
@@ -57,6 +56,10 @@ public class CoreContextPropertiesSupplier {
         String jsonbAnyArrayStringsExistFunctionReference = systemPropertyReader.read(JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME_PROPERTY);
         if (jsonbAnyArrayStringsExistFunctionReference != null) {
             builder = builder.withJsonbAnyArrayStringsExistFunctionReference(jsonbAnyArrayStringsExistFunctionReference);
+        }
+        String removeValuesFromJsonArrayFunctionReference = systemPropertyReader.read(REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME_PROPERTY);
+        if (removeValuesFromJsonArrayFunctionReference != null) {
+            builder = builder.withRemoveValuesFromJsonArrayFunctionReference(removeValuesFromJsonArrayFunctionReference);
         }
         builder = builder.withSchema(systemPropertyReader.read(SCHEMA_PROPERTY));
         return builder.build();

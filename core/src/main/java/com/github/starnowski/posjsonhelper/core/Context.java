@@ -46,6 +46,10 @@ public class Context {
      * By default, the property is initialized with the null value.
      */
     private final String schema;
+    /**
+     * Name of SQL function that return jsonb array by deleting elements from jsonb array passed as input for function.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME} constant.
+     */
     private final String removeValuesFromJsonArrayFunctionReference;
     /**
      * The set of the SQL functions that should be executed with reference to schema specified by property {@link #schema}.
