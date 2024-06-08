@@ -115,10 +115,8 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
      */
     private final HibernateContext hibernateContext;
     private final JsonUpdateStatementConfigurationBuilder<C> jsonUpdateStatementConfigurationBuilder;
-    private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new JsonbSetFunctionFactory<T, C>() {
-    };
-    private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DeleteJsonbBySpecifiedPathOperatorFactory<T, C>() {
-    };
+    private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new DefaultJsonbSetFunctionFactory<>();
+    private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DefaultDeleteJsonbBySpecifiedPathOperatorFactory<>();
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -265,6 +263,8 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
+    public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {}
+
     public interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
         default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
@@ -274,4 +274,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
             return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), hibernateContext);
         }
     }
+
+    public static class DefaultDeleteJsonbBySpecifiedPathOperatorFactory<T, C> implements DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {}
 }
