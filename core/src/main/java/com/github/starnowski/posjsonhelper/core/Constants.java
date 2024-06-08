@@ -124,13 +124,17 @@ public class Constants {
      */
     public static final String DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR = "delete_jsonb_by_specific_path_hibernate_operator";
     /**
-     * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAllArrayStringsExistFunctionReference}.
+     * System property that is being used to set the name of HQL function that invokes SQL function defined in hibernate core context {@link HibernateContext#jsonbAllArrayStringsExistOperator}.
      */
     public static final String JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.jsonb_all_array_strings_exist";
     /**
-     * System property that is being used to set the name of HQL function that invokes SQL function defined in core context {@link Context#jsonbAnyArrayStringsExistFunctionReference}.
+     * System property that is being used to set the name of HQL function that invokes SQL function defined in hibernate core context {@link HibernateContext#jsonbAnyArrayStringsExistOperator}.
      */
     public static final String JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.jsonb_any_array_strings_exist";
+    /**
+     * System property that is being used to set the name of HQL function that invokes SQL function defined in hibernate core context {@link HibernateContext#removeJsonValuesFromJsonArrayFunction}.
+     */
+    public static final String REMOVE_VALUES_FROM_JSON_ARRAY_HIBERNATE_FUNCTION_PROPERTY = "com.github.starnowski.posjsonhelper.core.hibernate.functions.remove_values_from_json_array";
     /**
      * System property that is being used to set the name of HQL function that wraps the array operator in Postgresql.
      */
