@@ -25,4 +25,6 @@ public interface IFunctionArgument {
     //( [ [ argmode ] [ argname ] argtype [ { DEFAULT | = } default_expr ] [, ...] ] )
 
     String getType();
+
+    String getName();
 }

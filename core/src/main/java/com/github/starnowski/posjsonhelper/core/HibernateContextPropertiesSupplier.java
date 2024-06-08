@@ -43,6 +43,7 @@ public class HibernateContextPropertiesSupplier {
      * Component sets below properties:
      * {@link HibernateContext#jsonbAllArrayStringsExistOperator} based on {@link Constants#JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY}
      * {@link HibernateContext#jsonbAnyArrayStringsExistOperator} based on {@link Constants#JSONB_ANY_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR_PROPERTY}
+     * {@link HibernateContext#removeJsonValuesFromJsonArrayFunction} based on {@link Constants#REMOVE_VALUES_FROM_JSON_ARRAY_HIBERNATE_FUNCTION_PROPERTY}
      * {@link HibernateContext#jsonFunctionJsonArrayOperator} based on {@link Constants#JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY}
      * @return hibernate context
      */
@@ -59,6 +60,10 @@ public class HibernateContextPropertiesSupplier {
         String jsonFunctionJsonArrayOperator = systemPropertyReader.read(JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR_PROPERTY);
         if (jsonFunctionJsonArrayOperator != null) {
             builder = builder.withJsonFunctionJsonArrayOperator(jsonFunctionJsonArrayOperator);
+        }
+        String removeJsonValuesFromJsonArrayFunction = systemPropertyReader.read(REMOVE_VALUES_FROM_JSON_ARRAY_HIBERNATE_FUNCTION_PROPERTY);
+        if (removeJsonValuesFromJsonArrayFunction != null) {
+            builder = builder.withRemoveJsonValuesFromJsonArrayFunction(removeJsonValuesFromJsonArrayFunction);
         }
         return builder.build();
     }

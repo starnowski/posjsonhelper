@@ -63,9 +63,15 @@ public class HibernateContext {
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR} constant.
      */
     private final String deleteJsonBySpecificPathOperator;
+    /**
+     * Name of HQL function that wraps SQL function {@link Context#removeValuesFromJsonArrayFunctionReference}.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME} constant.
+     */
+    private final String removeJsonValuesFromJsonArrayFunction;
 
     public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator,
-                            String textFunctionOperator, String castFunctionOperator, String concatenateJsonbOperator, String deleteJsonBySpecificPathOperator) {
+                            String textFunctionOperator, String castFunctionOperator, String concatenateJsonbOperator, String deleteJsonBySpecificPathOperator,
+                            String removeJsonValuesFromJsonArrayFunction) {
         this.jsonbAllArrayStringsExistOperator = jsonbAllArrayStringsExistOperator;
         this.jsonbAnyArrayStringsExistOperator = jsonbAnyArrayStringsExistOperator;
         this.jsonFunctionJsonArrayOperator = jsonFunctionJsonArrayOperator;
@@ -73,10 +79,15 @@ public class HibernateContext {
         this.castFunctionOperator = castFunctionOperator;
         this.concatenateJsonbOperator = concatenateJsonbOperator;
         this.deleteJsonBySpecificPathOperator = deleteJsonBySpecificPathOperator;
+        this.removeJsonValuesFromJsonArrayFunction = removeJsonValuesFromJsonArrayFunction;
     }
 
     public static ContextBuilder builder() {
         return new ContextBuilder();
+    }
+
+    public String getRemoveJsonValuesFromJsonArrayFunction() {
+        return removeJsonValuesFromJsonArrayFunction;
     }
 
     public String getDeleteJsonBySpecificPathOperator() {
@@ -136,6 +147,12 @@ public class HibernateContext {
         private String castFunctionOperator = DEFAULT_CAST_FUNCTION_HIBERNATE_OPERATOR;
         private String concatenateJsonbOperator = DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR;
         private String deleteJsonBySpecificPathOperator = DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR;
+        private String removeJsonValuesFromJsonArrayFunction = DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME;
+
+        public ContextBuilder withRemoveJsonValuesFromJsonArrayFunction(String removeJsonValuesFromJsonArrayFunction) {
+            this.removeJsonValuesFromJsonArrayFunction = removeJsonValuesFromJsonArrayFunction;
+            return this;
+        }
 
         public ContextBuilder withDeleteJsonBySpecificPathOperator(String deleteJsonBySpecificPathOperator) {
             this.deleteJsonBySpecificPathOperator = deleteJsonBySpecificPathOperator;
@@ -174,7 +191,7 @@ public class HibernateContext {
 
         public HibernateContext build() {
             return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, this.jsonFunctionJsonArrayOperator,
-                    this.textFunctionOperator, this.castFunctionOperator, concatenateJsonbOperator, deleteJsonBySpecificPathOperator);
+                    this.textFunctionOperator, this.castFunctionOperator, concatenateJsonbOperator, deleteJsonBySpecificPathOperator, removeJsonValuesFromJsonArrayFunction);
         }
 
         public ContextBuilder withHibernateContext(HibernateContext hibernateContext) {
@@ -184,7 +201,8 @@ public class HibernateContext {
                     .withTextFunctionOperator(hibernateContext.getTextFunctionOperator())
                     .withCastFunctionOperator(hibernateContext.getCastFunctionOperator())
                     .withConcatenateJsonbOperator(hibernateContext.getConcatenateJsonbOperator())
-                    .withDeleteJsonBySpecificPathOperator(hibernateContext.getDeleteJsonBySpecificPathOperator());
+                    .withDeleteJsonBySpecificPathOperator(hibernateContext.getDeleteJsonBySpecificPathOperator())
+                    .withRemoveJsonValuesFromJsonArrayFunction(hibernateContext.getRemoveJsonValuesFromJsonArrayFunction());
         }
     }
 }

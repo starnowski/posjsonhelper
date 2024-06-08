@@ -6,6 +6,7 @@ import spock.lang.Unroll
 
 import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME
 import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME
+import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME
 
 class CoreContextPropertiesSupplierTest extends Specification {
 
@@ -24,6 +25,7 @@ class CoreContextPropertiesSupplierTest extends Specification {
 
         and: "should not set other properties"
             result.getJsonbAnyArrayStringsExistFunctionReference() == DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME
+            result.getRemoveValuesFromJsonArrayFunctionReference() == DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME
             result.getSchema() == null
 
         where:
@@ -45,6 +47,29 @@ class CoreContextPropertiesSupplierTest extends Specification {
 
         and: "should not set other properties"
             result.getJsonbAllArrayStringsExistFunctionReference() == DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME
+            result.getRemoveValuesFromJsonArrayFunctionReference() == DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME
+            result.getSchema() == null
+
+        where:
+            expectedFunctionName << ["some_fun", "this_is_right_function"]
+    }
+
+    @Unroll
+    def "should set remove_values_from_json_array function name based on system property 'com.github.starnowski.posjsonhelper.core.functions.remove_values_from_json_array', expected value #expectedFunctionName"(){
+        given:
+            def spr = Mock(SystemPropertyReader)
+            def tested = new CoreContextPropertiesSupplier(spr)
+
+        when:
+            def result = tested.get()
+
+        then:
+            1 * spr.read("com.github.starnowski.posjsonhelper.core.functions.remove_values_from_json_array") >> expectedFunctionName
+            result.getRemoveValuesFromJsonArrayFunctionReference() == expectedFunctionName
+
+        and: "should not set other properties"
+            result.getJsonbAllArrayStringsExistFunctionReference() == DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME
+            result.getJsonbAnyArrayStringsExistFunctionReference() == DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME
             result.getSchema() == null
 
         where:
@@ -67,6 +92,7 @@ class CoreContextPropertiesSupplierTest extends Specification {
         and: "should not set other properties"
             result.getJsonbAnyArrayStringsExistFunctionReference() == DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME
             result.getJsonbAllArrayStringsExistFunctionReference() == DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME
+            result.getRemoveValuesFromJsonArrayFunctionReference() == DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME
 
         where:
             expectedSchemaName << ["non_public", "public"]

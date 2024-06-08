@@ -24,8 +24,7 @@ package com.github.starnowski.posjsonhelper.core;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
-import static com.github.starnowski.posjsonhelper.core.Constants.DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
+import static com.github.starnowski.posjsonhelper.core.Constants.*;
 
 /**
  * Component that store properties used by core components
@@ -48,21 +47,31 @@ public class Context {
      */
     private final String schema;
     /**
+     * Name of SQL function that return jsonb array by deleting elements from jsonb array passed as input for function.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME} constant.
+     */
+    private final String removeValuesFromJsonArrayFunctionReference;
+    /**
      * The set of the SQL functions that should be executed with reference to schema specified by property {@link #schema}.
      * This feature may be useful when a function not built into Postgres should be executable with schema IDs other than the public schema.
      */
     private final Set<String> functionsThatShouldBeExecutedWithSchemaReference;
 
     public Context(String jsonbAllArrayStringsExistFunctionReference, String jsonbAnyArrayStringsExistFunctionReference, String schema,
-                   Set<String> functionsThatShouldBeExecutedWithSchemaReference) {
+                   String removeValuesFromJsonArrayFunctionReference, Set<String> functionsThatShouldBeExecutedWithSchemaReference) {
         this.jsonbAllArrayStringsExistFunctionReference = jsonbAllArrayStringsExistFunctionReference;
         this.jsonbAnyArrayStringsExistFunctionReference = jsonbAnyArrayStringsExistFunctionReference;
         this.schema = schema;
+        this.removeValuesFromJsonArrayFunctionReference = removeValuesFromJsonArrayFunctionReference;
         this.functionsThatShouldBeExecutedWithSchemaReference = functionsThatShouldBeExecutedWithSchemaReference;
     }
 
     public static ContextBuilder builder() {
         return new ContextBuilder();
+    }
+
+    public String getRemoveValuesFromJsonArrayFunctionReference() {
+        return removeValuesFromJsonArrayFunctionReference;
     }
 
     /**
@@ -104,8 +113,14 @@ public class Context {
     public static class ContextBuilder {
         private String jsonbAllArrayStringsExistFunctionReference = DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
         private String jsonbAnyArrayStringsExistFunctionReference = DEFAULT_JSONB_ANY_ARRAY_STRINGS_EXIST_FUNCTION_NAME;
+        private String removeValuesFromJsonArrayFunctionReference = DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME;
         private String schema;
         private Set<String> functionsThatShouldBeExecutedWithSchemaReference;
+
+        public ContextBuilder withRemoveValuesFromJsonArrayFunctionReference(String removeValuesFromJsonArrayFunctionReference) {
+            this.removeValuesFromJsonArrayFunctionReference = removeValuesFromJsonArrayFunctionReference;
+            return this;
+        }
 
         public ContextBuilder withFunctionsThatShouldBeExecutedWithSchemaReference(Set<String> functionsThatShouldBeExecutedWithSchemaReference) {
             this.functionsThatShouldBeExecutedWithSchemaReference = functionsThatShouldBeExecutedWithSchemaReference;
@@ -115,6 +130,7 @@ public class Context {
         public ContextBuilder withContext(Context context) {
             return withJsonbAllArrayStringsExistFunctionReference(context.getJsonbAllArrayStringsExistFunctionReference())
                     .withJsonbAnyArrayStringsExistFunctionReference(context.getJsonbAnyArrayStringsExistFunctionReference())
+                    .withRemoveValuesFromJsonArrayFunctionReference(context.getRemoveValuesFromJsonArrayFunctionReference())
                     .withSchema(context.getSchema())
                     .withFunctionsThatShouldBeExecutedWithSchemaReference(context.getFunctionsThatShouldBeExecutedWithSchemaReference());
         }
@@ -135,7 +151,7 @@ public class Context {
         }
 
         public Context build() {
-            return new Context(jsonbAllArrayStringsExistFunctionReference, jsonbAnyArrayStringsExistFunctionReference, schema, functionsThatShouldBeExecutedWithSchemaReference);
+            return new Context(jsonbAllArrayStringsExistFunctionReference, jsonbAnyArrayStringsExistFunctionReference, schema, removeValuesFromJsonArrayFunctionReference, functionsThatShouldBeExecutedWithSchemaReference);
         }
     }
 }

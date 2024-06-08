@@ -1,23 +1,23 @@
 /**
- *     Posjsonhelper library is an open-source project that adds support of
- *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
- *     Copyright (C) 2023  Szymon Tarnowski
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 package com.github.starnowski.posjsonhelper.core.sql.functions;
 
@@ -75,7 +75,11 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
     }
 
     protected String prepareArgumentsPhrase(List<IFunctionArgument> functionArguments) {
-        return functionArguments.stream().map(IFunctionArgument::getType).collect(Collectors.joining(", "));
+        return functionArguments.stream().map(this::prepareArgumentPhrase).collect(Collectors.joining(", "));
+    }
+
+    protected String prepareArgumentPhrase(IFunctionArgument functionArgument) {
+        return (functionArgument.getName() == null ? "" : functionArgument.getName() + " ") + functionArgument.getType();
     }
 
     protected void validate(P parameters) {
@@ -94,51 +98,46 @@ public abstract class AbstractFunctionDefinitionFactory<R extends ISQLDefinition
     }
 
     protected String buildFunctionNameAndArgumentDeclaration(P parameters) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE OR REPLACE FUNCTION ");
-        sb.append(returnFunctionReference(parameters));
-        sb.append(buildArgumentDeclaration(parameters));
-        sb.append(" ");
-        sb.append(buildReturnPhrase(parameters));
-        return sb.toString();
+        String sb = "CREATE OR REPLACE FUNCTION " +
+                returnFunctionReference(parameters) +
+                buildArgumentDeclaration(parameters) +
+                " " +
+                buildReturnPhrase(parameters);
+        return sb;
     }
 
     private String buildReturnPhrase(P parameters) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("RETURNS ");
-        sb.append(prepareReturnType(parameters));
-        return sb.toString();
+        String sb = "RETURNS " +
+                prepareReturnType(parameters);
+        return sb;
     }
 
     protected String buildArgumentDeclaration(P parameters) {
         List<IFunctionArgument> arguments = prepareFunctionArguments(parameters);
-        StringBuilder sb = new StringBuilder();
-        sb.append("(");
-        sb.append(prepareArgumentsPhrase(arguments));
-        sb.append(")");
-        return sb.toString();
+        String sb = "(" +
+                prepareArgumentsPhrase(arguments) +
+                ")";
+        return sb;
     }
 
     protected String buildBodyAndMetaData(P parameters) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(buildBody(parameters));
-        sb.append("\n");
-        sb.append("$$ LANGUAGE ");
-        sb.append(returnFunctionLanguage(parameters));
+        String sb = buildBody(parameters) +
+                "\n" +
+                "$$ LANGUAGE " +
+                returnFunctionLanguage(parameters);
 //        sb.append("\n");
         //TODO Metadata
 //        sb.append(buildMetaData(parameters));
-        return sb.toString();
+        return sb;
     }
 
     protected String produceStatement(P parameters) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(buildFunctionNameAndArgumentDeclaration(parameters));
-        sb.append(" AS $$");
-        sb.append("\n");
-        sb.append(buildBodyAndMetaData(parameters));
-        sb.append(";");
-        return sb.toString();
+        String sb = buildFunctionNameAndArgumentDeclaration(parameters) +
+                " AS $$" +
+                "\n" +
+                buildBodyAndMetaData(parameters) +
+                ";";
+        return sb;
     }
 
     protected abstract List<IFunctionArgument> prepareFunctionArguments(P parameters);
