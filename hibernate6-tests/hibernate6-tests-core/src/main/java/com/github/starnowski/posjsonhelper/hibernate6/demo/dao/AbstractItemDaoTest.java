@@ -647,7 +647,7 @@ public abstract class AbstractItemDaoTest {
     @Test
     @Transactional
     @DisplayName("should modify json array elements by removing and adding specific values with the udpate statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
-    public void shouldSetJsonArrayWithNewValueWithUpdateStatementForDemo() throws JSONException {
+    public void shouldSetJsonArrayWithNewValueWithUpdateStatementForDemo() {
         // GIVEN
         Item item = tested.findById(24L);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
