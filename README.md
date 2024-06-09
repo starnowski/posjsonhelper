@@ -973,7 +973,6 @@ Usage example:
         assertThat(document.jsonString()).isEqualTo("{\"name\":\"Simon\",\"child\":{\"pets\":[\"chameleon\",\"lion\",\"dolphin\"]},\"inventory\":[\"fins\",\"knife\"]}");
 ```
 
-
 ### Properties
 
 | Property name                                                                                   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
