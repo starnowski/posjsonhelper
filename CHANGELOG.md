@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.4.0](#040---2024-06-08)
 * [0.3.3](#033---2024-05-22)
 * [0.3.2](#032---2024-05-01)
 * [0.3.1](#031---2024-03-11)
@@ -21,6 +22,45 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.4.0] - 2024-06-08
+
+### Added
+
+- Added custom generic (java generic type) value to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration.JsonUpdateStatementOperation type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic C type declaration to com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.JsonbSetFunctionFactory interface [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.DefaultJsonbSetFunctionFactory type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.DeleteJsonbBySpecifiedPathOperatorFactory interface [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.DefaultDeleteJsonbBySpecifiedPathOperatorFactory type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withJsonbSetFunctionFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#JsonbSetFunctionFactory) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withDeleteJsonbBySpecifiedPathOperatorFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#DeleteJsonbBySpecifiedPathOperatorFactory) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendJsonbSet(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.lang.String, <C>) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added JsonbSetFunction(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.SqmTypedNode, java.lang.String, org.hibernate.query.sqm.tree.SqmTypedNode, com.github.starnowski.posjsonhelper.core.HibernateContext) constructor [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationFilter type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.DefaultJsonUpdateStatementOperationSort type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added generic T type declaration to com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder type [138](https://github.com/starnowski/posjsonhelper/issues/138)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfigurationBuilder#append(com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType, com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.lang.String, <T>) method [138](https://github.com/starnowski/posjsonhelper/issues/138)
+
+- Added SQL functions that adds items to jsonb array and another that removes it [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME_PROPERTY constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#REMOVE_VALUES_FROM_JSON_ARRAY_HIBERNATE_FUNCTION_PROPERTY constant [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Context#removeValuesFromJsonArrayFunctionReference property and getter method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Context.ContextBuilder#withRemoveValuesFromJsonArrayFunctionReference(java.lang.String) method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext#removeJsonValuesFromJsonArrayFunction property and getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext.ContextBuilder#withRemoveJsonValuesFromJsonArrayFunction(java.lang.String) method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionArgument#name property and getter method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument#getName() method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.RemoveJsonValuesFromJsonArrayFunctionDescriptor type [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.RemoveJsonValuesFromJsonArrayFunctionDescriptorRegister type [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.RemoveJsonValuesFromJsonArrayFunctionDescriptorRegisterFactory type [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.functions.RemoveJsonValuesFromJsonArrayFunction type [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.functions.ConcatenateJsonbOperator#ConcatenateJsonbOperator(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.tree.SqmTypedNode, com.github.starnowski.posjsonhelper.core.HibernateContext)  constructor [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementConfiguration.JsonUpdateStatementOperation#getCustomValue() method [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.RemoveJsonValuesFromJsonArrayFunctionContextFactory type [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.functions.RemoveJsonValuesFromJsonArrayFunctionProducer type [140](https://github.com/starnowski/posjsonhelper/issues/140)
 
 ## [0.3.3] - 2024-05-22
  

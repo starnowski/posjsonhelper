@@ -647,7 +647,7 @@ public abstract class AbstractItemDaoTest {
     @Test
     @Transactional
     @DisplayName("should modify json array elements by removing and adding specific values with the udpate statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
-    public void shouldSetJsonArrayWithNewValueWithUpdateStatementForDemo() throws JSONException {
+    public void shouldSetJsonArrayWithNewValueWithUpdateStatementForDemo() {
         // GIVEN
         Item item = tested.findById(24L);
         DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
@@ -659,7 +659,7 @@ public abstract class AbstractItemDaoTest {
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("child").append("pets").build(), null, new JsonArrayOperations(Arrays.asList("crab", "ant"), Arrays.asList("lion", "dolphin")));
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("name").build(), JSONObject.quote("Simon"));
         hibernate6JsonUpdateStatementBuilder.appendJsonbSet(new JsonTextArrayBuilder().append("inventory").build(), null, new JsonArrayOperations(Arrays.asList("compass", "mask"), Arrays.asList("knife")));
-        hibernate6JsonUpdateStatementBuilder.withJsonbSetFunctionFactory(new Hibernate6JsonUpdateStatementBuilder.JsonbSetFunctionFactory<Object, JsonArrayOperations>() {
+        hibernate6JsonUpdateStatementBuilder.withJsonbSetFunctionFactory(new Hibernate6JsonUpdateStatementBuilder.DefaultJsonbSetFunctionFactory<Object, JsonArrayOperations>() {
 
             public JsonbSetFunction build(NodeBuilder nodeBuilder, Path<Object> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<JsonArrayOperations> operation, HibernateContext hibernateContext) {
                 if (operation.getCustomValue() != null) {
@@ -669,7 +669,7 @@ public abstract class AbstractItemDaoTest {
                     RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, concatenateOperator, toRemoveJSONArray.toString(), hibernateContext);
                     return new JsonbSetFunction(nodeBuilder, (SqmTypedNode) rootPath, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
                 } else {
-                    return new JsonbSetFunction(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                    return super.build(nodeBuilder, rootPath, operation, hibernateContext);
                 }
             }
 
@@ -682,7 +682,7 @@ public abstract class AbstractItemDaoTest {
                     RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, concatenateOperator, toRemoveJSONArray.toString(), hibernateContext);
                     return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
                 } else {
-                    return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+                    return super.build(nodeBuilder, sqmTypedNode, operation, hibernateContext);
                 }
             }
         });
