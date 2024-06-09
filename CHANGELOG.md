@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.4.1](#041---2024-06-09)
 * [0.4.0](#040---2024-06-08)
 * [0.3.3](#033---2024-05-22)
 * [0.3.2](#032---2024-05-01)
@@ -22,6 +23,13 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.4.1] - 2024-06-09
+
+### Changed
+
+- Fixed the reading the source file with procedure body in RemoveJsonValuesFromJsonArrayFunctionProducer class [143](https://github.com/starnowski/posjsonhelper/issues/143)
+  - Fixed how file with SQL procedure body is read in com.github.starnowski.posjsonhelper.json.core.sql.functions.RemoveJsonValuesFromJsonArrayFunctionProducer#RemoveJsonValuesFromJsonArrayFunctionProducer() constructor [143](https://github.com/starnowski/posjsonhelper/issues/143)
 
 ## [0.4.0] - 2024-06-08
 
