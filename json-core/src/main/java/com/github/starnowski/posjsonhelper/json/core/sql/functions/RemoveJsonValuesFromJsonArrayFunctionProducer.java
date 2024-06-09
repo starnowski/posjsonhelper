@@ -4,10 +4,8 @@ import com.github.starnowski.posjsonhelper.core.sql.functions.AbstractDefaultFun
 import com.github.starnowski.posjsonhelper.core.sql.functions.DefaultFunctionFactoryParameters;
 import com.github.starnowski.posjsonhelper.core.sql.functions.IFunctionArgument;
 
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,15 +16,21 @@ public class RemoveJsonValuesFromJsonArrayFunctionProducer extends AbstractDefau
     private final String removeJsonValuesFromJsonArrayFunctionBody;
 
     public RemoveJsonValuesFromJsonArrayFunctionProducer() {
-        URI uri;
-        byte[] fileBytes;
+        removeJsonValuesFromJsonArrayFunctionBody = convert(RemoveJsonValuesFromJsonArrayFunctionProducer.class.getResourceAsStream("remove_json_values_function_body.txt"));
+    }
+
+    private static String convert(InputStream inputStream) {
+        StringBuilder stringBuilder = new StringBuilder();
+        byte[] byteArray = new byte[1024];
+        int readBytes = -1;
         try {
-            uri = RemoveJsonValuesFromJsonArrayFunctionProducer.class.getClassLoader().getResource("remove_json_values_function_body.txt").toURI();
-            fileBytes = Files.readAllBytes(Paths.get(uri));
-        } catch (Exception e) {
+            while ((readBytes = inputStream.read(byteArray)) != -1) {
+                stringBuilder.append(new String(Arrays.copyOfRange(byteArray, 0, readBytes)));
+            }
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        removeJsonValuesFromJsonArrayFunctionBody = new String(fileBytes, StandardCharsets.UTF_8);
+        return stringBuilder.toString();
     }
 
     @Override
