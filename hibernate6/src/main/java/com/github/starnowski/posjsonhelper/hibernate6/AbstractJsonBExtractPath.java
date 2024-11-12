@@ -64,6 +64,10 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
         this(referencedPathSource, mapPathParameters(nodeBuilder, path), nodeBuilder, functionName);
     }
 
+    public AbstractJsonBExtractPath(SqmTypedNode referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
+        this(referencedPathSource, mapPathParameters(nodeBuilder, path), nodeBuilder, functionName);
+    }
+
     /**
      *
      * @param referencedPathSource path for property that represent JSON or String type. Property has to implement {@link SqmTypedNode}
@@ -72,9 +76,13 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
      * @param functionName name of the main function
      */
     public AbstractJsonBExtractPath(Path referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder, String functionName) {
+        this((SqmTypedNode) referencedPathSource, path, nodeBuilder, functionName);
+    }
+
+    public AbstractJsonBExtractPath(SqmTypedNode referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
-                contactParameters(referencedPathSource, (List<? extends SqmTypedNode<?>>) path),
+                contactParameters(referencedPathSource, path),
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.invariant(nodeBuilder.getTypeConfiguration().getBasicTypeRegistry().resolve(StandardBasicTypes.STRING)),
@@ -91,12 +99,12 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
         return result;
     }
 
-    private static List<? extends SqmTypedNode<?>> contactParameters(Path referencedPathSource, List<? extends SqmTypedNode<?>> path) {
+    private static List<? extends SqmTypedNode<?>> contactParameters(SqmTypedNode referencedPathSource, List<? extends SqmTypedNode<?>> path) {
         if (path == null || path.isEmpty()) {
             throw new IllegalArgumentException("Path argument can not be null or empty list");
         }
         List<SqmTypedNode<?>> result = new ArrayList<>();
-        result.add((SqmTypedNode) referencedPathSource);
+        result.add(referencedPathSource);
         result.addAll(path);
         return result;
     }

@@ -39,7 +39,7 @@ public class JsonBExtractPathDescriptor extends AbstractJsonBExtractPathDescript
     }
 
     @Override
-    protected JsonBExtractPath generateAbstractJsonBExtractPathImpl(Path referencedPathSource, List<SqmTypedNode<?>> pathArguments, NodeBuilder nodeBuilder) {
+    protected JsonBExtractPath generateAbstractJsonBExtractPathImpl(SqmTypedNode referencedPathSource, List<SqmTypedNode<?>> pathArguments, NodeBuilder nodeBuilder) {
         return new JsonBExtractPath(referencedPathSource, pathArguments, nodeBuilder);
     }
 }
