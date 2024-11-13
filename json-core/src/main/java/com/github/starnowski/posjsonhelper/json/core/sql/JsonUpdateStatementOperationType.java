@@ -24,5 +24,7 @@ package com.github.starnowski.posjsonhelper.json.core.sql;
 public enum JsonUpdateStatementOperationType {
 
     JSONB_SET,
-    DELETE_BY_SPECIFIC_PATH
+    DELETE_BY_SPECIFIC_PATH,
+    ADD_ARRAY_ITEMS,
+    REMOVE_ARRAY_ITEMS
 }
