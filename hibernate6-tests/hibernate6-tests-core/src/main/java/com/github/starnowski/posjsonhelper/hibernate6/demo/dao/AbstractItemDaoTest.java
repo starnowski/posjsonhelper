@@ -368,6 +368,23 @@ public abstract class AbstractItemDaoTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return correct id #expectedIds when searching by any matching tags [#tags] in inner elements by using nested jsonPath operatos")
+    @ParameterizedTest
+    @MethodSource("provideShouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElements")
+    public void shouldReturnCorrectIdWhenSearchingByAnyMatchingTagsInInnerElementsByUsingNestedJsonPathOperators(List<String> tags, Set<Long> expectedIds) {
+
+        // when
+        List<Item> results = tested.findAllByAnyMatchingTagsInInnerElementByUsingNestedJsonPathOperators(new HashSet<String>(tags));
+
+        // then
+        Set<Long> ids = results.stream().map(it -> it.getId()).collect(Collectors.toSet());
+        assertThat(ids).hasSize(expectedIds.size());
+        assertThat(ids).isEqualTo(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should add json property with specific value to inner element")
     @ParameterizedTest
     @MethodSource("provideShouldReplaceJsonPropertyWithSpecificValueToInnerElement")

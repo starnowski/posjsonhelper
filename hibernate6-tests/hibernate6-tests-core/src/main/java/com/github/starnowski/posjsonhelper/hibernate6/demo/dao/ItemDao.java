@@ -152,6 +152,15 @@ public class ItemDao {
         return entityManager.createQuery(query).getResultList();
     }
 
+    public List<Item> findAllByAnyMatchingTagsInInnerElementByUsingNestedJsonPathOperators(HashSet<String> tags) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> query = cb.createQuery(Item.class);
+        Root<Item> root = query.from(Item.class);
+        query.select(root);
+        query.where(new JsonbAnyArrayStringsExistPredicate(hibernateContext, (NodeBuilder) cb, new JsonBExtractPath(new JsonBExtractPath(root.get("jsonbContent"), (NodeBuilder) cb, List.of("child")), (NodeBuilder) cb, List.of("pets")), tags.toArray(new String[0])));
+        return entityManager.createQuery(query).getResultList();
+    }
+
     public Item findById(Long id) {
         return entityManager.find(Item.class, id);
     }
