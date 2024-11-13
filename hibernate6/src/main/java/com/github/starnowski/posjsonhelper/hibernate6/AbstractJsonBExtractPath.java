@@ -64,6 +64,13 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
         this(referencedPathSource, mapPathParameters(nodeBuilder, path), nodeBuilder, functionName);
     }
 
+    /**
+     *
+     * @param referencedPathSource path for property that represent JSON or String type.
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param path list of values that represent JSON path. The order of elements is important!
+     * @param functionName name of the main function
+     */
     public AbstractJsonBExtractPath(SqmTypedNode referencedPathSource, NodeBuilder nodeBuilder, List<String> path, String functionName) {
         this(referencedPathSource, mapPathParameters(nodeBuilder, path), nodeBuilder, functionName);
     }
@@ -79,6 +86,13 @@ public abstract class AbstractJsonBExtractPath<T extends AbstractJsonBExtractPat
         this((SqmTypedNode) referencedPathSource, path, nodeBuilder, functionName);
     }
 
+    /**
+     *
+     * @param referencedPathSource path for property that represent JSON or String type.
+     * @param path list of values that represent JSON path. The order of elements is important!
+     * @param nodeBuilder component of type {@link NodeBuilder}
+     * @param functionName name of the main function
+     */
     public AbstractJsonBExtractPath(SqmTypedNode referencedPathSource, List<? extends SqmTypedNode<?>> path, NodeBuilder nodeBuilder, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
