@@ -43,6 +43,7 @@ import static java.util.stream.Collectors.toList;
  *  <li>When weights are the same then process is continued</li>
  *  <li> {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} has value 9 </li>
  *  <li> {@link JsonUpdateStatementOperationType#JSONB_SET} has value 10 </li>
+ *  <li> {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} has value 11 </li>
  *  <li> {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} has value 12 </li>
  *  <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
  *  <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
@@ -67,6 +68,7 @@ public class DefaultJsonUpdateStatementOperationSort<T> implements JsonUpdateSta
 
     private static final Map<JsonUpdateStatementOperationType, Integer> operationTypesOrderWeight = Arrays.asList(new Pair<>(JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH, 9),
             new Pair<>(JsonUpdateStatementOperationType.JSONB_SET, 10),
+            new Pair<>(JsonUpdateStatementOperationType.ADD_ARRAY_ITEMS, 11),
             new Pair<>(JsonUpdateStatementOperationType.REMOVE_ARRAY_ITEMS, 12)).stream().collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 
     @Override

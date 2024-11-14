@@ -31,9 +31,6 @@ import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 
-import java.util.Arrays;
-import java.util.Collection;
-
 import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.*;
 
 /**
@@ -138,6 +135,11 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<C>()
                 .withSort(new DefaultJsonUpdateStatementOperationSort<C>())
                 .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<C>());
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withRemoveArrayItemsFunctionFactory(RemoveArrayItemsFunctionFactory removeArrayItemsFunctionFactory) {
+        this.removeArrayItemsFunctionFactory = removeArrayItemsFunctionFactory;
+        return this;
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> withJsonbSetFunctionFactory(JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory) {
@@ -280,8 +282,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
-    public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {}
-
     public interface RemoveArrayItemsFunctionFactory<T, C> {
 
         default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
@@ -295,9 +295,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
-    public static class DefaultRemoveArrayItemsFunctionFactory<T, C> implements RemoveArrayItemsFunctionFactory<T, C> {}
-
-
     public interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
         default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
@@ -308,7 +305,14 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
-    public static class DefaultDeleteJsonbBySpecifiedPathOperatorFactory<T, C> implements DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {}
+    public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {
+    }
+
+    public static class DefaultRemoveArrayItemsFunctionFactory<T, C> implements RemoveArrayItemsFunctionFactory<T, C> {
+    }
+
+    public static class DefaultDeleteJsonbBySpecifiedPathOperatorFactory<T, C> implements DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
+    }
 
 
 }
