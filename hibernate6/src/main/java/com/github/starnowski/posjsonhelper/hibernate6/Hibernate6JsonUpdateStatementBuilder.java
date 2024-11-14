@@ -23,6 +23,7 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.functions.RemoveJsonValuesFromJsonArrayFunction;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
 import com.github.starnowski.posjsonhelper.json.core.sql.*;
 import jakarta.persistence.criteria.Expression;
@@ -119,6 +120,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     private final JsonUpdateStatementConfigurationBuilder<C> jsonUpdateStatementConfigurationBuilder;
     private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new DefaultJsonbSetFunctionFactory<>();
     private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DefaultDeleteJsonbBySpecifiedPathOperatorFactory<>();
+    private RemoveArrayItemsFunctionFactory removeArrayItemsFunctionFactory = new DefaultRemoveArrayItemsFunctionFactory();
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -249,6 +251,14 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
                     } else {
                         current = jsonbSetFunctionFactory.build(nodeBuilder, current, operation, hibernateContext);
                     }
+                    break;
+                case REMOVE_ARRAY_ITEMS:
+                    if (current == null) {
+                        current = removeArrayItemsFunctionFactory.build(nodeBuilder, rootPath, operation, hibernateContext);
+                    } else {
+                        current = removeArrayItemsFunctionFactory.build(nodeBuilder, current, operation, hibernateContext);
+                    }
+                    break;
             }
         }
         return (Expression<? extends T>) current;
@@ -272,6 +282,22 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
 
     public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {}
 
+    public interface RemoveArrayItemsFunctionFactory<T, C> {
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, new JsonBExtractPath(rootPath, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, deleteOperator, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+        }
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, new JsonBExtractPath(sqmTypedNode, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, deleteOperator, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+        }
+    }
+
+    public static class DefaultRemoveArrayItemsFunctionFactory<T, C> implements RemoveArrayItemsFunctionFactory<T, C> {}
+
+
     public interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
         default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             return new DeleteJsonbBySpecifiedPathOperator(nodeBuilder, rootPath, operation.getJsonTextArray().toString(), hibernateContext);
@@ -283,4 +309,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     public static class DefaultDeleteJsonbBySpecifiedPathOperatorFactory<T, C> implements DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {}
+
+
 }

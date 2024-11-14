@@ -751,6 +751,9 @@ public abstract class AbstractItemDaoTest {
         assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"crab\",\"chameleon\"]},\"inventory\":[\"fins\"]}");
     }
 
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @Test
     @Transactional
     @DisplayName("should remove json array elements with the update statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")

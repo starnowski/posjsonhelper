@@ -80,6 +80,10 @@ public class JsonTextArray {
         return path;
     }
 
+    public List<String> getPathWithStringValues() {
+        return path.stream().map(String::valueOf).collect(Collectors.toList());
+    }
+
     /**
      * Returns json array based on list of objects.
      * The result string is going to have "{" bracket at the beginning.
