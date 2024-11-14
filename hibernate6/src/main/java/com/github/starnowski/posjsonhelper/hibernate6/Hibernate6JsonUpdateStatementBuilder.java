@@ -286,12 +286,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
 
         default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, new JsonBExtractPath(rootPath, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
-            return new JsonbSetFunction(nodeBuilder, deleteOperator, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, (SqmTypedNode) rootPath, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
         }
 
         default JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
             RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, new JsonBExtractPath(sqmTypedNode, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
-            return new JsonbSetFunction(nodeBuilder, deleteOperator, operation.getJsonTextArray().toString(), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
         }
     }
 

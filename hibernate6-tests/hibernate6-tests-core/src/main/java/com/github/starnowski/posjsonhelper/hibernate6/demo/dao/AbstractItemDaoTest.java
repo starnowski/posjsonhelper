@@ -767,7 +767,7 @@ public abstract class AbstractItemDaoTest {
 
         JSONArray toRemoveJSONArray = new JSONArray(Arrays.asList("mask", "compass"));
         Hibernate6JsonUpdateStatementBuilder<Object, JsonArrayOperations> hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
-        hibernate6JsonUpdateStatementBuilder.appendRemoveArrayItems(new JsonTextArrayBuilder().append("child").append("pets").build(), toRemoveJSONArray.toString());
+        hibernate6JsonUpdateStatementBuilder.appendRemoveArrayItems(new JsonTextArrayBuilder().append("inventory").build(), toRemoveJSONArray.toString());
 
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
