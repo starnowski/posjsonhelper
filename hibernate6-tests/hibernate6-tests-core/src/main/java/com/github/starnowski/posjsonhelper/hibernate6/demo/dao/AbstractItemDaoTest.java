@@ -723,7 +723,7 @@ public abstract class AbstractItemDaoTest {
             executionPhase = BEFORE_TEST_METHOD)
     @Test
     @Transactional
-    @DisplayName("should remove json array elements with the update statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
+    @DisplayName("should remove json array elements with the update statement by using RemoveJsonValuesFromJsonArrayFunction - documentation demo")
     public void shouldRemoveJsonArrayElementseWithUpdateStatementForDemo() {
         // GIVEN
         Item item = tested.findById(24L);
@@ -738,6 +738,36 @@ public abstract class AbstractItemDaoTest {
         JsonbSetFunction jsonbSetFunction = new JsonbSetFunction(nodeBuilder, (SqmTypedNode) root.get("jsonbContent"), new JsonTextArrayBuilder().append("inventory").build().toString(), deleteOperator, hibernateContext);
         // Set the property you want to update and the new value
         criteriaUpdate.set("jsonbContent", jsonbSetFunction);
+
+        // Add any conditions to restrict which entities will be updated
+        criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 24L));
+
+        // WHEN
+        entityManager.createQuery(criteriaUpdate).executeUpdate();
+
+        // THEN
+        entityManager.refresh(item);
+        document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"crab\",\"chameleon\"]},\"inventory\":[\"fins\"]}");
+    }
+
+    @Test
+    @Transactional
+    @DisplayName("should remove json array elements with the update statement by using Hibernate6JsonUpdateStatementBuilder - documentation demo")
+    public void shouldRemoveJsonArrayElementsWithUpdateStatementWithJsonUpdateStatementBuilder() {
+        // GIVEN
+        Item item = tested.findById(24L);
+        DocumentContext document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
+        assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"crab\",\"chameleon\"]},\"inventory\":[\"mask\",\"fins\",\"compass\"]}");
+        CriteriaUpdate<Item> criteriaUpdate = entityManager.getCriteriaBuilder().createCriteriaUpdate(Item.class);
+        Root<Item> root = criteriaUpdate.from(Item.class);
+
+        JSONArray toRemoveJSONArray = new JSONArray(Arrays.asList("mask", "compass"));
+        Hibernate6JsonUpdateStatementBuilder<Object, JsonArrayOperations> hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext);
+        hibernate6JsonUpdateStatementBuilder.appendRemoveArrayItems(new JsonTextArrayBuilder().append("child").append("pets").build(), toRemoveJSONArray.toString());
+
+        // Set the property you want to update and the new value
+        criteriaUpdate.set("jsonbContent", hibernate6JsonUpdateStatementBuilder.build());
 
         // Add any conditions to restrict which entities will be updated
         criteriaUpdate.where(entityManager.getCriteriaBuilder().equal(root.get("id"), 24L));

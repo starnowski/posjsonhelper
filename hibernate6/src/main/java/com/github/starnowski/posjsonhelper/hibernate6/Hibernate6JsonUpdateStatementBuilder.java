@@ -30,8 +30,10 @@ import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
 
-import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH;
-import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET;
+import java.util.Arrays;
+import java.util.Collection;
+
+import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.*;
 
 /**
  * Builder for SQL statement part that allows to set particular json properties.
@@ -250,6 +252,11 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
             }
         }
         return (Expression<? extends T>) current;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendRemoveArrayItems(JsonTextArray jsonTextArray, String jsonArray) {
+        jsonUpdateStatementConfigurationBuilder.append(REMOVE_ARRAY_ITEMS, jsonTextArray, jsonArray);
+        return this;
     }
 
     public interface JsonbSetFunctionFactory<T, C> {
