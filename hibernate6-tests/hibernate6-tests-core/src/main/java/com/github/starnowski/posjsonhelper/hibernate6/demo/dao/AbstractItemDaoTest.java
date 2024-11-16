@@ -733,10 +733,10 @@ public abstract class AbstractItemDaoTest {
         Root<Item> root = criteriaUpdate.from(Item.class);
 
         Hibernate6JsonUpdateStatementBuilder hibernate6JsonUpdateStatementBuilder = new Hibernate6JsonUpdateStatementBuilder(root.get("jsonbContent"), (NodeBuilder) entityManager.getCriteriaBuilder(), hibernateContext)
-                .appendAddArrayItems(new JsonTextArrayBuilder().append("child").append("pets").build(), new JSONArray(Arrays.asList("lion", "dolphin")).toString())
-                .appendRemoveArrayItems(new JsonTextArrayBuilder().append("child").append("pets").build(), new JSONArray(Arrays.asList("crab", "ant")).toString())
+                .appendAddArrayItems(new JsonTextArrayBuilder().append("child").append("pets").build(), Arrays.asList("lion", "dolphin"))
+                .appendRemoveArrayItems(new JsonTextArrayBuilder().append("child").append("pets").build(), Arrays.asList("crab", "ant"))
                 .appendJsonbSet(new JsonTextArrayBuilder().append("name").build(), JSONObject.quote("Simon"))
-                .appendRemoveArrayItems(new JsonTextArrayBuilder().append("inventory").build(), new JSONArray(Arrays.asList("compass", "mask")).toString())
+                .appendRemoveArrayItems(new JsonTextArrayBuilder().append("inventory").build(), Arrays.asList("compass", "mask"))
                 .appendAddArrayItems(new JsonTextArrayBuilder().append("inventory").build(), new JSONArray(List.of("knife")).toString());
 
         // Set the property you want to update and the new value
