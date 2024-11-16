@@ -123,7 +123,8 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DefaultDeleteJsonbBySpecifiedPathOperatorFactory<>();
     private RemoveArrayItemsFunctionFactory<T, C> removeArrayItemsFunctionFactory = new DefaultRemoveArrayItemsFunctionFactory<>();
     private AddArrayItemsFunctionFactory<T, C> addArrayItemsFunctionFactory = new DefaultAddArrayItemsFunctionFactory<>();
-    private CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper = new CollectionToJsonArrayStringMapper(){};
+    private final CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper = new CollectionToJsonArrayStringMapper() {
+    };
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -290,8 +291,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendRemoveArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
-        jsonUpdateStatementConfigurationBuilder.append(REMOVE_ARRAY_ITEMS, jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
-        return this;
+        return appendRemoveArrayItems(jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, String jsonArrayString) {
@@ -300,8 +300,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
-        jsonUpdateStatementConfigurationBuilder.append(ADD_ARRAY_ITEMS, jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
-        return this;
+        return appendAddArrayItems(jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
     }
 
     public interface AddArrayItemsFunctionFactory<T, C> {
@@ -351,6 +350,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
+    public interface CollectionToJsonArrayStringMapper {
+        default String map(Collection<?> collection) {
+            return new JSONArray(collection).toString();
+        }
+    }
+
     public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {
     }
 
@@ -361,11 +366,5 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     public static class DefaultAddArrayItemsFunctionFactory<T, C> implements AddArrayItemsFunctionFactory<T, C> {
-    }
-
-    public interface CollectionToJsonArrayStringMapper {
-        default String map(Collection<?> collection) {
-            return new JSONArray(collection).toString();
-        }
     }
 }
