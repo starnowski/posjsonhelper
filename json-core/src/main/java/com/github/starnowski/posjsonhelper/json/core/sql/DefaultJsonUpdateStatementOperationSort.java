@@ -1,23 +1,23 @@
 /**
- *     Posjsonhelper library is an open-source project that adds support of
- *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
- *     Copyright (C) 2023  Szymon Tarnowski
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 package com.github.starnowski.posjsonhelper.json.core.sql;
 
@@ -43,6 +43,8 @@ import static java.util.stream.Collectors.toList;
  *  <li>When weights are the same then process is continued</li>
  *  <li> {@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH} has value 9 </li>
  *  <li> {@link JsonUpdateStatementOperationType#JSONB_SET} has value 10 </li>
+ *  <li> {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} has value 11 </li>
+ *  <li> {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} has value 12 </li>
  *  <li>if the {@link JsonTextArray#getPath()} operation list sizes are not the same, then the component with the smaller operation list size comes first</li>
  *  <li>if the {@link JsonTextArray#getPath()} operation lists are the same, then individual path fragments are compared in the loop</li>
  *  <li>First, it is checked whether parts of paths with the same index are the same using the {@link Objects#equals(Object, Object)} method</li>
@@ -65,7 +67,9 @@ import static java.util.stream.Collectors.toList;
 public class DefaultJsonUpdateStatementOperationSort<T> implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationSort<T> {
 
     private static final Map<JsonUpdateStatementOperationType, Integer> operationTypesOrderWeight = Arrays.asList(new Pair<>(JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH, 9),
-            new Pair<>(JsonUpdateStatementOperationType.JSONB_SET, 10)).stream().collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+            new Pair<>(JsonUpdateStatementOperationType.JSONB_SET, 10),
+            new Pair<>(JsonUpdateStatementOperationType.ADD_ARRAY_ITEMS, 11),
+            new Pair<>(JsonUpdateStatementOperationType.REMOVE_ARRAY_ITEMS, 12)).stream().collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
 
     @Override
     public List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> sort(List<JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<T>> operations) {

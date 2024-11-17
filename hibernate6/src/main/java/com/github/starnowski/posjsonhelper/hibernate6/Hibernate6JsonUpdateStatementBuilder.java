@@ -23,15 +23,19 @@ package com.github.starnowski.posjsonhelper.hibernate6;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.hibernate6.functions.JsonbSetFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.functions.RemoveJsonValuesFromJsonArrayFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.ConcatenateJsonbOperator;
 import com.github.starnowski.posjsonhelper.hibernate6.operators.DeleteJsonbBySpecifiedPathOperator;
 import com.github.starnowski.posjsonhelper.json.core.sql.*;
 import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.Path;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
+import org.json.JSONArray;
 
-import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.DELETE_BY_SPECIFIC_PATH;
-import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.JSONB_SET;
+import java.util.Collection;
+
+import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.*;
 
 /**
  * Builder for SQL statement part that allows to set particular json properties.
@@ -117,6 +121,10 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     private final JsonUpdateStatementConfigurationBuilder<C> jsonUpdateStatementConfigurationBuilder;
     private JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory = new DefaultJsonbSetFunctionFactory<>();
     private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DefaultDeleteJsonbBySpecifiedPathOperatorFactory<>();
+    private RemoveArrayItemsFunctionFactory<T, C> removeArrayItemsFunctionFactory = new DefaultRemoveArrayItemsFunctionFactory<>();
+    private AddArrayItemsFunctionFactory<T, C> addArrayItemsFunctionFactory = new DefaultAddArrayItemsFunctionFactory<>();
+    private final CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper = new CollectionToJsonArrayStringMapper() {
+    };
 
     /**
      * Construction initialize property {@link #jsonUpdateStatementConfigurationBuilder} and an instance of
@@ -134,6 +142,16 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<C>()
                 .withSort(new DefaultJsonUpdateStatementOperationSort<C>())
                 .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<C>());
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withAddArrayItemsFunctionFactory(AddArrayItemsFunctionFactory<T, C> addArrayItemsFunctionFactory) {
+        this.addArrayItemsFunctionFactory = addArrayItemsFunctionFactory;
+        return this;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withRemoveArrayItemsFunctionFactory(RemoveArrayItemsFunctionFactory<T, C> removeArrayItemsFunctionFactory) {
+        this.removeArrayItemsFunctionFactory = removeArrayItemsFunctionFactory;
+        return this;
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> withJsonbSetFunctionFactory(JsonbSetFunctionFactory<T, C> jsonbSetFunctionFactory) {
@@ -247,9 +265,55 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
                     } else {
                         current = jsonbSetFunctionFactory.build(nodeBuilder, current, operation, hibernateContext);
                     }
+                    break;
+                case REMOVE_ARRAY_ITEMS:
+                    if (current == null) {
+                        current = removeArrayItemsFunctionFactory.build(nodeBuilder, rootPath, operation, hibernateContext);
+                    } else {
+                        current = removeArrayItemsFunctionFactory.build(nodeBuilder, current, operation, hibernateContext);
+                    }
+                    break;
+                case ADD_ARRAY_ITEMS:
+                    if (current == null) {
+                        current = addArrayItemsFunctionFactory.build(nodeBuilder, rootPath, operation, hibernateContext);
+                    } else {
+                        current = addArrayItemsFunctionFactory.build(nodeBuilder, current, operation, hibernateContext);
+                    }
+                    break;
             }
         }
         return (Expression<? extends T>) current;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendRemoveArrayItems(JsonTextArray jsonTextArray, String jsonArrayString) {
+        jsonUpdateStatementConfigurationBuilder.append(REMOVE_ARRAY_ITEMS, jsonTextArray, jsonArrayString);
+        return this;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendRemoveArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
+        return appendRemoveArrayItems(jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, String jsonArrayString) {
+        jsonUpdateStatementConfigurationBuilder.append(ADD_ARRAY_ITEMS, jsonTextArray, jsonArrayString);
+        return this;
+    }
+
+    public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
+        return appendAddArrayItems(jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
+    }
+
+    public interface AddArrayItemsFunctionFactory<T, C> {
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            ConcatenateJsonbOperator concatenateOperator = new ConcatenateJsonbOperator(nodeBuilder, new JsonBExtractPath(rootPath, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, (SqmTypedNode) rootPath, operation.getJsonTextArray().toString(), concatenateOperator, hibernateContext);
+        }
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            ConcatenateJsonbOperator concatenateOperator = new ConcatenateJsonbOperator(nodeBuilder, new JsonBExtractPath(sqmTypedNode, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), concatenateOperator, hibernateContext);
+        }
     }
 
     public interface JsonbSetFunctionFactory<T, C> {
@@ -263,7 +327,18 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
-    public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {}
+    public interface RemoveArrayItemsFunctionFactory<T, C> {
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, new JsonBExtractPath(rootPath, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, (SqmTypedNode) rootPath, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
+        }
+
+        default JsonbSetFunction build(NodeBuilder nodeBuilder, SqmTypedNode sqmTypedNode, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
+            RemoveJsonValuesFromJsonArrayFunction deleteOperator = new RemoveJsonValuesFromJsonArrayFunction(nodeBuilder, new JsonBExtractPath(sqmTypedNode, nodeBuilder, operation.getJsonTextArray().getPathWithStringValues()), operation.getValue(), hibernateContext);
+            return new JsonbSetFunction(nodeBuilder, sqmTypedNode, operation.getJsonTextArray().toString(), deleteOperator, hibernateContext);
+        }
+    }
 
     public interface DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
         default DeleteJsonbBySpecifiedPathOperator build(NodeBuilder nodeBuilder, Path<T> rootPath, JsonUpdateStatementConfiguration.JsonUpdateStatementOperation<C> operation, HibernateContext hibernateContext) {
@@ -275,5 +350,21 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
-    public static class DefaultDeleteJsonbBySpecifiedPathOperatorFactory<T, C> implements DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {}
+    public interface CollectionToJsonArrayStringMapper {
+        default String map(Collection<?> collection) {
+            return new JSONArray(collection).toString();
+        }
+    }
+
+    public static class DefaultJsonbSetFunctionFactory<T, C> implements JsonbSetFunctionFactory<T, C> {
+    }
+
+    public static class DefaultRemoveArrayItemsFunctionFactory<T, C> implements RemoveArrayItemsFunctionFactory<T, C> {
+    }
+
+    public static class DefaultDeleteJsonbBySpecifiedPathOperatorFactory<T, C> implements DeleteJsonbBySpecifiedPathOperatorFactory<T, C> {
+    }
+
+    public static class DefaultAddArrayItemsFunctionFactory<T, C> implements AddArrayItemsFunctionFactory<T, C> {
+    }
 }

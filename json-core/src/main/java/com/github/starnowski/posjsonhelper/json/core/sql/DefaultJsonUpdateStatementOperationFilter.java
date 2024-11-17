@@ -49,6 +49,8 @@ import static java.util.Optional.ofNullable;
  *
  * then the element with '{parent,child1, child11}' is going to be removed.
  *
+ * Operations <b>{@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS}</b> and <b>{@link JsonUpdateStatementOperationType#DELETE_BY_SPECIFIC_PATH}</b> are not filtered:
+ *
  */
 public class DefaultJsonUpdateStatementOperationFilter<T> implements JsonUpdateStatementConfigurationBuilder.JsonUpdateStatementOperationFilter<T> {
     @Override
