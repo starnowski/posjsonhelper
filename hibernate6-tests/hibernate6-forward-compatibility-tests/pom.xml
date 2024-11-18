@@ -32,7 +32,9 @@
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>[6.6.2,7.0.0)</version>
+<!--            There are some problems with downloading 7.0.0.Beta version for hibernate-->
+<!--            <version>[6.6.2,7.0.0)</version>-->
+            <version>6.6.2.Final</version>
         </dependency>
     </dependencies>
 
