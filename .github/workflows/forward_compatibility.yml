@@ -50,4 +50,4 @@ jobs:
           java-version: '11'
 
       - name: Run tests for hibernate6
-        run: ./mvnw -DskipTests  --quiet clean install && ./mvnw -pl :hibernate6-forward-compatibility-tests -P forward_compatibility_tests test
+        run: ./mvnw -DskipTests  --quiet -P forward_compatibility_tests clean install && ./mvnw -pl :hibernate6-tests-core,:hibernate6-forward-compatibility-tests -P forward_compatibility_tests test
