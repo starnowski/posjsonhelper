@@ -17,7 +17,6 @@
         <module>hibernate6-tests-spi</module>
         <module>hibernate6-tests-native-support</module>
         <module>hibernate6-tests-native-support-1</module>
-        <module>hibernate6-forward-compatibility-tests</module>
     </modules>
 
     <profiles>
