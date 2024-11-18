@@ -1049,7 +1049,8 @@ Compatibility matrix with Hibernate 6.
 | 0.2.0 - 0.2.1 | 6.1.5.Final |
 
 # Known issues
-  * Problem with hibernate package, version or classes etc.
+  * **Problem with hibernate package, version or classes etc.**
+
     If you face issue related to missing method definition or type like for example:
       ```
         java.lang.NoSuchMethodError: 'org.hibernate.query.criteria.JpaExpression
