@@ -915,6 +915,28 @@ update
 
 The most inner jsonb_set function execution for this prepared statement is going to set an empty array for the "parents" property.
 
+The builder has methods for setting values:
+
+- appendJsonbSet(JsonTextArray jsonTextArray, String value)
+- appendJsonbSet(JsonTextArray jsonTextArray, String value, C customValue)
+
+removing properties:
+
+  appendDeleteBySpecificPath(JsonTextArray jsonTextArray)
+
+adding array elements
+
+- appendAddArrayItems(JsonTextArray jsonTextArray, String jsonArrayString)
+- appendAddArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) ** Check comment about optional dependency!**
+
+removing array elements
+
+- appendRemoveArrayItems(JsonTextArray jsonTextArray, String jsonArrayString)
+- appendRemoveArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) ** Check comment about optional dependency!**
+
+Some methods related to modification on json array by default requires org.json.json library (check [optional dependencies](#optional-dependencies)).
+However, it is possible to pass custom implementation of interface that maps collection object to json array value with "withCollectionToJsonArrayStringMapper(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.CollectionToJsonArrayStringMapper)" builder method   
+
 #### How to add custom value support for Hibernate6JsonUpdateStatementBuilder?
 
 The Hibernate6JsonUpdateStatementBuilder type is generic. A second generic type is a custom value that can be added to the Hibernate6JsonUpdateStatementBuilder context.

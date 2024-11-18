@@ -123,17 +123,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DefaultDeleteJsonbBySpecifiedPathOperatorFactory<>();
     private RemoveArrayItemsFunctionFactory<T, C> removeArrayItemsFunctionFactory = new DefaultRemoveArrayItemsFunctionFactory<>();
     private AddArrayItemsFunctionFactory<T, C> addArrayItemsFunctionFactory = new DefaultAddArrayItemsFunctionFactory<>();
-
-    /**
-     * Set {@link #collectionToJsonArrayStringMapper} object
-     * @param collectionToJsonArrayStringMapper object that implements {@link CollectionToJsonArrayStringMapper} interface
-     * @return a reference to the constructor component for which the methods were executed
-     */
-    public Hibernate6JsonUpdateStatementBuilder<T, C> withCollectionToJsonArrayStringMapper(CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper) {
-        this.collectionToJsonArrayStringMapper = collectionToJsonArrayStringMapper;
-        return this;
-    }
-
     private CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper = new CollectionToJsonArrayStringMapper() {
     };
 
@@ -153,6 +142,17 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         jsonUpdateStatementConfigurationBuilder = new JsonUpdateStatementConfigurationBuilder<C>()
                 .withSort(new DefaultJsonUpdateStatementOperationSort<C>())
                 .withPostSortFilter(new DefaultJsonUpdateStatementOperationFilter<C>());
+    }
+
+    /**
+     * Set {@link #collectionToJsonArrayStringMapper} object
+     *
+     * @param collectionToJsonArrayStringMapper object that implements {@link CollectionToJsonArrayStringMapper} interface
+     * @return a reference to the constructor component for which the methods were executed
+     */
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withCollectionToJsonArrayStringMapper(CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper) {
+        this.collectionToJsonArrayStringMapper = collectionToJsonArrayStringMapper;
+        return this;
     }
 
     public Hibernate6JsonUpdateStatementBuilder<T, C> withAddArrayItemsFunctionFactory(AddArrayItemsFunctionFactory<T, C> addArrayItemsFunctionFactory) {
@@ -297,7 +297,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     /**
-     *
      * Adding {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} type operation that removes array elements for specific json path
      *
      * @param jsonTextArray json array that specified path for property
@@ -310,13 +309,12 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     /**
-     *
      * Adding {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} type operation that removes array elements for specific json path.
      * Method use {@link #collectionToJsonArrayStringMapper} to map collection objet to json array elements.
      * To change default {@link #collectionToJsonArrayStringMapper} please use {@link #}
      *
      * @param jsonTextArray json array that specified path for property
-     * @param collection collection object that represent value that suppose to be removed
+     * @param collection    collection object that represent value that suppose to be removed
      * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendRemoveArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
@@ -324,7 +322,6 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     /**
-     *
      * Adding {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} type operation that adds array elements for specific json path
      *
      * @param jsonTextArray json array that specified path for property
@@ -337,12 +334,11 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     }
 
     /**
-     *
      * Adding {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} type operation that removes array elements for specific json path.
      * Method use {@link #collectionToJsonArrayStringMapper} to map collection objet to json array elements
      *
      * @param jsonTextArray json array that specified path for property
-     * @param collection collection object that represent value that suppose to be added
+     * @param collection    collection object that represent value that suppose to be added
      * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
@@ -403,6 +399,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         /**
          * Maps collection object to correct string value that represents json array.
          * Default implementation use org.json package
+         *
          * @param collection objects collection that represents json array values
          * @return string value that represents json array
          */
