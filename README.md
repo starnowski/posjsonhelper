@@ -59,6 +59,32 @@ You can use it just by adding it as a dependency in the project descriptor file 
         </dependency>
 ```
 
+#### Optional dependencies
+
+The posjsonhelper library does not have transient dependency to hibernate library.
+So please bare in mind that hibernate dependency has to be added separetly in your project like below:
+
+```xml
+  <dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>????</version>
+  </dependency>
+```
+
+Please check hibernate compatibility [version matrix](#hibernate-6-version-compatibility) to check correct version.
+
+Default implementation for some functionalities related to the JSON operations require org.json:json library.
+However, there are ways to implements specific interfaces and below library might not be necessary to add.
+
+```xml
+  <dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20240303</version>
+  </dependency>
+```
+
 ### Building project locally
 If someone would like to build the project locally from the source please see the CONTRIBUTING.md file to check how to set up the project locally.
 
@@ -888,6 +914,28 @@ update
 ```
 
 The most inner jsonb_set function execution for this prepared statement is going to set an empty array for the "parents" property.
+
+The builder has methods for setting values:
+
+- appendJsonbSet(JsonTextArray jsonTextArray, String value)
+- appendJsonbSet(JsonTextArray jsonTextArray, String value, C customValue)
+
+removing properties:
+
+  appendDeleteBySpecificPath(JsonTextArray jsonTextArray)
+
+adding array elements
+
+- appendAddArrayItems(JsonTextArray jsonTextArray, String jsonArrayString)
+- appendAddArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) ** Check comment about optional dependency!**
+
+removing array elements
+
+- appendRemoveArrayItems(JsonTextArray jsonTextArray, String jsonArrayString)
+- appendRemoveArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) ** Check comment about optional dependency!**
+
+Some methods related to modification on json array by default requires org.json.json library (check [optional dependencies](#optional-dependencies)).
+However, it is possible to pass custom implementation of interface that maps collection object to json array value with "withCollectionToJsonArrayStringMapper(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.CollectionToJsonArrayStringMapper)" builder method   
 
 #### How to add custom value support for Hibernate6JsonUpdateStatementBuilder?
 

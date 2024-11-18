@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.4.2](#042---2024-11-18)
 * [0.4.1](#041---2024-06-09)
 * [0.4.0](#040---2024-06-08)
 * [0.3.3](#033---2024-05-22)
@@ -23,6 +24,37 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.4.2] - 2024-11-18
+
+### Added
+
+- Added support for adding and removing items from json array  [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added org.json.json library as optional dependency for com.github.starnowski.posjsonhelper:hibernate6 module [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withAddArrayItemsFunctionFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.AddArrayItemsFunctionFactory<T, C>) method [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#withRemoveArrayItemsFunctionFactory(com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.RemoveArrayItemsFunctionFactory<T, C>) method [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.AddArrayItemsFunctionFactory<T, C> interface [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder.RemoveArrayItemsFunctionFactory<T, C> interface [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendRemoveArrayItems(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, String) method [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendRemoveArrayItems(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.util.Collection) method [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendAddArrayItems(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, String) method [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.Hibernate6JsonUpdateStatementBuilder#appendAddArrayItems(com.github.starnowski.posjsonhelper.json.core.sql.JsonTextArray, java.util.Collection) method [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.java#ADD_ARRAY_ITEMS enum value [149](https://github.com/starnowski/posjsonhelper/issues/149)
+  - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.java#REMOVE_ARRAY_ITEMS enum value [149](https://github.com/starnowski/posjsonhelper/issues/149)
+
+- Added constructor to AbstractJsonBExtractPath with SqmTypedNode argument [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<java.lang.String>, java.lang.String) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder, java.lang.String) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, List<java.lang.String>, org.hibernate.query.sqm.NodeBuilder) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(org.hibernate.query.sqm.tree.SqmTypedNode, List<java.lang.String>, org.hibernate.query.sqm.NodeBuilder) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+
+### Removed
+
+  - Removed constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Removed constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+
 
 ## [0.4.1] - 2024-06-09
 
