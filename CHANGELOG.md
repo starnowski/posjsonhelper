@@ -42,6 +42,12 @@ https://www.markdownguide.org/basic-syntax/
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.java#ADD_ARRAY_ITEMS enum value [149](https://github.com/starnowski/posjsonhelper/issues/149)
   - Added com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatementOperationType.java#REMOVE_ARRAY_ITEMS enum value [149](https://github.com/starnowski/posjsonhelper/issues/149)
 
+- Added constructor to AbstractJsonBExtractPath with SqmTypedNode argument [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<java.lang.String>, java.lang.String) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder, java.lang.String) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, List<java.lang.String>, org.hibernate.query.sqm.NodeBuilder) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+
 
 ## [0.4.1] - 2024-06-09
 
