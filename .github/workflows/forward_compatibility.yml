@@ -50,4 +50,4 @@ jobs:
           java-version: '11'
 
       - name: Run tests for hibernate6
-        run: ./mvnw -DskipTests  --quiet -P forward_compatibility_tests clean install && ./mvnw -pl :hibernate6-tests-core,:hibernate6-forward-compatibility-tests -P forward_compatibility_tests test
+        run: ./mvnw -DskipTests --quiet -P forward_compatibility_tests clean install && ./scripts/run_integration_tests.sh --postgres_docker_version='16.1'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' -pl :hibernate6-tests-core,:hibernate6-forward-compatibility-tests -P forward_compatibility_tests test
