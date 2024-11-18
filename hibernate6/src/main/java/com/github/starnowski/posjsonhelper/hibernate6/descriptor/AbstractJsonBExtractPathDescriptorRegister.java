@@ -35,6 +35,7 @@ public class AbstractJsonBExtractPathDescriptorRegister extends AbstractConditio
     private final AbstractJsonBExtractPathDescriptor abstractJsonBExtractPathDescriptor;
 
     /**
+     * @param abstractJsonBExtractPathDescriptor descriptor
      * @param shouldOverrideFunctionIfAlreadyRegistered value of property {@link #shouldOverrideFunctionIfAlreadyRegistered}
      */
     public AbstractJsonBExtractPathDescriptorRegister(AbstractJsonBExtractPathDescriptor abstractJsonBExtractPathDescriptor, boolean shouldOverrideFunctionIfAlreadyRegistered) {

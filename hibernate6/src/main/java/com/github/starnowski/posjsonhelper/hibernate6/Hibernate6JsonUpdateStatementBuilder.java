@@ -300,7 +300,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
      * Adding {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} type operation that removes array elements for specific json path
      *
      * @param jsonTextArray json array that specified path for property
-     * @param value         json value that represent json array of elements, values have to be correct json array like '["crab","ant"]'
+     * @param jsonArrayString json value that represent json array of elements, values have to be correct json array like '["crab","ant"]'
      * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendRemoveArrayItems(JsonTextArray jsonTextArray, String jsonArrayString) {
@@ -311,7 +311,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     /**
      * Adding {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} type operation that removes array elements for specific json path.
      * Method use {@link #collectionToJsonArrayStringMapper} to map collection objet to json array elements.
-     * To change default {@link #collectionToJsonArrayStringMapper} please use {@link #}
+     * To change default {@link #collectionToJsonArrayStringMapper} please use {@link #withCollectionToJsonArrayStringMapper(CollectionToJsonArrayStringMapper)}
      *
      * @param jsonTextArray json array that specified path for property
      * @param collection    collection object that represent value that suppose to be removed
@@ -325,7 +325,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
      * Adding {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} type operation that adds array elements for specific json path
      *
      * @param jsonTextArray json array that specified path for property
-     * @param value         json value that represent json array of elements, values have to be correct json array like '["crab","ant"]'
+     * @param jsonArrayString json value that represent json array of elements, values have to be correct json array like '["crab","ant"]'
      * @return a reference to the constructor component for which the methods were executed
      */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, String jsonArrayString) {

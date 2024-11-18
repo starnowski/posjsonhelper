@@ -48,8 +48,8 @@ public class JsonBExtractPathText extends AbstractJsonBExtractPath<JsonBExtractP
     /**
      *
      * @param referencedPathSource path for property that represent JSON or String type.
-     * @param path
-     * @param nodeBuilder
+     * @param path list of values that represent JSON path. The order of elements is important!
+     * @param nodeBuilder component of type {@link NodeBuilder}
      */
     public JsonBExtractPathText(SqmTypedNode referencedPathSource, List<String> path, NodeBuilder nodeBuilder) {
         super(referencedPathSource, nodeBuilder, path, JSONB_EXTRACT_PATH_TEXT_FUNCTION_NAME);
