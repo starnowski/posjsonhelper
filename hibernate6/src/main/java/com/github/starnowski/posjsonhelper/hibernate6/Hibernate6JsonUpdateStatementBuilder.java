@@ -123,7 +123,18 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     private DeleteJsonbBySpecifiedPathOperatorFactory<T, C> deleteJsonbBySpecifiedPathOperatorFactory = new DefaultDeleteJsonbBySpecifiedPathOperatorFactory<>();
     private RemoveArrayItemsFunctionFactory<T, C> removeArrayItemsFunctionFactory = new DefaultRemoveArrayItemsFunctionFactory<>();
     private AddArrayItemsFunctionFactory<T, C> addArrayItemsFunctionFactory = new DefaultAddArrayItemsFunctionFactory<>();
-    private final CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper = new CollectionToJsonArrayStringMapper() {
+
+    /**
+     * Set {@link #collectionToJsonArrayStringMapper} object
+     * @param collectionToJsonArrayStringMapper object that implements {@link CollectionToJsonArrayStringMapper} interface
+     * @return a reference to the constructor component for which the methods were executed
+     */
+    public Hibernate6JsonUpdateStatementBuilder<T, C> withCollectionToJsonArrayStringMapper(CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper) {
+        this.collectionToJsonArrayStringMapper = collectionToJsonArrayStringMapper;
+        return this;
+    }
+
+    private CollectionToJsonArrayStringMapper collectionToJsonArrayStringMapper = new CollectionToJsonArrayStringMapper() {
     };
 
     /**
@@ -301,7 +312,8 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
     /**
      *
      * Adding {@link JsonUpdateStatementOperationType#REMOVE_ARRAY_ITEMS} type operation that removes array elements for specific json path.
-     * Method use {@link #collectionToJsonArrayStringMapper} to map collection objet to json array elements
+     * Method use {@link #collectionToJsonArrayStringMapper} to map collection objet to json array elements.
+     * To change default {@link #collectionToJsonArrayStringMapper} please use {@link #}
      *
      * @param jsonTextArray json array that specified path for property
      * @param collection collection object that represent value that suppose to be removed
@@ -311,11 +323,28 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         return appendRemoveArrayItems(jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
     }
 
+    /**
+     *
+     * Adding {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} type operation that adds array elements for specific json path
+     *
+     * @param jsonTextArray json array that specified path for property
+     * @param value         json value that represent json array of elements, values have to be correct json array like '["crab","ant"]'
+     * @return a reference to the constructor component for which the methods were executed
+     */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, String jsonArrayString) {
         jsonUpdateStatementConfigurationBuilder.append(ADD_ARRAY_ITEMS, jsonTextArray, jsonArrayString);
         return this;
     }
 
+    /**
+     *
+     * Adding {@link JsonUpdateStatementOperationType#ADD_ARRAY_ITEMS} type operation that removes array elements for specific json path.
+     * Method use {@link #collectionToJsonArrayStringMapper} to map collection objet to json array elements
+     *
+     * @param jsonTextArray json array that specified path for property
+     * @param collection collection object that represent value that suppose to be added
+     * @return a reference to the constructor component for which the methods were executed
+     */
     public Hibernate6JsonUpdateStatementBuilder<T, C> appendAddArrayItems(JsonTextArray jsonTextArray, Collection<?> collection) {
         return appendAddArrayItems(jsonTextArray, collectionToJsonArrayStringMapper.map(collection));
     }
@@ -367,7 +396,16 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
         }
     }
 
+    /**
+     * Functional interface that map collection object to correct string value that represents json array.
+     */
     public interface CollectionToJsonArrayStringMapper {
+        /**
+         * Maps collection object to correct string value that represents json array.
+         * Default implementation use org.json package
+         * @param collection objects collection that represents json array values
+         * @return string value that represents json array
+         */
         default String map(Collection<?> collection) {
             return new JSONArray(collection).toString();
         }
