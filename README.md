@@ -7,6 +7,7 @@
 * [Introduction](#introduction)
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
+      * [Optional dependencies](#optional-dependencies)
     * [Building project locally](#building-project-locally)
 * [How to attach postgresql_dialect](#how-to-attach-postgresql-dialect)
 * [How to attach FunctionContributor](#how-to-attach-functioncontributor)
@@ -1046,6 +1047,9 @@ Compatibility matrix with Hibernate 6.
 |---------------|-------------|
 | 0.3.0         | 6.4.0.Final |
 | 0.2.0 - 0.2.1 | 6.1.5.Final |
+
+# Known issues
+
 
 # Reporting issues
 * Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
