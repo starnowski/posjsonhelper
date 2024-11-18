@@ -22,6 +22,12 @@
             <groupId>com.github.starnowski.posjsonhelper</groupId>
             <artifactId>hibernate6-tests-core</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hibernate.orm</groupId>
+                    <artifactId>hibernate-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hibernate.orm</groupId>
