@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.github.starnowski.posjsonhelper</groupId>
         <artifactId>parent</artifactId>
-        <version>0.4.2</version>
+        <version>0.4.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>hibernate6-tests</artifactId>
@@ -18,6 +18,19 @@
         <module>hibernate6-tests-native-support</module>
         <module>hibernate6-tests-native-support-1</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>forward_compatibility_tests</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <modules>
+                <module>hibernate6-tests-core</module>
+                <module>hibernate6-forward-compatibility-tests</module>
+            </modules>
+        </profile>
+    </profiles>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>

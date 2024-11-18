@@ -2,10 +2,12 @@
 
 [![Run tests for posjsonhelper](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml/badge.svg)](https://github.com/starnowski/posjsonhelper/actions/workflows/ci.yml)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.starnowski.posjsonhelper/parent.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.github.starnowski.posjsonhelper%22%20AND%20a:%22parent%22)
+[![Run forward compatibility tests for posjsonhelper](https://github.com/starnowski/posjsonhelper/actions/workflows/forward_compatibility.yml/badge.svg)](https://github.com/starnowski/posjsonhelper/actions/workflows/forward_compatibility.yml)
 
 * [Introduction](#introduction)
 * [How to start using posjsonhelper](#how-to-start-using-posjsonhelper)
     * [Setting maven dependency](#setting-maven-dependency)
+      * [Optional dependencies](#optional-dependencies)
     * [Building project locally](#building-project-locally)
 * [How to attach postgresql_dialect](#how-to-attach-postgresql-dialect)
 * [How to attach FunctionContributor](#how-to-attach-functioncontributor)
@@ -1045,6 +1047,18 @@ Compatibility matrix with Hibernate 6.
 |---------------|-------------|
 | 0.3.0         | 6.4.0.Final |
 | 0.2.0 - 0.2.1 | 6.1.5.Final |
+
+# Known issues
+  * **Problem with hibernate package, version or classes etc.**
+
+    If you face issue related to missing method definition or type like for example:
+      ```
+        java.lang.NoSuchMethodError: 'org.hibernate.query.criteria.JpaExpression
+      ```
+    Then first please check if your project has hibernate-core library on classpath.
+    The hibernate-core is [optional dependency](#optional-dependencies) for this project and you have to make sure that it was added in your project.
+    Please check similar issue [145](https://github.com/starnowski/posjsonhelper/issues/145).
+    If you hibernate-core is on classpath and the issue still exists then please [report issue](#reporting-issues).
 
 # Reporting issues
 * Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
