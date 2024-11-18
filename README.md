@@ -59,6 +59,32 @@ You can use it just by adding it as a dependency in the project descriptor file 
         </dependency>
 ```
 
+#### Optional dependencies
+
+The posjsonhelper library does not have transient dependency to hibernate library.
+So please bare in mind that hibernate dependency has to be added separetly in your project like below:
+
+```xml
+  <dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-core</artifactId>
+    <version>????</version>
+  </dependency>
+```
+
+Please check hibernate compatibility [version matrix](#hibernate-6-version-compatibility) to check correct version.
+
+Default implementation for some functionalities related to the JSON operations require org.json:json library.
+However, there are ways to implements specific interfaces and below library might not be necessary to add.
+
+```xml
+  <dependency>
+    <groupId>org.json</groupId>
+    <artifactId>json</artifactId>
+    <version>20240303</version>
+  </dependency>
+```
+
 ### Building project locally
 If someone would like to build the project locally from the source please see the CONTRIBUTING.md file to check how to set up the project locally.
 
