@@ -1,4 +1,4 @@
-package demo.configuration;
+package com.github.starnowski.posjsonhelper.hibernate6.demo.configuration;
 
 import com.github.starnowski.posjsonhelper.core.Context;
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
