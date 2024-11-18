@@ -1049,7 +1049,15 @@ Compatibility matrix with Hibernate 6.
 | 0.2.0 - 0.2.1 | 6.1.5.Final |
 
 # Known issues
-
+  * Problem with hibernate package, version or classes etc.
+    If you face issue related to missing method definition or type like for example:
+      ```
+        java.lang.NoSuchMethodError: 'org.hibernate.query.criteria.JpaExpression
+      ```
+    Then first please check if your project has hibernate-core library on classpath.
+    The hibernate-core is [optional dependency](#optional-dependencies) for this project and you have to make sure that it was added in your project.
+    Please check similar issue [145](https://github.com/starnowski/posjsonhelper/issues/145).
+    If you hibernate-core is on classpath and the issue still exists then please [report issue](#reporting-issues).
 
 # Reporting issues
 * Any new issues please report in [GitHub site](https://github.com/starnowski/posjsonhelper/issues)
