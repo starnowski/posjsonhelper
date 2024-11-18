@@ -47,6 +47,13 @@ https://www.markdownguide.org/basic-syntax/
   - Added constructor com.github.starnowski.posjsonhelper.hibernate6.AbstractJsonBExtractPath#AbstractJsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>, org.hibernate.query.sqm.NodeBuilder, java.lang.String) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
   - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, List<java.lang.String>, org.hibernate.query.sqm.NodeBuilder) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
   - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(org.hibernate.query.sqm.tree.SqmTypedNode, List<java.lang.String>, org.hibernate.query.sqm.NodeBuilder) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Added constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(org.hibernate.query.sqm.tree.SqmTypedNode, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+
+### Removed
+
+  - Removed constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPath#JsonBExtractPath(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
+  - Removed constructor com.github.starnowski.posjsonhelper.hibernate6.JsonBExtractPathText#JsonBExtractPathText(jakarta.persistence.criteria.Path, org.hibernate.query.sqm.NodeBuilder, List<? extends org.hibernate.query.sqm.tree.SqmTypedNode<?>>) constructor [147](https://github.com/starnowski/posjsonhelper/issues/147)
 
 
 ## [0.4.1] - 2024-06-09
