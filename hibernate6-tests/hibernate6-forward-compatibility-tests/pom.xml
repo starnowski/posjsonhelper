@@ -6,11 +6,10 @@
     <parent>
         <groupId>com.github.starnowski.posjsonhelper</groupId>
         <artifactId>hibernate6-tests</artifactId>
-        <version>0.5.0-SNAPSHOT</version>
+        <version>0.4.2</version>
     </parent>
 
-    <artifactId>hibernate6-tests-latestversion</artifactId>
-
+    <artifactId>hibernate6-forward-compatibility-tests</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -56,30 +55,6 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.0</version>
             </plugin>
-            <!--            Missing support for the toolchan-->
-            <!--            <plugin>-->
-            <!--                <groupId>org.codehaus.gmavenplus</groupId>-->
-            <!--                <artifactId>gmavenplus-plugin</artifactId>-->
-            <!--                <version>2.1.0</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            <goal>execute</goal>-->
-            <!--                            <goal>addSources</goal>-->
-            <!--                            <goal>addTestSources</goal>-->
-            <!--                            <goal>generateStubs</goal>-->
-            <!--                            <goal>compile</goal>-->
-            <!--                            <goal>generateTestStubs</goal>-->
-            <!--                            <goal>compileTests</goal>-->
-            <!--                            <goal>removeStubs</goal>-->
-            <!--                            <goal>removeTestStubs</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--                <configuration>-->
-            <!--                    <targetBytecode>17</targetBytecode>-->
-            <!--                </configuration>-->
-            <!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
