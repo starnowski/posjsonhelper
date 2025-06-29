@@ -35,6 +35,14 @@ public class Constants {
     public static final String JSONB_EXTRACT_PATH_FUNCTION_NAME = "jsonb_extract_path";
 
     /**
+     * Name of the Postgres function 'to_tsquery', to_tsquery transforms unformatted text querytext to tsquery.
+     * The text which must consist of single tokens separated by the Boolean operators &amp; (AND), | (OR) and ! (NOT).
+     * The text is parsed and normalized much as for to_tsvector, then the &amp; (AND) Boolean operator is inserted between surviving words.\
+     * Please check <a href="https://www.postgresql.org/docs/9.4/textsearch-controls.html">Postgres doc</a>
+     */
+    public static final String TO_TSQUERY_FUNCTION_NAME = "to_tsquery";
+
+    /**
      * Name of the Postgres function 'plainto_tsquery' plainto_tsquery transforms unformatted text querytext to tsquery.
      * The text is parsed and normalized much as for to_tsvector, then the &amp; (AND) Boolean operator is inserted between surviving words.
      * The to_tsquery offers access to more features than plainto_tsquery, but is less forgiving about its input.

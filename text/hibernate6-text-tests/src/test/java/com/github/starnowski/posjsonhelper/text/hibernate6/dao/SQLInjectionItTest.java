@@ -31,6 +31,7 @@ import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.IS
 public class SQLInjectionItTest extends AbstractItTest {
 
     private static final String PLAINTO_TSQUERY_STATEMENT_PATTERN = "SELECT t.id FROM tweet t WHERE to_tsvector(t.short_content) @@ plainto_tsquery(%s)";
+    private static final String TO_TSQUERY_STATEMENT_PATTERN = "SELECT t.id FROM tweet t WHERE to_tsvector(t.short_content) @@ to_tsquery(%s)";
     private static final String PHRASETO_TSQUERY_STATEMENT_PATTERN = "SELECT t.id FROM tweet t WHERE to_tsvector(t.short_content) @@ phraseto_tsquery(%s)";
     private static final String WEBSEARCH_TO_TSQUERY_STATEMENT_PATTERN = "SELECT t.id FROM tweet t WHERE to_tsvector(t.short_content) @@ websearch_to_tsquery(%s)";
     private static final String SETTING_CONFIGURATION_PROPERTY_PATTERN = "SELECT set_config('%s', '%s', false);";
@@ -43,6 +44,7 @@ public class SQLInjectionItTest extends AbstractItTest {
 
     private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyWithExpectedValue() {
         return Stream.of(
+                Arguments.of("c.prop1", "some value", TO_TSQUERY_STATEMENT_PATTERN, "'cats'", asList(1, 3), 9),
                 Arguments.of("c.prop1", "some value", PLAINTO_TSQUERY_STATEMENT_PATTERN, "'cats'", asList(1, 3), 9),
                 Arguments.of("prop.value", "this is a test", PLAINTO_TSQUERY_STATEMENT_PATTERN, "'rats'", asList(2, 3), 9),
                 Arguments.of("c.prop1", "some value", WEBSEARCH_TO_TSQUERY_STATEMENT_PATTERN, "'cats'", asList(1, 3), 11),
@@ -74,6 +76,7 @@ public class SQLInjectionItTest extends AbstractItTest {
 
     private static Stream<Arguments> provideShouldModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected() {
         return Stream.of(
+                Arguments.of("c.prop1", "some value", TO_TSQUERY_STATEMENT_PATTERN, "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--", "SECURITY FAILED", 9),
                 Arguments.of("c.prop1", "some value", PLAINTO_TSQUERY_STATEMENT_PATTERN, "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--", "SECURITY FAILED", 9),
                 Arguments.of("prop.value", "this is a test", PLAINTO_TSQUERY_STATEMENT_PATTERN, "'rats'); SELECT set_config('prop.value', 'WARNING', false)--", "WARNING", 9),
                 Arguments.of("c.prop1", "some value", WEBSEARCH_TO_TSQUERY_STATEMENT_PATTERN, "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--", "SECURITY FAILED", 11),
@@ -114,7 +117,7 @@ public class SQLInjectionItTest extends AbstractItTest {
     @DisplayName("should not modify current configuration property #property and change current value #value when using predicate PlainToTSQueryFunction with corrupted query")
     @ParameterizedTest
     @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpected")
-    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPlainQueryWihtCorruptedQuery(String property, String value, String query){
+    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingPlainQueryWithCorruptedQuery(String property, String value, String query){
         //GIVEN:
         jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
 
@@ -126,6 +129,34 @@ public class SQLInjectionItTest extends AbstractItTest {
         var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
         assertThat(currentValue).isEqualTo(value);
         results.isEmpty();
+
+        // https://portswigger.net/web-security/sql-injection
+    }
+
+    private static Stream<Arguments> provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpectedForTSQueryFunctionI() {
+        return Stream.of(
+                Arguments.of("c.prop1", "some value", "'cats'); SELECT set_config('c.prop1', 'SECURITY FAILED', false)--"),
+                Arguments.of("prop.value", "this is a test",  "'rats'); SELECT set_config('prop.value', 'WARNING', false)--")
+        );
+    }
+
+    @DisplayName("should not modify current configuration property #property and change current value #value when using predicate ToTSQueryFunction with corrupted query")
+    @ParameterizedTest
+    @MethodSource("provideShouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWithExpectedForTSQueryFunctionI")
+    public void shouldNotModifyCurrentConfigurationPropertyAndChangeCurrentValueWhenUsingToTSQueryFunctionWithCorruptedQuery(String property, String value, String query){
+        //GIVEN:
+        jdbcTemplate.execute(String.format(SETTING_CONFIGURATION_PROPERTY_PATTERN, property, value));
+
+        //WHEN:
+        try {
+            tested.findBySingleToTSQueryFunctionInDescriptionForDefaultConfiguration(query);
+        } catch (Exception ex) {
+            ex.getMessage();
+        }
+
+        //THEN:
+        var currentValue = jdbcTemplate.queryForObject(String.format(GETTING_CONFIGURATION_PROPERTY_PATTERN, property), String.class);
+        assertThat(currentValue).isEqualTo(value);
 
         // https://portswigger.net/web-security/sql-injection
     }
