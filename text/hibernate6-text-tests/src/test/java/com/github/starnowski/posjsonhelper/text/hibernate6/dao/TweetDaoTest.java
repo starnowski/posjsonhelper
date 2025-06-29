@@ -46,6 +46,17 @@ public class TweetDaoTest extends AbstractItTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldFindCorrectTweetsByToTSQueryFunctionInDescriptionForDefaultConfiguration() {
+        return Stream.of(
+                Arguments.of("cats", asList(1L, 3L)),
+                Arguments.of("rats", asList(2L, 3L)),
+                Arguments.of("rats & cats", List.of(3L)),
+                Arguments.of("cats & rats", List.of(3L)),
+                Arguments.of("cats & rats & cats", List.of(3L))
+        );
+    }
+
+
     private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePlainQueryInDescription() {
         return Stream.of(
                 Arguments.of("cats", asList(1L, 3L)),
@@ -168,6 +179,22 @@ public class TweetDaoTest extends AbstractItTest {
 
         // when
         List<Tweet> results = tested.findBySingleToTSQueryFunctionInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for default configuration' for to_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByToTSQueryFunctionInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsBySingleToTSQueryFunctionInDescriptionForDefaultConfiguration(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySingleToTSQueryFunctionInDescriptionForDefaultConfiguration(phrase);
 
         // then
         assertThat(results).hasSize(expectedIds.size());
