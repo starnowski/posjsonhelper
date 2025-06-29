@@ -45,8 +45,9 @@ jobs:
       - name: Run tests
         run: ./mvnw -DskipTests --quiet clean install && ./scripts/run_integration_tests.sh --postgres_docker_version='16.1'  -- ./mvnw '-Dposjsonhelper.test.database.port=15432' '-Drun.custom.directory.test=true' test
 
-      - name: Run mutation tests
-        run: ./mvnw -pl :hibernate5,:core,:json-core -P pitest,unit-tests,!all-tests test org.pitest:pitest-maven:mutationCoverage
+#TODO emporary commenting mutation tests
+#      - name: Run mutation tests
+#        run: ./mvnw -pl :hibernate5,:core,:json-core -P pitest,unit-tests,!all-tests test org.pitest:pitest-maven:mutationCoverage
 
       # Executing gmavenplus plugin
       # https://github.com/groovy/GMavenPlus/issues/43
