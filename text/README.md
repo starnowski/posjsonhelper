@@ -14,6 +14,7 @@
     * [Cast operator and text search configuration](#cast-operator-and-text-search-configuration)
   * [Function 'phraseto_tsquery'](#function-phraseto_tsquery)
   * [Function 'websearch_to_tsquery'](#function-websearch_to_tsquery)
+  * [Function 'to_tsquery'](#function-to_tsquery)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -133,7 +134,7 @@ select
         to_tsvector('english', t1_0.short_content) @@ plainto_tsquery('english', ?);
 ```
 
-Similar code but implemeneted with usage of HQL language:
+Similar code but implemented with usage of HQL language:
 
 ```java
     public List<Tweet> findBySinglePlainQueryInDescriptionForConfigurationWithHQL(String phrase, String configuration) {
@@ -277,6 +278,49 @@ And the same example but with HQL:
 public List<Tweet> findCorrectTweetsByWebSearchToTSQueryInDescriptionWithHQL(String phrase, String configuration) {
         //websearch_to_tsquery
         String statement = String.format("from Tweet as tweet where text_operator_function(to_tsvector('%1$s', tweet.shortContent), websearch_to_tsquery('%1$s', :phrase))", configuration);
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+```
+
+Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
+
+#### Function to_tsquery
+
+ToTSQueryFunction wraps the [to_tsquery](https://www.postgresql.org/docs/11/textsearch-controls.html) function.
+Let's check below code example:
+
+```java
+public List<Tweet> findBySingleToTSQueryFunctionInDescriptionForDefaultConfiguration(String phrase) {
+  CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+  CriteriaQuery<Tweet> query = cb.createQuery(Tweet.class);
+  Root<Tweet> root = query.from(Tweet.class);
+  query.select(root);
+  query.where(new TextOperatorFunction((NodeBuilder) cb, new TSVectorFunction((SqmTypedNode) cb.coalesce(root.get("shortContent"), " "), (NodeBuilder) cb), new ToTSQueryFunction((NodeBuilder) cb, (String) null, phrase), hibernateContext));
+  return entityManager.createQuery(query).getResultList();
+}
+```
+
+For such code hibernate is going to generate below sql:
+
+```sql
+select
+        t1_0.id,
+        t1_0.short_content,
+        t1_0.title 
+    from
+        tweet t1_0 
+    where
+        to_tsvector(coalesce(t1_0.short_content, ?)) @@ to_tsquery(?)
+```
+
+And the same example but with HQL:
+
+```hql
+    public List<Tweet> findBySingleToTSQueryFunctionInDescriptionForDefaultConfigurationWithHQL(String phrase) {
+        //to_tsquery
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(coalesce(tweet.shortContent, \" \")), to_tsquery(:phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();

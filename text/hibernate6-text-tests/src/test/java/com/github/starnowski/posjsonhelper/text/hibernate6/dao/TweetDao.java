@@ -124,7 +124,7 @@ public class TweetDao {
     }
 
     public List<Tweet> findBySingleToTSQueryFunctionInDescriptionForDefaultConfigurationWithHQL(String phrase) {
-        //plainto_tsquery
+        //to_tsquery
         String statement = "from Tweet as tweet where text_operator_function(to_tsvector(coalesce(tweet.shortContent, \" \")), to_tsquery(:phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
