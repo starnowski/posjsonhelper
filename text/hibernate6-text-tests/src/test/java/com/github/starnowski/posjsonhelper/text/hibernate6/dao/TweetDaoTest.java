@@ -62,6 +62,7 @@ public class TweetDaoTest extends AbstractItTest {
     private static Stream<Arguments> provideShouldFindCorrectTweetsBySingleToTSQueryFunctionInDescription() {
         return Stream.of(
                 Arguments.of("cats & world", List.of(1L)),
+                Arguments.of("cats <-> rule", List.of(1L)),
                 Arguments.of("cat", asList(1L, 3L)),
                 Arguments.of("cat | projects", asList(1L, 3L, 4L)),
                 Arguments.of("(cat & !hate) | projects", asList(1L, 4L)),
