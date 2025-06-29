@@ -9,7 +9,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Path;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.SqmTypedNode;
@@ -119,6 +118,14 @@ public class TweetDao {
     public List<Tweet> findBySinglePlainQueryInDescriptionForDefaultConfigurationWithHQL(String phrase) {
         //plainto_tsquery
         String statement = "from Tweet as tweet where text_operator_function(to_tsvector(coalesce(tweet.shortContent, \" \")), plainto_tsquery(:phrase))";
+        TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+
+    public List<Tweet> findBySingleToTSQueryFunctionInDescriptionForDefaultConfigurationWithHQL(String phrase) {
+        //plainto_tsquery
+        String statement = "from Tweet as tweet where text_operator_function(to_tsvector(coalesce(tweet.shortContent, \" \")), to_tsquery(:phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();

@@ -156,6 +156,22 @@ public class TweetDaoTest extends AbstractItTest {
     @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
             config = @SqlConfig(transactionMode = ISOLATED),
             executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for to_tsquery function with HQL")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsByToTSQueryFunctionInDescriptionForDefaultConfiguration")
+    public void shouldFindCorrectTweetsByToTSQueryFunctionInDescriptionForDefaultConfigurationWithHQL(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySingleToTSQueryFunctionInDescriptionForDefaultConfigurationWithHQL(phrase);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
     @DisplayName("should return all ids when searching by query for english configuration' for plainto_tsquery function")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectTweetsBySinglePlainQueryInDescription")
