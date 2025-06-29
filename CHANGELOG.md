@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.4.3](#043---2025-06-29)
 * [0.4.2](#042---2024-11-18)
 * [0.4.1](#041---2024-06-09)
 * [0.4.0](#040---2024-06-08)
@@ -24,6 +25,17 @@ https://www.markdownguide.org/basic-syntax/
 * [0.1.0](#010---2023-05-06)
 
 ## [Unreleased]
+
+## [0.4.3] - 2025-06-29
+
+### Added
+
+- Added support for to_tsquery function  [155](https://github.com/starnowski/posjsonhelper/issues/155)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#TO_TSQUERY_FUNCTION_NAME constant [155](https://github.com/starnowski/posjsonhelper/issues/155)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.ToTSQueryFunctionDescriptor type [155](https://github.com/starnowski/posjsonhelper/issues/155)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.ToTSQueryFunctionDescriptorRegister type [155](https://github.com/starnowski/posjsonhelper/issues/155)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.descriptor.ToTSQueryFunctionDescriptorRegisterFactory type [155](https://github.com/starnowski/posjsonhelper/issues/155)
+  - Added com.github.starnowski.posjsonhelper.text.hibernate6.functions.ToTSQueryFunction type [155](https://github.com/starnowski/posjsonhelper/issues/155)
 
 ## [0.4.2] - 2024-11-18
 
