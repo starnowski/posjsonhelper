@@ -59,6 +59,21 @@ public class TweetDaoTest extends AbstractItTest {
         );
     }
 
+    private static Stream<Arguments> provideShouldFindCorrectTweetsBySingleToTSQueryFunctionInDescription() {
+        return Stream.of(
+                Arguments.of("cats & world", List.of(1L)),
+                Arguments.of("cat", asList(1L, 3L)),
+                Arguments.of("cat | projects", asList(1L, 3L, 4L)),
+                Arguments.of("(cat & !hate) | projects", asList(1L, 4L)),
+                Arguments.of("rats", asList(2L, 3L)),
+                Arguments.of("rat", asList(2L, 3L)),
+                Arguments.of("rats & cats", List.of(3L)),
+                Arguments.of("cats & rats", List.of(3L)),
+                Arguments.of("rat & cat", List.of(3L)),
+                Arguments.of("cat & rat", List.of(3L))
+        );
+    }
+
     private static Stream<Arguments> provideShouldFindCorrectTweetsBySinglePhraseInDescriptionForDefaultConfiguration() {
         return Stream.of(
                 Arguments.of("Rats and cats", List.of(3L)),
@@ -136,6 +151,22 @@ public class TweetDaoTest extends AbstractItTest {
 
         // when
         List<Tweet> results = tested.findBySinglePlainQueryInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
+
+        // then
+        assertThat(results).hasSize(expectedIds.size());
+        assertThat(results.stream().map(Tweet::getId).collect(toSet())).containsAll(expectedIds);
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, TWEETS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should return all ids when searching by query for english configuration' for to_tsquery function")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectTweetsBySingleToTSQueryFunctionInDescription")
+    public void shouldFindCorrectTweetsBySingleToTSQueryFunctionInDescription(String phrase, List<Long> expectedIds) {
+
+        // when
+        List<Tweet> results = tested.findBySingleToTSQueryFunctionInDescriptionForConfiguration(phrase, ENGLISH_CONFIGURATION);
 
         // then
         assertThat(results).hasSize(expectedIds.size());
