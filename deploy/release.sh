@@ -20,7 +20,7 @@ openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DI
 
 gpg --batch --yes --pinentry-mode loopback --import "${GPG_DIR}/secring.gpg"
 gpg --import "${GPG_DIR}/pubring.gpg"
-gpg --list-secret-keys --with-key-expire
+gpg --list-secret-keys
 
 #Test
 #"${DIRNAME}/../mvnw" clean install -DperformRelease=true -DskipTests=true
