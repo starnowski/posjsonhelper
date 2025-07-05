@@ -6,7 +6,7 @@
 
     <groupId>com.github.starnowski.posjsonhelper</groupId>
     <artifactId>parent</artifactId>
-    <version>0.4.500</version>
+    <version>0.4.600</version>
     <modules>
         <module>poc</module>
         <module>core</module>
