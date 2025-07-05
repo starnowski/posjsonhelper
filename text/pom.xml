@@ -36,4 +36,20 @@
         </dependencies>
     </dependencyManagement>
 
+    <profiles>
+        <profile>
+            <id>onlySourceModules</id>
+            <activation>
+                <property>
+                    <name>onlySourceModules</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>hibernate6-text</module>
+<!--                <module>hibernate6-text-tests</module>-->
+            </modules>
+        </profile>
+    </profiles>
+
 </project>

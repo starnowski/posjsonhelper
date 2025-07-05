@@ -25,5 +25,5 @@ gpg --import "${GPG_DIR}/public.key"
 #"${DIRNAME}/../mvnw" clean install -DperformRelease=true -DskipTests=true
 
 # Prod
-"${DIRNAME}/../mvnw" deploy --settings "${GPG_DIR}/settings.xml" -DperformRelease=true -DskipTests=true -P maven-central-deploy
+"${DIRNAME}/../mvnw" deploy --settings "${GPG_DIR}/settings.xml" -DperformRelease=true -DonlySourceModules=true -DskipTests=true -P maven-central-deploy
 exit $?
