@@ -10,7 +10,8 @@
     </parent>
 
     <groupId>com.github.starnowski.posjsonhelper.text</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>text-parent</artifactId>
+    <name>${project.groupId}:${project.artifactId}</name>
     <packaging>pom</packaging>
     <modules>
         <module>hibernate6-text</module>

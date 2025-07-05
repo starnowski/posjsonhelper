@@ -274,43 +274,37 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-deploy-plugin</artifactId>
-                        <version>2.8.2</version>
-                        <configuration>
-                            <deployAtEnd>true</deployAtEnd>
-                        </configuration>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
                         <executions>
                             <execution>
-                                <id>default-deploy</id>
-                                <phase>deploy</phase>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
                                 <goals>
-                                    <goal>deploy</goal>
+                                    <goal>sign</goal>
                                 </goals>
                             </execution>
                         </executions>
+                        <configuration>
+                            <keyname>${gpg.keyname}</keyname>
+                            <useAgent>true</useAgent>
+                            <passphrase>${gpg.passphrase}</passphrase>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.8.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <deploymentName>posjsonhelper</deploymentName>
+                            <ignorePublishedComponents>true</ignorePublishedComponents>
+                            <excludeArtifacts>poc,test-utils,hibernate6-tests,hibernate6-tests-core,hibernate6-tests-1,hibernate6-tests-spi,hibernate6-tests-native-support,hibernate6-tests-native-support-1,hibernate6-text-tests</excludeArtifacts>
+                            <publishingServerId>maven-central-starnowski-posjsonhelper</publishingServerId>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>maven-central-deploy</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>maven-central-starnowski-posjsonhelper</id>
-                    <name>starnowski-posjsonhelper</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-                </repository>
-            </repositories>
-            <distributionManagement>
-                <repository>
-                    <id>maven-central-starnowski-posjsonhelper</id>
-                    <name>starnowski-posjsonhelper</name>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
-                </repository>
-            </distributionManagement>
         </profile>
     </profiles>
 
