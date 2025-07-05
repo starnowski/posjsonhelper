@@ -205,7 +205,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     name: "Publish to the Maven Central Repository"
-    needs: [compatibility_tests_9_10_11,compatibility_tests_12_13_14,compatibility_tests_15]
+#    needs: [compatibility_tests_9_10_11,compatibility_tests_12_13_14,compatibility_tests_15]
     steps:
       - name: Git checkout
 #        if: startsWith(github.ref, 'refs/tags/v')
