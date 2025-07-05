@@ -18,7 +18,7 @@ trap removeSecretKey EXIT SIGINT
 openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DIR}/private.key.enc" -out "${GPG_DIR}/private.key"
 openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DIR}/public.key.enc" -out "${GPG_DIR}/public.key"
 
-gpg --import "${GPG_DIR}/private.key"
+gpg --batch --yes --pinentry-mode loopback --import "${GPG_DIR}/private.key"
 gpg --import "${GPG_DIR}/public.key"
 
 #Test
