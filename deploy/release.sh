@@ -8,7 +8,7 @@ export GPG_DIR="${DIRNAME}"
 function removeSecretKey {
     lastCommandStatus="$?"
     echo "Removing keys"
-    gpg --yes --delete-secret-key "${GPG_PUBLIC_KEYNAME}"
+    gpg --batch --yes --delete-secret-key "${GPG_PUBLIC_KEYNAME}"
     exit $lastCommandStatus
 }
 
