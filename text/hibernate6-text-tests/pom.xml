@@ -5,12 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.starnowski.posjsonhelper.text</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>text-parent</artifactId>
         <version>0.4.200</version>
     </parent>
 
     <artifactId>hibernate6-text-tests</artifactId>
-    <groupId>com.github.starnowski.posjsonhelper.text</groupId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
