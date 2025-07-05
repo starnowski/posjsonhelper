@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hibernate6-text-tests</artifactId>
+    <groupId>com.github.starnowski.posjsonhelper.text</groupId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
