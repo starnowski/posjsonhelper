@@ -15,12 +15,11 @@ function removeSecretKey {
 trap removeSecretKey EXIT SIGINT
 
 # Decrypting key files
-openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DIR}/secring.gpg.enc" -out "${GPG_DIR}/secring.gpg"
-openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DIR}/pubring.gpg.enc" -out "${GPG_DIR}/pubring.gpg"
+openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DIR}/private.key.enc" -out "${GPG_DIR}/private.key"
+openssl aes-256-cbc -d -pass "pass:${ENCRYPTION_PASSWORD}" -pbkdf2 -in "${GPG_DIR}/public.key.enc" -out "${GPG_DIR}/public.key"
 
-gpg --batch --yes --pinentry-mode loopback --import "${GPG_DIR}/secring.gpg"
-gpg --import "${GPG_DIR}/pubring.gpg"
-gpg --list-secret-keys
+gpg --import "${GPG_DIR}/private.key"
+gpg --import "${GPG_DIR}/public.key"
 
 #Test
 #"${DIRNAME}/../mvnw" clean install -DperformRelease=true -DskipTests=true
