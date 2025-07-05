@@ -307,7 +307,8 @@
                         <extensions>true</extensions>
                         <configuration>
                             <deploymentName>posjsonhelper</deploymentName>
-                            <excludeArtifacts>test-utils, hibernate6-tests, hibernate6-tests-core,hibernate6-tests-1,hibernate6-tests-spi,hibernate6-tests-native-support,hibernate6-tests-native-support-1,hibernate6-text-tests</excludeArtifacts>
+                            <ignorePublishedComponents>true</ignorePublishedComponents>
+                            <excludeArtifacts>test-utils,hibernate6-tests,hibernate6-tests-core,hibernate6-tests-1,hibernate6-tests-spi,hibernate6-tests-native-support,hibernate6-tests-native-support-1,hibernate6-text-tests</excludeArtifacts>
                             <publishingServerId>maven-central-starnowski-posjsonhelper</publishingServerId>
                         </configuration>
                     </plugin>
