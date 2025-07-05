@@ -237,15 +237,6 @@
 
     <profiles>
         <profile>
-            <id>onlySourceModules</id>
-            <activation>
-                <property>
-                    <name>onlySourceModules</name>
-                    <value>true</value>
-                </property>
-            </activation>
-        </profile>
-        <profile>
             <id>ossrh</id>
             <properties>
                 <gpg.executable>gpg</gpg.executable>
