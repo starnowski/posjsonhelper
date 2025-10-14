@@ -11,13 +11,13 @@ public class Item {
 
     @Id
     private Long id;
-    @Column(name = "short_name")
+    @Column(name = "short_name", length = 75)
     private String shortName;
-    @Column(name = "full_name")
+    @Column(name = "full_name", length = 150)
     private String fullName;
-    @Column(name = "short_description")
+    @Column(name = "short_description", length = 255)
     private String shortDescription;
-    @Column(name = "full_description")
+    @Column(name = "full_description", length = 512)
     private String fullDescription;
 
     public Long getId() {
