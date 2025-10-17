@@ -1,13 +1,18 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Item;
+import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
+import org.hibernate.query.sqm.NodeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
+import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.ENGLISH_CONFIGURATION;
 
 @Repository
 public class ItemDao {
@@ -25,22 +30,26 @@ public class ItemDao {
 
         // Build weighted tsvector using posjsonhelper functions
         Expression<String> shortNameVec = cb.function("setweight", String.class,
-                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("shortName")),
+                new TSVectorFunction(root.get("shortName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("shortName")),
                 cb.literal("A")
         );
 
         Expression<String> fullNameVec = cb.function("setweight", String.class,
-                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("fullName")),
+                new TSVectorFunction(root.get("fullName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("fullName")),
                 cb.literal("B")
         );
 
         Expression<String> shortDescriptionVec = cb.function("setweight", String.class,
-                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("shortDescription")),
+                new TSVectorFunction(root.get("shortDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("shortDescription")),
                 cb.literal("C")
         );
 
         Expression<String> fullDescriptionVec = cb.function("setweight", String.class,
-                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("fullDescription")),
+                new TSVectorFunction(root.get("fullDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("fullDescription")),
                 cb.literal("D")
         );
 
