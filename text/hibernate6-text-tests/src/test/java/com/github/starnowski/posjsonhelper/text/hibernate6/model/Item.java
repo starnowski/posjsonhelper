@@ -17,7 +17,7 @@ public class Item {
     private String fullName;
     @Column(name = "short_description", length = 255)
     private String shortDescription;
-    @Column(name = "full_description", length = 512)
+    @Column(name = "full_description", length = 1024)
     private String fullDescription;
 
     public Long getId() {
