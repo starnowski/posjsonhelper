@@ -2,11 +2,14 @@ package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
+import com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Item;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
+import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 import org.hibernate.query.sqm.NodeBuilder;
+import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -31,44 +34,32 @@ public class ItemDao {
         // Build weighted tsvector using posjsonhelper functions
         Expression<String> shortNameVec = cb.function("setweight", String.class,
                 new TSVectorFunction(root.get("shortName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
-//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("shortName")),
                 cb.literal("A")
         );
 
         Expression<String> fullNameVec = cb.function("setweight", String.class,
                 new TSVectorFunction(root.get("fullName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
-//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("fullName")),
                 cb.literal("B")
         );
 
         Expression<String> shortDescriptionVec = cb.function("setweight", String.class,
                 new TSVectorFunction(root.get("shortDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
-//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("shortDescription")),
                 cb.literal("C")
         );
 
         Expression<String> fullDescriptionVec = cb.function("setweight", String.class,
                 new TSVectorFunction(root.get("fullDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
-//                cb.function("to_tsvector", String.class, cb.literal("english"), root.get("fullDescription")),
                 cb.literal("D")
         );
 
         // Concatenate tsvectors (|| operator)
-        Expression<String> fullVector = cb.function("tsvector_concat", String.class,
-                shortNameVec, fullNameVec, shortDescriptionVec, fullDescriptionVec
-        );
+        SqmExpression<String> fullVector = (SqmExpression<String>) cb.concat(cb.concat(shortNameVec, fullNameVec), cb.concat(shortDescriptionVec, fullDescriptionVec));
 
         // Build tsquery
-        Expression<String> queryExpr = cb.function(
-                "plainto_tsquery", String.class,
-                cb.literal("english"),
-                cb.literal(phrase)
-        );
+        Expression<String> queryExpr = new WebsearchToTSQueryFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, phrase);
 
-        // WHERE clause using @@ operator (registered as ts_match)
-        Predicate matches = cb.isTrue(
-                cb.function("ts_match", Boolean.class, fullVector, queryExpr)
-        );
+        // WHERE clause using @@ operator
+        TextOperatorFunction matches = new TextOperatorFunction((NodeBuilder) cb, fullVector, new WebsearchToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), phrase), hibernateContext);
 
         cq.where(matches);
 
