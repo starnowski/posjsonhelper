@@ -7,7 +7,10 @@ import com.github.starnowski.posjsonhelper.text.hibernate6.model.Item;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,7 @@ public class ItemDao {
     private HibernateContext hibernateContext;
 
 
-    public List<Item> findItemsByQuery(String phrase) {
+    public List<Item> findItemsByQuery(String phrase, boolean ascSort) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> cq = cb.createQuery(Item.class);
         Root<Item> root = cq.from(Item.class);
@@ -70,7 +73,7 @@ public class ItemDao {
                 queryExpr
         );
 
-        cq.orderBy(cb.desc(rankExpr));
+        cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
 
         return entityManager.createQuery(cq).getResultList();
     }
