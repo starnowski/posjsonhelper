@@ -29,7 +29,7 @@ public class ItemDao {
     private HibernateContext hibernateContext;
 
 
-    public List<Item> findItemsByQuery(String phrase, boolean ascSort) {
+    public List<Item> findItemsByWebSearchToTSQuerySortedByTsRank(String phrase, boolean ascSort) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> cq = cb.createQuery(Item.class);
         Root<Item> root = cq.from(Item.class);

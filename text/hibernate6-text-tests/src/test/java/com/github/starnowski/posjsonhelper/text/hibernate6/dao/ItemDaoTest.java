@@ -16,6 +16,7 @@ import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.CL
 import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.ITEMS_SCRIPT_PATH;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.BEFORE_TEST_METHOD;
 import static org.springframework.test.context.jdbc.SqlConfig.TransactionMode.ISOLATED;
 
@@ -39,8 +40,10 @@ class ItemDaoTest extends AbstractItTest {
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectItemWithOrderBasedOnPhrase")
     public void shouldFindCorrectItemWithOrderBasedOnPhrase(String phrase, boolean ascSort, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
         // WHEN
-        List<Item> items = itemDao.findItemsByQuery(phrase, ascSort);
+        List<Item> items = itemDao.findItemsByWebSearchToTSQuerySortedByTsRank(phrase, ascSort);
 
         // THEN
         assertEquals(expectedIds, items.stream().map(Item::getId).toList());
