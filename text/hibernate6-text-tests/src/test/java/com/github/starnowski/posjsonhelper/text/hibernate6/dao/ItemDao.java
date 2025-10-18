@@ -4,9 +4,11 @@ import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Item;
+import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Expression;
@@ -76,5 +78,30 @@ public class ItemDao {
         cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
 
         return entityManager.createQuery(cq).getResultList();
+    }
+
+    public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankInHQL(String phrase, boolean ascSort) {
+        StringBuilder statement = new StringBuilder();
+        statement.append("from Item as item where ");
+        statement.append("text_operator_function("); // text_operator_function - start
+        statement.append("concat("); // main concat - start
+        statement.append("concat("); // first concat - start
+        statement.append("function('setweight', to_tsvector('%1$s', item.shortName), literal('A'))");
+        statement.append(",");
+        statement.append("function('setweight', to_tsvector('%1$s', item.fullName), literal('B'))");
+        statement.append(")"); // first concat - end
+        statement.append(","); // main concat - separator
+        statement.append("concat("); // second concat - start
+        statement.append("function('setweight', to_tsvector('%1$s', item.shortDescription), literal('C'))");
+        statement.append(",");
+        statement.append("function('setweight', to_tsvector('%1$s', item.fullDescription), literal('D'))");
+        statement.append(")"); // first second - end
+        statement.append(")"); // main concat - end
+        statement.append(","); // text_operator_function - separator
+        statement.append(")"); // text_operator_function - end
+
+        TypedQuery<Item> query = entityManager.createQuery(statement.toString().formatted(ENGLISH_CONFIGURATION), Item.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
     }
 }
