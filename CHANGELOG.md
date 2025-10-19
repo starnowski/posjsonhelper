@@ -27,6 +27,22 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+## [0.4.5] - 2025-10-19
+
+### Added
+
+- Added support for Array Function operator that creates Postgress Array for types that implements Comparable Java interface [160](https://github.com/starnowski/posjsonhelper/issues/160)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_ARRAY_FUNCTION_OPERATOR constant [155](https://github.com/starnowski/posjsonhelper/issues/155)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext#arrayFunctionOperator property and getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptor type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptorRegister type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptorRegisterFactory type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.ArrayFunction type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+
+### Changed
+
+  - Added generic parameter type that extends java.lang.Comparable to type com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction
+
 ## [0.4.4] - 2025-10-19
 
 - Changed constructor com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction#TextOperatorFunction(org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction, org.hibernate.query.sqm.tree.expression.SqmExpression, com.github.starnowski.posjsonhelper.core.HibernateContext) to com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction#TextOperatorFunction(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.expression.SqmExpression, org.hibernate.query.sqm.tree.expression.SqmExpression, com.github.starnowski.posjsonhelper.core.HibernateContext) [158](https://github.com/starnowski/posjsonhelper/issues/158)
