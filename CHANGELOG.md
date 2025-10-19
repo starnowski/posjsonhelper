@@ -10,6 +10,7 @@ https://www.markdownguide.org/basic-syntax/
 
 
 * [Unreleased](#unreleased)
+* [0.4.5](#045---2025-10-19)
 * [0.4.4](#044---2025-10-19)
 * [0.4.3](#043---2025-06-29)
 * [0.4.2](#042---2024-11-18)
@@ -32,16 +33,16 @@ https://www.markdownguide.org/basic-syntax/
 ### Added
 
 - Added support for Array Function operator that creates Postgress Array for types that implements Comparable Java interface [160](https://github.com/starnowski/posjsonhelper/issues/160)
-  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_ARRAY_FUNCTION_OPERATOR constant [155](https://github.com/starnowski/posjsonhelper/issues/155)
-  - Added com.github.starnowski.posjsonhelper.core.HibernateContext#arrayFunctionOperator property and getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
-  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptor type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
-  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptorRegister type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
-  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptorRegisterFactory type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
-  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.ArrayFunction type getter [140](https://github.com/starnowski/posjsonhelper/issues/140)
+  - Added com.github.starnowski.posjsonhelper.core.Constants#DEFAULT_ARRAY_FUNCTION_OPERATOR constant [160](https://github.com/starnowski/posjsonhelper/issues/160)
+  - Added com.github.starnowski.posjsonhelper.core.HibernateContext#arrayFunctionOperator property and getter [160](https://github.com/starnowski/posjsonhelper/issues/160)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptor type getter [160](https://github.com/starnowski/posjsonhelper/issues/160)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptorRegister type getter [160](https://github.com/starnowski/posjsonhelper/issues/160)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptorRegisterFactory type getter [160](https://github.com/starnowski/posjsonhelper/issues/160)
+  - Added com.github.starnowski.posjsonhelper.hibernate6.operators.ArrayFunction type getter [160](https://github.com/starnowski/posjsonhelper/issues/160)
 
 ### Changed
 
-  - Added generic parameter type that extends java.lang.Comparable to type com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction
+  - Added generic parameter type that extends java.lang.Comparable to type com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction [160](https://github.com/starnowski/posjsonhelper/issues/160)
 
 ## [0.4.4] - 2025-10-19
 
