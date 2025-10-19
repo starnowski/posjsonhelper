@@ -230,7 +230,7 @@ public class ItemDao {
         return query.getResultList();
     }
 
-    public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankWithCustomW(String phrase, boolean ascSort, double[] weights) {
+    public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankWithCustomWeight(String phrase, boolean ascSort, double[] weights) {
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<Item> cq = cb.createQuery(Item.class);
         Root<Item> root = cq.from(Item.class);
@@ -278,5 +278,58 @@ public class ItemDao {
         cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
 
         return entityManager.createQuery(cq).getResultList();
+    }
+
+    public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankWithCustomWeightInHQL(String phrase, boolean ascSort, double[] weights) {
+        String statement = "from Item as item where " +
+                "text_operator_function(" + // text_operator_function - start
+                "concat(" + // main concat - start
+                "concat(" + // first concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortName), 'A')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullName), 'B')" +
+                ")" + // first concat - end
+                "," + // main concat - separator
+                "concat(" + // second concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')" +
+                ")" + // first second - end
+                ")" + // main concat - end
+                "," + // text_operator_function - separator
+
+                "websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)" + // websearch_to_tsquery operator
+
+                ")" + // text_operator_function - end
+                " order by " + // order - start
+
+
+                "function('ts_rank', " + // ts_rank function - start
+                ":weights" +
+                "," +
+                "concat(" + // main concat - start
+                "concat(" + // first concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortName), 'A')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullName), 'B')" +
+                ")" + // first concat - end
+                "," + // main concat - separator
+                "concat(" + // second concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')" +
+                ")" + // first second - end
+                ")" + // main concat - end
+                "," + // ts_rank function - separator
+
+                "websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)" + // websearch_to_tsquery operator
+
+                ")" + // ts_rank function - end
+                (ascSort ? " asc" : "desc");
+
+        TypedQuery<Item> query = entityManager.createQuery(statement.formatted(ENGLISH_CONFIGURATION), Item.class);
+        query.setParameter("phrase", phrase);
+        query.setParameter("weights", weights);
+        return query.getResultList();
     }
 }
