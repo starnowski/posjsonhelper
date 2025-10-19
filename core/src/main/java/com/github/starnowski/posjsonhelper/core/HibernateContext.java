@@ -1,19 +1,19 @@
 /**
  * Posjsonhelper library is an open-source project that adds support of
  * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
+ * <p>
  * Copyright (C) 2023  Szymon Tarnowski
- *
+ * <p>
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- *
+ * <p>
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
@@ -43,6 +43,12 @@ public class HibernateContext {
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR} constant.
      */
     private final String jsonFunctionJsonArrayOperator;
+
+    /**
+     * Name of HQL function that wraps Postgres "ARRAY" operator.
+     * By default, the property is initialized with the value of  {@link Constants#DEFAULT_ARRAY_FUNCTION_OPERATOR} constant.
+     */
+    private final String arrayFunctionOperator;
     /**
      * Name of HQL function that wraps Postgres text "@@" operator.
      * By default, the property is initialized with the value of  {@link Constants#DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR} constant.
@@ -71,7 +77,8 @@ public class HibernateContext {
 
     public HibernateContext(String jsonbAllArrayStringsExistOperator, String jsonbAnyArrayStringsExistOperator, String jsonFunctionJsonArrayOperator,
                             String textFunctionOperator, String castFunctionOperator, String concatenateJsonbOperator, String deleteJsonBySpecificPathOperator,
-                            String removeJsonValuesFromJsonArrayFunction) {
+                            String removeJsonValuesFromJsonArrayFunction,
+                            String arrayFunctionOperator) {
         this.jsonbAllArrayStringsExistOperator = jsonbAllArrayStringsExistOperator;
         this.jsonbAnyArrayStringsExistOperator = jsonbAnyArrayStringsExistOperator;
         this.jsonFunctionJsonArrayOperator = jsonFunctionJsonArrayOperator;
@@ -80,6 +87,7 @@ public class HibernateContext {
         this.concatenateJsonbOperator = concatenateJsonbOperator;
         this.deleteJsonBySpecificPathOperator = deleteJsonBySpecificPathOperator;
         this.removeJsonValuesFromJsonArrayFunction = removeJsonValuesFromJsonArrayFunction;
+        this.arrayFunctionOperator = arrayFunctionOperator;
     }
 
     public static ContextBuilder builder() {
@@ -138,6 +146,10 @@ public class HibernateContext {
         return jsonFunctionJsonArrayOperator;
     }
 
+    public String getArrayFunctionOperator() {
+        return arrayFunctionOperator;
+    }
+
     public static class ContextBuilder {
 
         private String jsonbAllArrayStringsExistOperator = DEFAULT_JSONB_ALL_ARRAY_STRINGS_EXIST_HIBERNATE_OPERATOR;
@@ -148,6 +160,12 @@ public class HibernateContext {
         private String concatenateJsonbOperator = DEFAULT_CONCATENATE_JSONB_HIBERNATE_OPERATOR;
         private String deleteJsonBySpecificPathOperator = DEFAULT_DELETE_JSONB_BY_SPECIFIC_PATH_HIBERNATE_OPERATOR;
         private String removeJsonValuesFromJsonArrayFunction = DEFAULT_REMOVE_VALUES_FROM_JSON_ARRAY_FUNCTION_NAME;
+        private String arrayFunctionOperator = DEFAULT_ARRAY_FUNCTION_OPERATOR;
+
+        public ContextBuilder withArrayFunctionOperator(String arrayFunctionOperator) {
+            this.arrayFunctionOperator = arrayFunctionOperator;
+            return this;
+        }
 
         public ContextBuilder withRemoveJsonValuesFromJsonArrayFunction(String removeJsonValuesFromJsonArrayFunction) {
             this.removeJsonValuesFromJsonArrayFunction = removeJsonValuesFromJsonArrayFunction;
@@ -191,7 +209,8 @@ public class HibernateContext {
 
         public HibernateContext build() {
             return new HibernateContext(this.jsonbAllArrayStringsExistOperator, this.jsonbAnyArrayStringsExistOperator, this.jsonFunctionJsonArrayOperator,
-                    this.textFunctionOperator, this.castFunctionOperator, concatenateJsonbOperator, deleteJsonBySpecificPathOperator, removeJsonValuesFromJsonArrayFunction);
+                    this.textFunctionOperator, this.castFunctionOperator, concatenateJsonbOperator, deleteJsonBySpecificPathOperator, removeJsonValuesFromJsonArrayFunction,
+                    arrayFunctionOperator);
         }
 
         public ContextBuilder withHibernateContext(HibernateContext hibernateContext) {
@@ -202,7 +221,8 @@ public class HibernateContext {
                     .withCastFunctionOperator(hibernateContext.getCastFunctionOperator())
                     .withConcatenateJsonbOperator(hibernateContext.getConcatenateJsonbOperator())
                     .withDeleteJsonBySpecificPathOperator(hibernateContext.getDeleteJsonBySpecificPathOperator())
-                    .withRemoveJsonValuesFromJsonArrayFunction(hibernateContext.getRemoveJsonValuesFromJsonArrayFunction());
+                    .withRemoveJsonValuesFromJsonArrayFunction(hibernateContext.getRemoveJsonValuesFromJsonArrayFunction())
+                    .withArrayFunctionOperator(hibernateContext.getArrayFunctionOperator());
         }
     }
 }
