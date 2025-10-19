@@ -36,7 +36,7 @@ public interface ISQLDefinition {
 
     /**
      * Returns DDL statement that drops changes applied by statement returned by the {@link #getCreateScript()} method.
-     * <p>
+     * <p/>
      * <b>IMPORTANT!</b>
      * </p>
      * By default, there is no assumption that statement has to contains the compensation operation for operation returned by the {@link #getCreateScript()} method.
