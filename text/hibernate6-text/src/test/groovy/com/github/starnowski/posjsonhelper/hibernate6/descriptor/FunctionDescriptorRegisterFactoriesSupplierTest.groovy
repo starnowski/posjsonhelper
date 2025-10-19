@@ -26,7 +26,8 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
                                                                                                 TextOperatorFunctionDescriptorRegisterFactory.class,
                                                                                                 TSVectorFunctionDescriptorRegisterFactory.class,
                                                                                                 CastOperatorFunctionDescriptorRegisterFactory.class,
-                                                                                                WebsearchToTSQueryFunctionDescriptorRegisterFactory.class])
+                                                                                                WebsearchToTSQueryFunctionDescriptorRegisterFactory.class,
+                                                                                                ArrayFunctionDescriptorRegisterFactory.class])
     }
 
 }

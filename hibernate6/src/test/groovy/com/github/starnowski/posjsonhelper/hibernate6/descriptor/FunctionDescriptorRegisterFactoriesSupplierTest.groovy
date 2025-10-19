@@ -23,7 +23,8 @@ class FunctionDescriptorRegisterFactoriesSupplierTest extends Specification {
                                                                                                     JsonbSetFunctionDescriptorRegisterFactory.class,
                                                                                                     ConcatenateJsonbOperatorDescriptorRegisterFactory.class,
                                                                                                     DeleteJsonbBySpecifiedPathOperatorDescriptorRegisterFactory.class,
-                                                                                                    RemoveJsonValuesFromJsonArrayFunctionDescriptorRegisterFactory.class])
+                                                                                                    RemoveJsonValuesFromJsonArrayFunctionDescriptorRegisterFactory.class,
+                                                                                                    ArrayFunctionDescriptorRegisterFactory.class])
     }
 
 }
