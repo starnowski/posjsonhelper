@@ -37,7 +37,7 @@ public class JsonbAllArrayStringsExistPredicate extends AbstractJsonbArrayString
      * @param jsonBExtractPath json path for json property {@link JsonBExtractPath}
      * @param values array of string values passed to as argument for function
      */
-    public JsonbAllArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values) {
+    public JsonbAllArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, Comparable[] values) {
         super(context, nodeBuilder, jsonBExtractPath, values, context.getJsonbAllArrayStringsExistOperator());
     }
 

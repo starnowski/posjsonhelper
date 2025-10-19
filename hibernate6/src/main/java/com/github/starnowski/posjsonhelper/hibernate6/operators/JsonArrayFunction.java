@@ -37,14 +37,14 @@ import java.util.List;
  *
  * @see com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor
  */
-public class JsonArrayFunction extends SelfRenderingSqmFunction<String> implements Serializable {
+public class JsonArrayFunction extends SelfRenderingSqmFunction<Comparable> implements Serializable {
 
     /**
      * @param nodeBuilder      node builder {@link NodeBuilder}
      * @param arguments        array of values passed to as argument for function
      * @param hibernateContext context object of type {@link HibernateContext}
      */
-    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<String>> arguments, HibernateContext hibernateContext) {
+    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<Comparable>> arguments, HibernateContext hibernateContext) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
                 arguments,
