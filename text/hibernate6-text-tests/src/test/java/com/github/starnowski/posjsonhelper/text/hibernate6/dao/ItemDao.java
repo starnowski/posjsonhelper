@@ -4,7 +4,6 @@ import com.github.starnowski.posjsonhelper.core.HibernateContext;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Item;
-import com.github.starnowski.posjsonhelper.text.hibernate6.model.Tweet;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.RegconfigTypeCastOperatorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction;
 import jakarta.persistence.EntityManager;
@@ -81,51 +80,51 @@ public class ItemDao {
     }
 
     public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankInHQL(String phrase, boolean ascSort) {
-        StringBuilder statement = new StringBuilder();
-        statement.append("from Item as item where ");
-        statement.append("text_operator_function("); // text_operator_function - start
-        statement.append("concat("); // main concat - start
-        statement.append("concat("); // first concat - start
-        statement.append("function('setweight', to_tsvector('%1$s', item.shortName), 'A')");
-        statement.append(",");
-        statement.append("function('setweight', to_tsvector('%1$s', item.fullName), 'B')");
-        statement.append(")"); // first concat - end
-        statement.append(","); // main concat - separator
-        statement.append("concat("); // second concat - start
-        statement.append("function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')");
-        statement.append(",");
-        statement.append("function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')");
-        statement.append(")"); // first second - end
-        statement.append(")"); // main concat - end
-        statement.append(","); // text_operator_function - separator
+        String statement = "from Item as item where " +
+                "text_operator_function(" + // text_operator_function - start
+                "concat(" + // main concat - start
+                "concat(" + // first concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortName), 'A')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullName), 'B')" +
+                ")" + // first concat - end
+                "," + // main concat - separator
+                "concat(" + // second concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')" +
+                ")" + // first second - end
+                ")" + // main concat - end
+                "," + // text_operator_function - separator
 
-        statement.append("websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)"); // websearch_to_tsquery operator
+                "websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)" + // websearch_to_tsquery operator
 
-        statement.append(")"); // text_operator_function - end
-        statement.append(" order by "); // order - start
+                ")" + // text_operator_function - end
+                " order by " + // order - start
 
 
-        statement.append("function('ts_rank', "); // ts_rank function - start
-        statement.append("concat("); // main concat - start
-        statement.append("concat("); // first concat - start
-        statement.append("function('setweight', to_tsvector('%1$s', item.shortName), 'A')");
-        statement.append(",");
-        statement.append("function('setweight', to_tsvector('%1$s', item.fullName), 'B')");
-        statement.append(")"); // first concat - end
-        statement.append(","); // main concat - separator
-        statement.append("concat("); // second concat - start
-        statement.append("function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')");
-        statement.append(",");
-        statement.append("function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')");
-        statement.append(")"); // first second - end
-        statement.append(")"); // main concat - end
-        statement.append(","); // ts_rank function - separator
+                "function('ts_rank', " + // ts_rank function - start
+                "concat(" + // main concat - start
+                "concat(" + // first concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortName), 'A')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullName), 'B')" +
+                ")" + // first concat - end
+                "," + // main concat - separator
+                "concat(" + // second concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')" +
+                ")" + // first second - end
+                ")" + // main concat - end
+                "," + // ts_rank function - separator
 
-        statement.append("websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)"); // websearch_to_tsquery operator
+                "websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)" + // websearch_to_tsquery operator
 
-        statement.append(")"); // ts_rank function - end
+                ")" + // ts_rank function - end
+                (ascSort ? " asc" : "desc");
 
-        TypedQuery<Item> query = entityManager.createQuery(statement.toString().formatted(ENGLISH_CONFIGURATION), Item.class);
+        TypedQuery<Item> query = entityManager.createQuery(statement.formatted(ENGLISH_CONFIGURATION), Item.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();
     }
