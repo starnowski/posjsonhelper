@@ -1,6 +1,7 @@
 package com.github.starnowski.posjsonhelper.text.hibernate6.dao;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.ArrayFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.functions.WebsearchToTSQueryFunction;
 import com.github.starnowski.posjsonhelper.text.hibernate6.model.Item;
@@ -17,6 +18,7 @@ import org.hibernate.query.sqm.tree.expression.SqmExpression;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.github.starnowski.posjsonhelper.text.hibernate6.Application.ENGLISH_CONFIGURATION;
@@ -226,5 +228,55 @@ public class ItemDao {
         TypedQuery<Item> query = entityManager.createQuery(statement.formatted(ENGLISH_CONFIGURATION), Item.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();
+    }
+
+    public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankWithCustomW(String phrase, boolean ascSort, double[] weights) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+        Root<Item> root = cq.from(Item.class);
+
+        // Build weighted tsvector using posjsonhelper functions
+        Expression<String> shortNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("A")
+        );
+
+        Expression<String> fullNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("B")
+        );
+
+        Expression<String> shortDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("C")
+        );
+
+        Expression<String> fullDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("D")
+        );
+
+        // Concatenate tsvectors (|| operator)
+        SqmExpression<String> fullVector = (SqmExpression<String>) cb.concat(cb.concat(shortNameVec, fullNameVec), cb.concat(shortDescriptionVec, fullDescriptionVec));
+
+        // Build tsquery
+        Expression<String> queryExpr = new WebsearchToTSQueryFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, phrase);
+
+        // WHERE clause using @@ operator
+        TextOperatorFunction matches = new TextOperatorFunction((NodeBuilder) cb, fullVector, new WebsearchToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), phrase), hibernateContext);
+
+        cq.where(matches);
+
+        // Ranking
+        Expression<Double> rankExpr = cb.function(
+                "ts_rank", Double.class,
+                new ArrayFunction<>((NodeBuilder) cb, Arrays.stream(weights).mapToObj(w -> (SqmExpression<Double>) cb.literal(w)).toList(), hibernateContext)
+                , fullVector
+                , queryExpr
+        );
+
+        cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
+
+        return entityManager.createQuery(cq).getResultList();
     }
 }
