@@ -64,7 +64,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
      * @param values           array of string values passed to as argument for function
      * @param functionName     function name
      */
-    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, Comparable[] values, String functionName) {
+    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, String[] values, String functionName) {
         this(context, nodeBuilder, jsonBExtractPath, mapArrayValues(nodeBuilder, context, values), functionName);
     }
 
@@ -89,20 +89,20 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
         this.jsonArrayFunction = arrayFunction;
     }
 
-    private static List<? extends SqmExpression<? extends Comparable>> parameters(JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction) {
-        List<SqmExpression<? extends Comparable>> result = new ArrayList<>();
+    private static List<? extends SqmExpression<? extends String>> parameters(JsonBExtractPath jsonBExtractPath, JsonArrayFunction<String> jsonArrayFunction) {
+        List<SqmExpression<? extends String>> result = new ArrayList<>();
         result.add(jsonBExtractPath);
         result.add(jsonArrayFunction);
         return result;
     }
 
-    private static JsonArrayFunction mapArrayValues(NodeBuilder nodeBuilder, HibernateContext context, Comparable... values) {
+    private static JsonArrayFunction mapArrayValues(NodeBuilder nodeBuilder, HibernateContext context, String... values) {
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Values can not be null or empty list");
         }
-        List<SqmExpression<Comparable>> arrayArguments = new ArrayList<>();
-        arrayArguments.addAll(Stream.of(values).map(p -> (SqmExpression<Comparable>) nodeBuilder.value(p)).collect(Collectors.toList()));
-        JsonArrayFunction jsonArrayFunction = new JsonArrayFunction(nodeBuilder, arrayArguments, context);
+        List<SqmExpression<String>> arrayArguments = new ArrayList<>();
+        arrayArguments.addAll(Stream.of(values).map(p -> (SqmExpression<String>) nodeBuilder.value(p)).collect(Collectors.toList()));
+        JsonArrayFunction<String> jsonArrayFunction = new JsonArrayFunction<String>(nodeBuilder, arrayArguments, context);
         return jsonArrayFunction;
     }
 
@@ -118,5 +118,5 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
     }
 
 
-    abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction jsonArrayFunction);
+    abstract protected T generateCopy(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction<String> jsonArrayFunction);
 }
