@@ -1,2 +1,3 @@
 TRUNCATE tweet CASCADE;
 TRUNCATE tweet_with_locale CASCADE;
+TRUNCATE item CASCADE;

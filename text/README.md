@@ -15,6 +15,7 @@
   * [Function 'phraseto_tsquery'](#function-phraseto_tsquery)
   * [Function 'websearch_to_tsquery'](#function-websearch_to_tsquery)
   * [Function 'to_tsquery'](#function-to_tsquery)
+* [Text ranking with ts_rank and ts_rank_cd](#text-ranking-with-ts_rank-and-ts_rank_cd)
 * [Properties](#properties)
 * [Reporting issues](#reporting-issues)
 * [Project contribution](#project-contribution)
@@ -24,6 +25,8 @@ Posjsonhelper text module adds support of Hibernate query for [postgresql text s
 The library is written in a java programming language.
 The project for this moment supports Hibernate in version 6.
 The required version of java is at least version 11.
+
+# How to start using posjsonhelper
 
 ### Setting maven dependency
 The project is available in the central maven repository.
@@ -322,6 +325,235 @@ And the same example but with HQL:
         //to_tsquery
         String statement = "from Tweet as tweet where text_operator_function(to_tsvector(coalesce(tweet.shortContent, \" \")), to_tsquery(:phrase))";
         TypedQuery<Tweet> query = entityManager.createQuery(statement, Tweet.class);
+        query.setParameter("phrase", phrase);
+        return query.getResultList();
+    }
+```
+
+### Text ranking with ts_rank and ts_rank_cd
+
+PostgreSQL provides ranking functions that allow ordering search results based on the relevance of a match between a document and a search query.  
+Two most commonly used ranking functions are [`ts_rank`](https://www.postgresql.org/docs/current/textsearch-controls.html) and [`ts_rank_cd`](https://www.postgresql.org/docs/current/textsearch-controls.html).
+
+* **`ts_rank`** — calculates a rank based on term frequency and inverse document frequency (TF/IDF).
+* **`ts_rank_cd`** — a variant that uses cover density ranking, which tends to favor documents where query terms appear close together.
+
+Currently, **posjsonhelper** does not provide direct wrappers for these ranking functions.  
+However, it is still possible to use them by leveraging the **Hibernate Criteria API** or **HQL**, as shown below.
+
+##### Example: Ranking using `ts_rank`
+
+The following example demonstrates how to calculate and sort results by the `ts_rank` function using Hibernate’s Criteria API:
+
+```java
+public List<Item> findItemsByWebSearchToTSQuerySortedByTsRank(String phrase, boolean ascSort) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+        Root<Item> root = cq.from(Item.class);
+
+        // Build weighted tsvector using posjsonhelper functions
+        Expression<String> shortNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("A")
+        );
+
+        Expression<String> fullNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("B")
+        );
+
+        Expression<String> shortDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("C")
+        );
+
+        Expression<String> fullDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("D")
+        );
+
+        // Concatenate tsvectors (|| operator)
+        SqmExpression<String> fullVector = (SqmExpression<String>) cb.concat(cb.concat(shortNameVec, fullNameVec), cb.concat(shortDescriptionVec, fullDescriptionVec));
+
+        // Build tsquery
+        Expression<String> queryExpr = new WebsearchToTSQueryFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, phrase);
+
+        // WHERE clause using @@ operator
+        TextOperatorFunction matches = new TextOperatorFunction((NodeBuilder) cb, fullVector, new WebsearchToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), phrase), hibernateContext);
+
+        cq.where(matches);
+
+        // Ranking
+        Expression<Double> rankExpr = cb.function(
+                "ts_rank", Double.class,
+                fullVector,
+                queryExpr
+        );
+
+        cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
+
+        return entityManager.createQuery(cq).getResultList();
+    }
+```
+
+This query produces SQL similar to:
+
+```sql
+select
+        i1_0.id,
+        i1_0.full_description,
+        i1_0.full_name,
+        i1_0.short_description,
+        i1_0.short_name 
+    from
+        item i1_0 
+    where
+        (
+            (
+                setweight(to_tsvector(?::regconfig, i1_0.short_name), 'A')||setweight(
+                    to_tsvector(?::regconfig, i1_0.full_name), 'B'
+                )
+            )||(
+                setweight(to_tsvector(?::regconfig, i1_0.short_description), 'C')||setweight(
+                    to_tsvector(?::regconfig, i1_0.full_description), 'D'
+                )
+            )
+        ) @@ websearch_to_tsquery(?::regconfig, ?) 
+    order by
+        ts_rank(((setweight(to_tsvector(?::regconfig, i1_0.short_name), 'A')||setweight(to_tsvector(?::regconfig, i1_0.full_name), 'B'))||(setweight(to_tsvector(?::regconfig, i1_0.short_description), 'C')||setweight(to_tsvector(?::regconfig, i1_0.full_description), 'D'))), websearch_to_tsquery('english', ?))
+```
+
+Example: Ranking using ts_rank_cd
+
+To use the cover density ranking method, replace the ranking function name with ts_rank_cd:
+
+```java
+public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankCd(String phrase, boolean ascSort) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+        Root<Item> root = cq.from(Item.class);
+
+        // Build weighted tsvector using posjsonhelper functions
+        Expression<String> shortNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("A")
+        );
+
+        Expression<String> fullNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("B")
+        );
+
+        Expression<String> shortDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("C")
+        );
+
+        Expression<String> fullDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("D")
+        );
+
+        // Concatenate tsvectors (|| operator)
+        SqmExpression<String> fullVector = (SqmExpression<String>) cb.concat(cb.concat(shortNameVec, fullNameVec), cb.concat(shortDescriptionVec, fullDescriptionVec));
+
+        // Build tsquery
+        Expression<String> queryExpr = new WebsearchToTSQueryFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, phrase);
+
+        // WHERE clause using @@ operator
+        TextOperatorFunction matches = new TextOperatorFunction((NodeBuilder) cb, fullVector, new WebsearchToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), phrase), hibernateContext);
+
+        cq.where(matches);
+
+        // Ranking
+        Expression<Double> rankExpr = cb.function(
+                "ts_rank_cd", Double.class,
+                fullVector,
+                queryExpr
+        );
+
+        cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
+
+        return entityManager.createQuery(cq).getResultList();
+    }
+```
+
+This query produces SQL similar to:
+
+```sql
+select
+        i1_0.id,
+        i1_0.full_description,
+        i1_0.full_name,
+        i1_0.short_description,
+        i1_0.short_name 
+    from
+        item i1_0 
+    where
+        (
+            (
+                setweight(to_tsvector(?::regconfig, i1_0.short_name), 'A')||setweight(
+                    to_tsvector(?::regconfig, i1_0.full_name), 'B'
+                )
+            )||(
+                setweight(to_tsvector(?::regconfig, i1_0.short_description), 'C')||setweight(
+                    to_tsvector(?::regconfig, i1_0.full_description), 'D'
+                )
+            )
+        ) @@ websearch_to_tsquery(?::regconfig, ?) 
+    order by
+        ts_rank_cd(((setweight(to_tsvector(?::regconfig, i1_0.short_name), 'A')||setweight(to_tsvector(?::regconfig, i1_0.full_name), 'B'))||(setweight(to_tsvector(?::regconfig, i1_0.short_description), 'C')||setweight(to_tsvector(?::regconfig, i1_0.full_description), 'D'))), websearch_to_tsquery('english', ?))
+```
+
+Similar code but implemented with usage of HQL language:
+
+```java
+public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankInHQL(String phrase, boolean ascSort) {
+        String statement = "from Item as item where " +
+                "text_operator_function(" + // text_operator_function - start
+                "concat(" + // main concat - start
+                "concat(" + // first concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortName), 'A')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullName), 'B')" +
+                ")" + // first concat - end
+                "," + // main concat - separator
+                "concat(" + // second concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')" +
+                ")" + // first second - end
+                ")" + // main concat - end
+                "," + // text_operator_function - separator
+
+                "websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)" + // websearch_to_tsquery operator
+
+                ")" + // text_operator_function - end
+                " order by " + // order - start
+
+
+                "function('ts_rank', " + // ts_rank function - start
+                "concat(" + // main concat - start
+                "concat(" + // first concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortName), 'A')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullName), 'B')" +
+                ")" + // first concat - end
+                "," + // main concat - separator
+                "concat(" + // second concat - start
+                "function('setweight', to_tsvector('%1$s', item.shortDescription), 'C')" +
+                "," +
+                "function('setweight', to_tsvector('%1$s', item.fullDescription), 'D')" +
+                ")" + // first second - end
+                ")" + // main concat - end
+                "," + // ts_rank function - separator
+
+                "websearch_to_tsquery(cast_operator_function('%1$s','regconfig'), :phrase)" + // websearch_to_tsquery operator
+
+                ")" + // ts_rank function - end
+                (ascSort ? " asc" : "desc");
+
+        TypedQuery<Item> query = entityManager.createQuery(statement.formatted(ENGLISH_CONFIGURATION), Item.class);
         query.setParameter("phrase", phrase);
         return query.getResultList();
     }

@@ -1,28 +1,27 @@
 /**
- *     Posjsonhelper library is an open-source project that adds support of
- *     Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- *
- *     Copyright (C) 2023  Szymon Tarnowski
- *
- *     This library is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU Lesser General Public
- *     License as published by the Free Software Foundation; either
- *     version 2.1 of the License, or (at your option) any later version.
- *
- *     This library is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- *     Lesser General Public License for more details.
- *
- *     You should have received a copy of the GNU Lesser General Public
- *     License along with this library; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
- *     USA
+ * Posjsonhelper library is an open-source project that adds support of
+ * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
+ * <p>
+ * Copyright (C) 2023  Szymon Tarnowski
+ * <p>
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ * <p>
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ * <p>
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
+ * USA
  */
 package com.github.starnowski.posjsonhelper.text.hibernate6.operators;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
-import com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction;
 import org.hibernate.query.sqm.NodeBuilder;
 import org.hibernate.query.sqm.function.FunctionRenderer;
 import org.hibernate.query.sqm.function.SelfRenderingSqmFunction;
@@ -44,16 +43,16 @@ import java.util.List;
 public class TextOperatorFunction extends SelfRenderingSqmFunction<Boolean> implements Serializable {
 
     private final HibernateContext context;
-    private final TSVectorFunction tsVectorFunction;
+    private final SqmExpression<String> tsVectorFunction;
     private final SqmExpression<String> argument;
 
     /**
-     * @param nodeBuilder component of type {@link NodeBuilder}
-     * @param tsVectorFunction object of type {@link TSVectorFunction}
-     * @param argument text query expression
+     * @param nodeBuilder      component of type {@link NodeBuilder}
+     * @param tsVectorFunction object of type {@link SqmExpression}
+     * @param argument         text query expression
      * @param hibernateContext context object of type {@link HibernateContext}
      */
-    public TextOperatorFunction(NodeBuilder nodeBuilder, TSVectorFunction tsVectorFunction, SqmExpression<String> argument, HibernateContext hibernateContext) {
+    public TextOperatorFunction(NodeBuilder nodeBuilder, SqmExpression<String> tsVectorFunction, SqmExpression<String> argument, HibernateContext hibernateContext) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getTextFunctionOperator()),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getTextFunctionOperator()),
                 contactParameters(tsVectorFunction, argument),
@@ -67,7 +66,8 @@ public class TextOperatorFunction extends SelfRenderingSqmFunction<Boolean> impl
         this.argument = argument;
     }
 
-    private static List<? extends SqmExpression<String>> contactParameters(TSVectorFunction tsVectorFunction, SqmExpression<String> argument) {
+    private static List<? extends SqmExpression<String>> contactParameters(SqmExpression tsVectorFunction,
+                                                                           SqmExpression<String> argument) {
         if (tsVectorFunction == null) {
             throw new IllegalArgumentException("TSVectorFunction argument can not be null");
         }

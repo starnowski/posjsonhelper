@@ -44,7 +44,7 @@ import java.util.stream.Stream;
  * <pre>{@code
  * {{main_func}}( jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) , json_function_json_array(:param1, :param2))
  * }</pre>
- * <p>
+ *
  * where:
  * {{main_func}} - name of main function returned by method {@link #getFunctionName()}
  * jsonb_extract_path( generatedAlias0.jsonbContent , :param0 ) - json path part, with this example path has only one element normally this could part could contain more elements "param"

@@ -1,19 +1,19 @@
 /**
  * Posjsonhelper library is an open-source project that adds support of
  * Hibernate query for https://www.postgresql.org/docs/10/functions-json.html)
- * <p>
+ *
  * Copyright (C) 2023  Szymon Tarnowski
- * <p>
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * <p>
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * <p>
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301
@@ -73,7 +73,7 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  *         document = JsonPath.parse((Object) JsonPath.read(item.getJsonbContent(), "$"));
  *         assertThat(document.jsonString()).isEqualTo("{\"child\":{\"pets\":[\"cat\"],\"birthday\":\"2021-11-23\"},\"parents\":[{\"name\":\"simone\",\"type\":\"mom\"}],\"inventory\":[\"fins\"],\"nicknames\":{\"school\":\"bambo\"}}");
  * }</pre>
- * <p>
+ *
  * The above code is going to execute below sql statement for update:
  *
  * <pre>{@code
@@ -95,8 +95,8 @@ import static com.github.starnowski.posjsonhelper.json.core.sql.JsonUpdateStatem
  *     where
  *         id=?
  * }</pre>
- * <p>
- * <p>
+ *
+ *
  * As it can be observed based on generated SQL, by default, the first operation is going to be an operation that deletes JSON content.
  * The most nested jsonb_set operation is going to set property "parents" with value "[]".
  *
@@ -243,7 +243,7 @@ public class Hibernate6JsonUpdateStatementBuilder<T, C> {
      * JsonUpdateStatementOperation{jsonTextArray={parents,0}, operation=JSONB_SET, value='{"type":"mom", "name":"simone"}'}
      * ]
      * }</pre>
-     * <p>
+     *
      * The expression generated on such would be translated to below sql part:
      *
      * <pre>{@code
