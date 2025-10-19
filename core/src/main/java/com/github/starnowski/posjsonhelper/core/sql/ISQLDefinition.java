@@ -38,7 +38,7 @@ public interface ISQLDefinition {
      * Returns DDL statement that drops changes applied by statement returned by the {@link #getCreateScript()} method.
      *
      * <b>IMPORTANT!</b>
-     * </p>
+     *
      * By default, there is no assumption that statement has to contains the compensation operation for operation returned by the {@link #getCreateScript()} method.
      * This means that the operation can not be by default treated as a rollback operation, but an operation that removes changes applied by statement returned by the {@link #getCreateScript()} method.
      * @return DDL statement that drops changes applied by statement returned by the {@link #getCreateScript()} method.
