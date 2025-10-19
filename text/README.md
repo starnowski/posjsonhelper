@@ -330,6 +330,8 @@ And the same example but with HQL:
     }
 ```
 
+Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
+
 ### Text ranking with ts_rank and ts_rank_cd
 
 PostgreSQL provides ranking functions that allow ordering search results based on the relevance of a match between a document and a search query.  
@@ -559,7 +561,68 @@ public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankInHQL(String phrase
     }
 ```
 
-Component has also constructor to which developer can pass [the cast operator](#cast-operator-and-text-search-configuration)
+It is also possible to pass custom weights like in below example (normalization flags can be also passed)
+
+For arguments like:
+
+```java
+                // Reserved weight values - D - 1.0 the top rank, A - 0.2 the lowest rank
+                Arguments.of("wing", true, asList(2L, 1L), new double[]{1.0, 0.8, 0.4, 0.2}),
+                // Reserved weight values - D - 1.0 the top rank, A - 0.2 the lowest rank
+                Arguments.of("wing", false, asList(1L, 2L), new double[]{1.0, 0.8, 0.4, 0.2})
+```
+
+```java
+public List<Item> findItemsByWebSearchToTSQuerySortedByTsRankWithCustomWeight(String phrase, boolean ascSort, double[] weights) {
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Item> cq = cb.createQuery(Item.class);
+        Root<Item> root = cq.from(Item.class);
+
+        // Build weighted tsvector using posjsonhelper functions
+        Expression<String> shortNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("A")
+        );
+
+        Expression<String> fullNameVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullName"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("B")
+        );
+
+        Expression<String> shortDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("shortDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("C")
+        );
+
+        Expression<String> fullDescriptionVec = cb.function("setweight", String.class,
+                new TSVectorFunction(root.get("fullDescription"), new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), (NodeBuilder) cb),
+                cb.literal("D")
+        );
+
+        // Concatenate tsvectors (|| operator)
+        SqmExpression<String> fullVector = (SqmExpression<String>) cb.concat(cb.concat(shortNameVec, fullNameVec), cb.concat(shortDescriptionVec, fullDescriptionVec));
+
+        // Build tsquery
+        Expression<String> queryExpr = new WebsearchToTSQueryFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, phrase);
+
+        // WHERE clause using @@ operator
+        TextOperatorFunction matches = new TextOperatorFunction((NodeBuilder) cb, fullVector, new WebsearchToTSQueryFunction((NodeBuilder) cb, new RegconfigTypeCastOperatorFunction((NodeBuilder) cb, ENGLISH_CONFIGURATION, hibernateContext), phrase), hibernateContext);
+
+        cq.where(matches);
+
+        // Ranking
+        Expression<Double> rankExpr = cb.function(
+                "ts_rank", Double.class,
+                new ArrayFunction<>((NodeBuilder) cb, Arrays.stream(weights).mapToObj(w -> (SqmExpression<Double>) cb.literal(w)).toList(), hibernateContext)
+                , fullVector
+                , queryExpr
+        );
+
+        cq.orderBy(ascSort ? cb.asc(rankExpr) : cb.desc(rankExpr));
+
+        return entityManager.createQuery(cq).getResultList();
+    }
+```
 
 ### Properties
 

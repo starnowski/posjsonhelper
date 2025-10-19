@@ -33,25 +33,25 @@ import java.util.List;
 
 /**
  * Component that generates SQM nodes for array operation.
- * It uses value returned by {@link HibernateContext#getJsonFunctionJsonArrayOperator()} method as function name.
+ * It uses value returned by {@link HibernateContext#getArrayFunctionOperator()} method as function name.
  *
- * @see com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor
+ * @see com.github.starnowski.posjsonhelper.hibernate6.descriptor.ArrayFunctionDescriptor
  */
-public class JsonArrayFunction<T extends Comparable<T>> extends SelfRenderingSqmFunction<T> implements Serializable {
+public class ArrayFunction<T extends Comparable<T>> extends SelfRenderingSqmFunction<T> implements Serializable {
 
     /**
      * @param nodeBuilder      node builder {@link NodeBuilder}
      * @param arguments        array of values passed to as argument for function
      * @param hibernateContext context object of type {@link HibernateContext}
      */
-    public JsonArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<T>> arguments, HibernateContext hibernateContext) {
-        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
-                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getJsonFunctionJsonArrayOperator()),
+    public ArrayFunction(NodeBuilder nodeBuilder, List<SqmExpression<T>> arguments, HibernateContext hibernateContext) {
+        super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getArrayFunctionOperator()),
+                (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(hibernateContext.getArrayFunctionOperator()),
                 arguments,
                 null,
                 null,
                 StandardFunctionReturnTypeResolvers.useFirstNonNull(),
                 nodeBuilder,
-                hibernateContext.getJsonFunctionJsonArrayOperator());
+                hibernateContext.getArrayFunctionOperator());
     }
 }

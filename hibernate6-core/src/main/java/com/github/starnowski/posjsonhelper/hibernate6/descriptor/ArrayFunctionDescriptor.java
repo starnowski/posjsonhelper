@@ -22,7 +22,7 @@
 package com.github.starnowski.posjsonhelper.hibernate6.descriptor;
 
 import com.github.starnowski.posjsonhelper.core.HibernateContext;
-import com.github.starnowski.posjsonhelper.hibernate6.operators.JsonArrayFunction;
+import com.github.starnowski.posjsonhelper.hibernate6.operators.ArrayFunction;
 import org.hibernate.query.ReturnableType;
 import org.hibernate.query.spi.QueryEngine;
 import org.hibernate.query.sqm.function.AbstractSqmSelfRenderingFunctionDescriptor;
@@ -54,11 +54,11 @@ import java.util.List;
  *  array[?,?,?,?,?]
  * }</pre>
  */
-public class JsonArrayFunctionDescriptor extends AbstractSqmSelfRenderingFunctionDescriptor {
+public class ArrayFunctionDescriptor extends AbstractSqmSelfRenderingFunctionDescriptor {
 
     protected final HibernateContext hibernateContext;
 
-    public JsonArrayFunctionDescriptor(HibernateContext hibernateContext) {
+    public ArrayFunctionDescriptor(HibernateContext hibernateContext) {
         super("array", null, null, null);
         this.hibernateContext = hibernateContext;
     }
@@ -86,6 +86,6 @@ public class JsonArrayFunctionDescriptor extends AbstractSqmSelfRenderingFunctio
         for (int i = 0; i < arguments.size(); i++) {
             args.add((SqmExpression<Comparable>) arguments.get(i));
         }
-        return (SelfRenderingSqmFunction<T>) new JsonArrayFunction(queryEngine.getCriteriaBuilder(), args, hibernateContext);
+        return (SelfRenderingSqmFunction<T>) new ArrayFunction<>(queryEngine.getCriteriaBuilder(), args, hibernateContext);
     }
 }

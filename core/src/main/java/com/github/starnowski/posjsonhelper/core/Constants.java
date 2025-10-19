@@ -116,6 +116,10 @@ public class Constants {
      */
     public static final String DEFAULT_JSON_FUNCTION_JSON_ARRAY_HIBERNATE_OPERATOR = "json_function_json_array";
     /**
+     * 	The default name for the HQL function that wraps Postgres "ARRAY" operator.
+     */
+    public static final String DEFAULT_ARRAY_FUNCTION_OPERATOR = "array_function";
+    /**
      * 	The default name for the HQL function that wraps Postgres text "@@" operator.
      */
     public static final String DEFAULT_TEXT_FUNCTION_HIBERNATE_OPERATOR = "text_operator_function";
