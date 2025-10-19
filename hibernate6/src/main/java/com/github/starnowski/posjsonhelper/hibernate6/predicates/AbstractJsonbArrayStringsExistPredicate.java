@@ -55,7 +55,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
 
     private final HibernateContext context;
     private final JsonBExtractPath jsonBExtractPath;
-    private final JsonArrayFunction jsonArrayFunction;
+    private final JsonArrayFunction<String> jsonArrayFunction;
 
     /**
      * @param context          object of type {@link HibernateContext}
@@ -75,7 +75,7 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
      * @param arrayFunction    component of type {@link JsonArrayFunction} that represent array of values passed to as argument for function
      * @param functionName     function name
      */
-    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction arrayFunction, String functionName) {
+    public AbstractJsonbArrayStringsExistPredicate(HibernateContext context, NodeBuilder nodeBuilder, JsonBExtractPath jsonBExtractPath, JsonArrayFunction<String> arrayFunction, String functionName) {
         super(nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 (FunctionRenderer) nodeBuilder.getQueryEngine().getSqmFunctionRegistry().findFunctionDescriptor(functionName),
                 parameters(jsonBExtractPath, arrayFunction),
@@ -96,14 +96,13 @@ public abstract class AbstractJsonbArrayStringsExistPredicate<T extends Abstract
         return result;
     }
 
-    private static JsonArrayFunction mapArrayValues(NodeBuilder nodeBuilder, HibernateContext context, String... values) {
+    private static JsonArrayFunction<String> mapArrayValues(NodeBuilder nodeBuilder, HibernateContext context, String... values) {
         if (values == null || values.length == 0) {
             throw new IllegalArgumentException("Values can not be null or empty list");
         }
         List<SqmExpression<String>> arrayArguments = new ArrayList<>();
         arrayArguments.addAll(Stream.of(values).map(p -> (SqmExpression<String>) nodeBuilder.value(p)).collect(Collectors.toList()));
-        JsonArrayFunction<String> jsonArrayFunction = new JsonArrayFunction<String>(nodeBuilder, arrayArguments, context);
-        return jsonArrayFunction;
+        return new JsonArrayFunction<String>(nodeBuilder, arrayArguments, context);
     }
 
     public T copy(SqmCopyContext context) {

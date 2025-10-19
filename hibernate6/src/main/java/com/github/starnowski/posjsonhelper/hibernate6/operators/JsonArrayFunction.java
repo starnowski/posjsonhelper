@@ -37,7 +37,7 @@ import java.util.List;
  *
  * @see com.github.starnowski.posjsonhelper.hibernate6.descriptor.JsonArrayFunctionDescriptor
  */
-public class JsonArrayFunction<T extends Comparable> extends SelfRenderingSqmFunction<T> implements Serializable {
+public class JsonArrayFunction<T extends Comparable<T>> extends SelfRenderingSqmFunction<T> implements Serializable {
 
     /**
      * @param nodeBuilder      node builder {@link NodeBuilder}
