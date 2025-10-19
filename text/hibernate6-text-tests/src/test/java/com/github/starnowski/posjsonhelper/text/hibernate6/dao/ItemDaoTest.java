@@ -39,7 +39,7 @@ class ItemDaoTest extends AbstractItTest {
     @DisplayName("should find correct item with order based on phrase")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectItemWithOrderBasedOnPhrase")
-    public void shouldFindCorrectItemWithOrderBasedOnPhrase(String phrase, boolean ascSort, List<Long> expectedIds) {
+    public void shouldFindCorrectItemWithOrderBasedOnPhraseRankedByTsRank(String phrase, boolean ascSort, List<Long> expectedIds) {
         assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // WHEN
@@ -55,11 +55,43 @@ class ItemDaoTest extends AbstractItTest {
     @DisplayName("should find correct item with order based on phrase")
     @ParameterizedTest
     @MethodSource("provideShouldFindCorrectItemWithOrderBasedOnPhrase")
-    public void shouldFindCorrectItemWithOrderBasedOnPhraseInHQL(String phrase, boolean ascSort, List<Long> expectedIds) {
+    public void shouldFindCorrectItemWithOrderBasedOnPhraseRankedByTsRankInHQL(String phrase, boolean ascSort, List<Long> expectedIds) {
         assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
 
         // WHEN
         List<Item> items = itemDao.findItemsByWebSearchToTSQuerySortedByTsRankInHQL(phrase, ascSort);
+
+        // THEN
+        assertEquals(expectedIds, items.stream().map(Item::getId).toList());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should find correct item with order based on phrase")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectItemWithOrderBasedOnPhrase")
+    public void shouldFindCorrectItemWithOrderBasedOnPhraseRankedByTsRankCd(String phrase, boolean ascSort, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
+        // WHEN
+        List<Item> items = itemDao.findItemsByWebSearchToTSQuerySortedByTsRankCd(phrase, ascSort);
+
+        // THEN
+        assertEquals(expectedIds, items.stream().map(Item::getId).toList());
+    }
+
+    @Sql(value = {CLEAR_DATABASE_SCRIPT_PATH, ITEMS_SCRIPT_PATH},
+            config = @SqlConfig(transactionMode = ISOLATED),
+            executionPhase = BEFORE_TEST_METHOD)
+    @DisplayName("should find correct item with order based on phrase")
+    @ParameterizedTest
+    @MethodSource("provideShouldFindCorrectItemWithOrderBasedOnPhrase")
+    public void shouldFindCorrectItemWithOrderBasedOnPhraseRankedByTsRankCdInHQL(String phrase, boolean ascSort, List<Long> expectedIds) {
+        assumeTrue(postgresVersion.getMajor() >= 11, "Test ignored because the 'websearch_to_tsquery' function was added in version 10 of Postgres");
+
+        // WHEN
+        List<Item> items = itemDao.findItemsByWebSearchToTSQuerySortedByTsRankCdInHQL(phrase, ascSort);
 
         // THEN
         assertEquals(expectedIds, items.stream().map(Item::getId).toList());
