@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * Function descriptor for <a href="https://www.postgresql.org/docs/current/textsearch-intro.html">text postgres operator</a>.
- * Generally it renders passed arguments that one is TSVectorFunction object type and second is expression that represents text query.
+ * Generally it renders passed arguments that one is SqmExpression<String> object type and second is expression that represents text query.
  * For example:
  * SQL
  * <pre>{@code
@@ -73,6 +73,6 @@ public class TextOperatorFunctionDescriptor extends AbstractSqmSelfRenderingFunc
         for (int i = 0; i < arguments.size(); i++) {
             args.add((SqmExpression<String>) arguments.get(i));
         }
-        return (SelfRenderingSqmFunction<T>) new TextOperatorFunction(queryEngine.getCriteriaBuilder(), (TSVectorFunction) args.get(0), args.get(1), hibernateContext);
+        return (SelfRenderingSqmFunction<T>) new TextOperatorFunction(queryEngine.getCriteriaBuilder(),  args.get(0), args.get(1), hibernateContext);
     }
 }
