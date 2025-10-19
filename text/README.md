@@ -25,6 +25,8 @@ The library is written in a java programming language.
 The project for this moment supports Hibernate in version 6.
 The required version of java is at least version 11.
 
+# How to start using posjsonhelper
+
 ### Setting maven dependency
 The project is available in the central maven repository.
 You can use it just by adding it as a dependency in the project descriptor file (pom.xml).

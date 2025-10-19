@@ -26,6 +26,11 @@ https://www.markdownguide.org/basic-syntax/
 
 ## [Unreleased]
 
+## [0.4.4] - 2025-10-19
+TODO
+- Changed constructor com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction#TextOperatorFunction(org.hibernate.query.sqm.NodeBuilder, com.github.starnowski.posjsonhelper.text.hibernate6.functions.TSVectorFunction, org.hibernate.query.sqm.tree.expression.SqmExpression, com.github.starnowski.posjsonhelper.core.HibernateContext) to com.github.starnowski.posjsonhelper.text.hibernate6.operators.TextOperatorFunction#TextOperatorFunction(org.hibernate.query.sqm.NodeBuilder, org.hibernate.query.sqm.tree.expression.SqmExpression, org.hibernate.query.sqm.tree.expression.SqmExpression, com.github.starnowski.posjsonhelper.core.HibernateContext) [158](https://github.com/starnowski/posjsonhelper/issues/158)
+
+
 ## [0.4.3] - 2025-06-29
 
 ### Added
