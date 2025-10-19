@@ -40,7 +40,7 @@ import java.util.List;
 
 /**
  * Function descriptor for <a href="https://www.postgresql.org/docs/current/textsearch-intro.html">text postgres operator</a>.
- * Generally it renders passed arguments that one is SqmExpression<String> object type and second is expression that represents text query.
+ * Generally it renders passed arguments that one is SqmExpression object type and second is expression that represents text query.
  * For example:
  * SQL
  * <pre>{@code
